@@ -1,0 +1,37 @@
+[
+    {
+        "userName": "Daniel",
+        "hashValue": 46123764,
+        "passwordFB": "kartoffel7"
+    },
+    {
+        "userName": "Fatima",
+        "hashValue": 13579246,
+        "passwordFB": "kartoffel8"
+    },
+    {
+        "userName": "Jacob",
+        "hashValue": 14702603,
+        "passwordFB": "kartoffel9"
+    },
+    {
+        "userName": "Jakob",
+        "hashValue": 87659876,
+        "passwordFB": "kartoffel10"
+    },
+    {
+        "userName": "Laurits",
+        "hashValue": 19328754,
+        "passwordFB": "kartoffel11"
+    },
+    {
+        "userName": "Mathias",
+        "hashValue": 65431298,
+        "passwordFB": "kartoffel12"
+    },
+    {
+        "userName": "Simon",
+        "hashValue": 69696969,
+        "passwordFB": "kartoffel13"
+    }
+]
