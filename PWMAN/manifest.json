@@ -1,0 +1,20 @@
+{
+    "manifest_version": 2,
+    "name": "Password Manager",
+    "version": "0.0.1",
+    "content_scripts": [{
+        "matches": [
+            "<all_urls>"
+        ],
+        "js": ["content.js"]
+    }],
+    "browser_action": {
+        "default_icon": "logo.png",
+        "default_popup": "popup.html",
+        "default_title": "PW MAN"
+    },
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "permissions": ["activeTab", "declarativeContent", "storage", "tabs"]
+}
