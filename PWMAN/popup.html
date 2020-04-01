@@ -4,18 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Styles/PopUp.css">
     <title>Password Manager</title>
 </head>
 
 <body>
-    <h3>Password manager</h3>
+    <h3 id="h3">Password manager</h3>
     <form id="form">
-        <label for="username"><b>Username</b></label>
+        <label id= "userLabel" for="username"><b>Username</b></label>
         <input id="username" type="text" placeholder="Enter Username" name="username" required>
-        <label for="password"><b>Password</b></label>
+        <label id="passLabel" for="password"><b>Password</b></label>
         <input id="password" type="password" placeholder="Enter Password" name="password" required>
-        <input id="submit" type="submit" value="Submit">
+        <input id="submit" type="submit" value="Log in">
     </form>
+    <div id="Logo"><img src = "logo2.png" style="width: 50px;" alt="PWMAN"></div>
     <script src="index.js "></script>
 </body>
 
