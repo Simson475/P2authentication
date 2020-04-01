@@ -71,6 +71,7 @@ body{
 #submit:hover{
     background-color: #E59400;
     color: black;
+    cursor: pointer;
 }
 
 #Logo{
