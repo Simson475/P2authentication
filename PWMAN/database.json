@@ -1,30 +1,29 @@
-[
-    {
-        "userName": "Daniel",
+[{
+        "username": "Daniel",
         "hashValue": 46123764
     },
     {
-        "userName": "Fatima",
+        "username": "Fatima",
         "hashValue": 13579246
     },
     {
-        "userName": "Jacob",
+        "username": "Jacob",
         "hashValue": 14702603
     },
     {
-        "userName": "Jakob",
+        "username": "Jakob",
         "hashValue": 87659876
     },
     {
-        "userName": "Laurits",
+        "username": "Laurits",
         "hashValue": 19328754
     },
     {
-        "userName": "Mathias",
+        "username": "Mathias",
         "hashValue": 65431298
     },
     {
-        "userName": "Simon",
+        "username": "Simon",
         "hashValue": 69696969
     }
 ]
