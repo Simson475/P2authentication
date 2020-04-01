@@ -14,10 +14,13 @@ async function formSubmit(event) {
         password: form.password.value
     };
 
-    await fetch("http://127.0.0.1:3000/validate", {
+    let answer = await fetch("http://127.0.0.1:3000/validate", {
         method: 'POST',
         body: JSON.stringify(jsondata, null, 2)
     });
+    answer = await answer.json()
+    console.log(answer)
+
 
     form.reset();
 }
