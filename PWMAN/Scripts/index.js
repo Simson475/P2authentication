@@ -30,6 +30,4 @@ async function formSubmit(event) {
 
         form.reset();
     });
-
-
 }
