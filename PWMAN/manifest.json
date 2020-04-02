@@ -6,15 +6,15 @@
         "matches": [
             "<all_urls>"
         ],
-        "js": ["content.js"]
+        "js": ["/Scripts/content.js"]
     }],
     "browser_action": {
-        "default_icon": "logo.png",
-        "default_popup": "popup.html",
+        "default_icon": "/Images/logo.png",
+        "default_popup": "/HTML/popup.html",
         "default_title": "PW MAN"
     },
     "background": {
-        "scripts": ["background.js"]
+        "scripts": ["/scripts/background.js"]
     },
     "permissions": ["activeTab", "declarativeContent", "storage", "tabs"]
 }
