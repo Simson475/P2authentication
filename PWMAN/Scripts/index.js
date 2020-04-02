@@ -1,6 +1,7 @@
 //Event Listeners
 document.querySelector("form").addEventListener("submit", formSubmit)
 
+
 /**
  * formsubmit takes information that is submitted and sends it to the server and resets the form
  * @param {object} event event that triggered the function. used to prevent default behaviour
@@ -24,3 +25,11 @@ async function formSubmit(event) {
 
     form.reset();
 }
+
+
+    
+
+    
+
+    
+    

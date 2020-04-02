@@ -74,7 +74,8 @@ body{
     position: absolute;
     top: 225px;
     right: 20px;
-    color: white;
+    padding: 2px;
+    color: black;
     background-color:orange;
     /*Border on the button*/
     border: solid black;
@@ -84,7 +85,8 @@ body{
 }
 #create:hover{
     background-color: #E59400;
-    color: black;
+    border-color: #E59400;
+    color: white;
     cursor: pointer;
 }
 
@@ -92,7 +94,8 @@ body{
     position: absolute;
     top: 225px;
     left: 20px;
-    color: white;
+    padding: 2px;
+    color: black;
     background-color:orange;
     /*Border on the button*/
     border: solid black;
@@ -102,7 +105,8 @@ body{
 }
 #return:hover{
     background-color: #E59400;
-    color: black;
+    border-color: #E59400;
+    color: white;
     cursor: pointer;
 }
 
