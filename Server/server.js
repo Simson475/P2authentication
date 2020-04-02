@@ -1,8 +1,15 @@
-const http = require('http'); //Giver os de nødvendige objekter 'req' og 'res' samt alt create server relateret
+const https = require('https'); //Giver os de nødvendige objekter 'req' og 'res' samt alt create server relateret
 const fs = require('fs'); //Giver os filfunktioner så vi kan skrive til og læse fra databasen
 
+/**
+ *  Reads the privatekey and the certiface used for settings up https
+ */ 
+const options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+};
 
-http.createServer(async function(req, res) {
+https.createServer(options, async function(req, res) {
     console.log(" request was made: " + req.url + " with method " + req.method);
     switch (req.url) {
         case "/validate":
@@ -17,7 +24,7 @@ http.createServer(async function(req, res) {
             break;
         default:
             res.writeHead(404, { "Content-Type": "text/plain" }); //Fejlmelding når URL'en ikke er genkendt
-            res.end("404, Site not found");
+            res.end("404, Site not found\n");
             break;
     }
 
