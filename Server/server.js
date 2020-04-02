@@ -38,20 +38,33 @@ console.log("listening at 3000");
  * @param {object} res res is response sent to user. used to send info back.
  */
 async function validator(req, res) {
-    res.writeHead(201, { "Content-Type": "application/json" })
+    res.writeHead(201, { "Content-Type": "application/json" }) //Skriver indholdstype i svaret til brugeren.
 
-    let userData = null;
-    let data = await loadData(req);
-    let database = JSON.parse(fs.readFileSync(__dirname + "/database.json"));
-    for (let element of database) {
-        if (data.username == element.username && data.password == element.hashValue) {
-            userData = JSON.parse(fs.readFileSync(__dirname + "/" + data.username + ".json"));
+    let storedUserData = null;
+    let data = await loadData(req); //Indlæser data fra client request. Returnerer læsbar JSON information.
+    let database = JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
+    for (let element of database) { //Itererer over databasen, bruger for bruger.
+        if (data.username == element.username && data.password == element.hashValue) { //Tjekker om username og password genkendes  
+            storedUserData = JSON.parse(fs.readFileSync(__dirname + "/" + data.username + ".json")); //Hvis parret genkendes, indlæses brugerens personlige password-database.
+        }
+    }
+    if (storedUserData == null) {
+        res.end(JSON.stringify("no user with given credentials")); //Tjekker om brugeren eksisterer
+        return;
+    }
+
+    let domainArray = data.domain.split("/"); //Gemmer websitet uden "http(s)://"
+    let domainStripped = domainArray[2]; //gemmer delen af domænet der ikke indeholder http(s).
+    for (let element of storedUserData) { //Itererer over brugerens gemte domæner.
+        if (domainStripped == element.domain) { //Tjekker om domænet eksisterer i databasen.
+            res.end(JSON.stringify(element)); //Sender domænet, brugernavn og password tilbage.
+            return;
         }
     }
 
-    console.log(userData);
-    res.end(JSON.stringify(userData));
+    res.end(JSON.stringify("no userdata found for current site")); //Ender her hvis domænet ikke er gemt i den personlige database.
 }
+
 /**
  * Creates an account for a user in the Password Manager
  * @param {object} req 
@@ -59,8 +72,8 @@ async function validator(req, res) {
  */
 async function masterAccount(req, res) {
     res.writeHead(201, { "Content-type": "application/json" }) //TODO FIND UD AF FORMAT DER SENDES OG RET CONTENT TYPE Skriver header på res. til brugeren 
-    let data = await loadData(req); //Vi loader Fatimas funktion. loader dataen, skal ventes på.
-    let database = JSON.parse(fs.readFileSync(__dirname + "/database.json"));
+    let data = await loadData(req); //Indlæser data fra client request. Returnerer læsbar JSON information.
+    let database = JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
 
     for (let element of database) { //Denne iterative kontrolstruktur tjekker om brugernavnet er taget.
         if (data.username == element.username) {
