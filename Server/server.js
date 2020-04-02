@@ -1,8 +1,15 @@
-const http = require('http');
+const https = require('https');
 const fs = require('fs');
 
+/**
+ * reads the certifcate file and the private key file
+ */
+const options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+};
 
-http.createServer(async function(req, res) {
+https.createServer(options, async function(req, res) {
     console.log(" request was made: " + req.url + " with method " + req.method);
     switch (req.url) {
         case "/validate":
@@ -11,7 +18,7 @@ http.createServer(async function(req, res) {
 
         default:
             res.writeHead(404, { "Content-Type": "text/plain" });
-            res.end("404, Site not found");
+            res.end("404, Site not found\n");
             break;
     }
 
