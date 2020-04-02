@@ -1,11 +1,11 @@
-[   {
-        "domain": "www.twitter.com",
+[{
+        "domain": "twitter.com",
         "username": "Simon",
         "password": "kartoffel13"
     },
 
     {
-        "domain": "www.hestenettet.dk",
+        "domain": "hestenettet.dk",
         "username": "Simon",
         "password": "kartoffel13"
     }
