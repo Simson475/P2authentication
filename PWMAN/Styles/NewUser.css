@@ -110,9 +110,25 @@ body{
     cursor: pointer;
 }
 
-
 #Logo{
     position: absolute;
     top: 20px;
     right: 25px;
 }
+
+#inUse{
+    display: none;
+    position: absolute;
+    top: 225px;
+    left: 20px;
+    color: red;
+}
+#wrongPassword{
+    display: none;
+    position: absolute;
+    top: 225px;
+    left: 20px;
+    color: red;
+}
+
+
