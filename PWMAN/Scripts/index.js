@@ -9,6 +9,7 @@ document.querySelector("form").addEventListener("submit", formSubmit)
 async function formSubmit(event) {
     event.preventDefault()
 
+
     let form = document.getElementById("form")
     let jsondata = {
         username: form.username.value,
@@ -25,11 +26,3 @@ async function formSubmit(event) {
 
     form.reset();
 }
-
-
-    
-
-    
-
-    
-    
