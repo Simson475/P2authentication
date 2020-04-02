@@ -23,10 +23,28 @@ async function formSubmit(event) {
         });
 
         answer = await answer.json()
-        console.log(answer)
+        
+
+        if (answer){
+            console.log(answer);
+        }
+        else {
+            document.getElementById("username").style.borderColor="#BA1919";
+            document.body.style.height = "280px";
+            document.getElementById("create").style.top = "250px";
+            document.getElementById("return").style.top = "250px";
+            document.getElementById("inUse").style.display = "inline"; 
+        }
 
         form.reset();
-    } else {
+    }
+    else{
+        document.body.style.height = "280px";
+        document.getElementById("create").style.top = "250px";
+        document.getElementById("return").style.top = "250px";
+        document.getElementById("firstPassword").style.borderColor = "#BA1919";
+        document.getElementById("secondPassword").style.borderColor = "#BA1919";
+        document.getElementById("wrongPassword").style.display = "inline"; 
 
     }
 }
