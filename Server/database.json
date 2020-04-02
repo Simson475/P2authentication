@@ -1,34 +1,37 @@
-[
-  {
-    "username": "Daniel",
-    "hashValue": 46123764
-  },
-  {
-    "username": "Fatima",
-    "hashValue": 13579246
-  },
-  {
-    "username": "Jacob",
-    "hashValue": 14702603
-  },
-  {
-    "username": "Jakob",
-    "hashValue": 87659876
-  },
-  {
-    "username": "Laurits",
-    "hashValue": 19328754
-  },
-  {
-    "username": "Mathias",
-    "hashValue": 65431298
-  },
-  {
-    "username": "Simon",
-    "hashValue": 69696969
-  },
-  {
-    "username": "mojndo",
-    "hashValue": "hej123"
-  }
+[{
+        "username": "Daniel",
+        "hashValue": 46123764
+    },
+    {
+        "username": "Fatima",
+        "hashValue": 13579246
+    },
+    {
+        "username": "Jacob",
+        "hashValue": 14702603
+    },
+    {
+        "username": "Jakob",
+        "hashValue": 87659876
+    },
+    {
+        "username": "Laurits",
+        "hashValue": 19328754
+    },
+    {
+        "username": "Mathias",
+        "hashValue": 65431298
+    },
+    {
+        "username": "Simon",
+        "hashValue": 69696969
+    },
+    {
+        "username": "mojndo",
+        "hashValue": "hej123"
+    },
+    {
+        "username": "Dennis",
+        "hashValue": "1"
+    }
 ]
