@@ -26,7 +26,26 @@ async function formSubmit(event) {
             body: JSON.stringify(jsondata, null, 2)
         });
         answer = await answer.json();
-        console.log(answer);
+        console.log(answer); /*Skal fjernes på et tidspunkt*/
+
+        if (answer == "no user with given credentials") {
+            /* TODO
+            STUB 
+            her indsættes error message om bruger ikke eksister eller forkert login oplysning
+            */
+
+        } else if (answer == "no userdata found for current site") {
+            /* TODO
+            STUB 
+            her indsættes error message om bruger ikke har login til den givne weksite
+            */
+        } else {
+            document.getElementById("form").style.display = "none";
+            document.getElementById("create").style.display = "none";
+            let paragraph = document.getElementById("paragraph")
+            paragraph.innerHTML = "Username:<br /> " + answer.username + "<br />Password: <br />" + answer.password;
+            paragraph.style.display = "block"
+        }
 
         form.reset();
     });
