@@ -8,4 +8,4 @@ let errorModule = {
 }
 
 
-export = errorModule;
+export {errorModule};
