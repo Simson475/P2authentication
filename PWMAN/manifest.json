@@ -16,5 +16,5 @@
     "background": {
         "scripts": ["/scripts/background.js"]
     },
-    "permissions": ["activeTab", "declarativeContent", "storage", "tabs"]
+    "permissions": ["activeTab", "declarativeContent", "storage", "tabs", "cookies"]
 }

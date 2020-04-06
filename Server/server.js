@@ -4,10 +4,10 @@ const fs = require('fs'); //Giver os filfunktioner så vi kan skrive til og læs
 /**
  *  Reads the privatekey and the certiface used for settings up https
  */
-const options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
-};
+//const options = {
+//    key: fs.readFileSync('key.pem'),
+//    cert: fs.readFileSync('cert.pem')
+//};
 
 http.createServer(async function(req, res) {
     console.log(" request was made: " + req.url + " with method " + req.method);
