@@ -1,14 +1,5 @@
+const http = require('http'); //Giver os de nødvendige objekter 'req' og 'res' samt alt create server relateret
 const fs = require('fs'); //Giver os filfunktioner så vi kan skrive til og læse fra databasen
-require("dotenv").config()
-const express = require("express");
-const app = express();
-const bcrypt = require("bcrypt");
-const passport = require("passport")
-const flash = require("express-flash")
-const session = require("express-session")
-const methodOverride = require("method-override")
-const path = require("path");
-
 
 /**
  *  Reads the privatekey and the certiface used for settings up https
@@ -18,13 +9,28 @@ const path = require("path");
 //    cert: fs.readFileSync('cert.pem')
 //};
 
-app.use(express.urlencoded({ extended: false })); //TODO find ud af hvad den gør
+http.createServer(async function(req, res) {
+    console.log(" request was made: " + req.url + " with method " + req.method);
+    switch (req.url) {
+        case "/validate":
+            validator(req, res); //funktionskald af validator hvis url'en ender i /validate
+            break;
+        case "/newUser":
+            masterAccount(req, res); //funktionskald der opretter bruger til password manageren
+            break;
+        case "/addAccount": //TODO tilføj funktion når html fil er klar.
+            res.writeHead(404, { "Content-Type": "text/plain" }); //Fejlmelding når URL'en ikke er genkendt
+            res.end("404, Site not found");
+            break;
+        default:
+            res.writeHead(404, { "Content-Type": "text/plain" }); //Fejlmelding når URL'en ikke er genkendt
+            res.end("404, Site not found\n");
+            break;
+    }
 
-app.post("/validate", ((req, res) => { validator(req, res) })) //Kalder funktionen validator hvis post request på /validate
+}).listen(3000, "127.0.0.1");
+console.log("listening at 3000");
 
-app.post("/newUser", ((req, res) => { masterAccount(req, res) })) //lytter efter et post request på /newUser og kalder funktionen masterAccount
-
-app.listen(3000, () => { console.log("listening at 3000") }) //sætter serveren til at lytte på 3000
 
 /**
  * validates the user has an account with given username/password combo. if so. sends data back if not, sends error back
