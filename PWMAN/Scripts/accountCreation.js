@@ -17,7 +17,7 @@ async function formSubmit(event) {
         document.getElementById("return").style.top = "225px";
         document.getElementById("firstPassword").style.borderColor = "#101010";
         document.getElementById("secondPassword").style.borderColor = "#101010";
-        document.getElementById("wrongPassword").style.display = "none"; 
+        document.getElementById("wrongPassword").style.display = "none";
 
 
 
@@ -28,40 +28,41 @@ async function formSubmit(event) {
 
         let answer = await fetch("http://127.0.0.1:3000/newUser", {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(jsondata, null, 2)
         });
 
         answer = await answer.json()
-        
 
-        if (answer){
+
+        if (answer) {
             console.log(answer);
-        }
-        else {
+        } else { //hvis brugernavnet allerede eksi
             /*gør bodyen større så der er plads til et label mere, flytter knapperne ned, skifter border farver på password felterne og viser besked*/
             document.body.style.height = "280px";
             document.getElementById("create").style.top = "250px";
             document.getElementById("return").style.top = "250px";
-            document.getElementById("username").style.borderColor="#BA1919";
-            document.getElementById("inUse").style.display = "inline"; 
+            document.getElementById("username").style.borderColor = "#BA1919";
+            document.getElementById("inUse").style.display = "inline";
         }
 
         form.reset();
-    }
-    else{
+    } else { //hvis passwordsene er ens
         /*i tilfælde af at der tidligere er indtastet et eksisterende bruger navn (resetter)*/
-        document.getElementById("username").style.borderColor="#101010";
+        document.getElementById("username").style.borderColor = "#101010";
         document.body.style.height = "280px";
         document.getElementById("create").style.top = "250px";
         document.getElementById("return").style.top = "250px";
-        document.getElementById("inUse").style.display = "none"; 
+        document.getElementById("inUse").style.display = "none";
         /*gør bodyen større så der er plads til et label mere, flytter knapperne ned, skifter border farver på password felterne og viser besked*/
         document.body.style.height = "280px";
         document.getElementById("create").style.top = "250px";
         document.getElementById("return").style.top = "250px";
         document.getElementById("firstPassword").style.borderColor = "#BA1919";
         document.getElementById("secondPassword").style.borderColor = "#BA1919";
-        document.getElementById("wrongPassword").style.display = "inline"; 
+        document.getElementById("wrongPassword").style.display = "inline";
 
     }
 }

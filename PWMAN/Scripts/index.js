@@ -23,6 +23,9 @@ async function formSubmit(event) {
         console.log(jsondata);
         let answer = await fetch("http://127.0.0.1:3000/validate", {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(jsondata, null, 2)
         });
         answer = await answer.json();
