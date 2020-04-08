@@ -1,6 +1,7 @@
 //Event Listeners
 document.querySelector("form").addEventListener("submit", formSubmit)
-
+const cryptoRandomString = require('crypto-random-string');
+const fs = require('fs');
 
 /**
  * formsubmit takes information that is submitted and sends it to the server and resets the form
@@ -18,13 +19,19 @@ async function formSubmit(event) {
         document.getElementById("firstPassword").style.borderColor = "#101010";
         document.getElementById("secondPassword").style.borderColor = "#101010";
         document.getElementById("wrongPassword").style.display = "none";
-
+        /*generere peber streng*/
+        let pepperString = cryptoRandomString({length: 20, type: 'base64'});
+        console.log(pepperString);
+        /*konkatinere indtastet password med den pebrede streng*/
+        let pepperPassword = form.password1.value + pepperString;
+        let hashedPassword = hashing(pepperPassword);
 
 
         let jsondata = {
             username: form.username.value,
-            password: form.password1.value
+            password: hashedPassword 
         };
+        
 
         let answer = await fetch("http://127.0.0.1:3000/newUser", {
             method: 'POST',
@@ -38,7 +45,11 @@ async function formSubmit(event) {
 
 
         if (answer) {
-            console.log(answer);
+
+            //Generere en pepperstring og gemmer den i en json med brugernavnet
+           /*  savePepper(jsondata.username,pepperString); */
+
+    
         } else { //hvis brugernavnet allerede eksi
             /*gør bodyen større så der er plads til et label mere, flytter knapperne ned, skifter border farver på password felterne og viser besked*/
             document.body.style.height = "280px";
@@ -66,3 +77,35 @@ async function formSubmit(event) {
 
     }
 }
+/*  TODO: skal omskirves til chrome file system
+function savePepper(username,pepperString){
+    
+    fs.writeFileSync("../Pepper/ "+ username + ".json",JSON.stringify(pepperString), function(err){
+        if (err) {
+            throw err;
+        }
+        console.log("Added: " + username + ".json");
+        
+    });
+    
+} */
+
+function hashing(str){ //stjålet fra nettet: http://mediocredeveloper.com/wp/?p=55
+    len = str.length;
+    hash = 0;
+    for(i=1; i<=len; i++){
+        char = str.charCodeAt((i-1));
+        hash += char*Math.pow(31,(len-i));
+        hash = hash & hash; //javascript limitation to force to 32 bits
+    }
+    return Math.abs(hash);
+}
+
+
+
+
+
+
+
+
+
