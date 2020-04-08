@@ -9,7 +9,7 @@
   },
   {
     "username": "Jacob",
-    "hashValue": 14702603
+    "hashValue": 8888
   },
   {
     "username": "Jakob",
@@ -26,9 +26,5 @@
   {
     "username": "Simon",
     "hashValue": 8888
-  },
-  {
-    "username": "test",
-    "hashValue": "1234"
   }
 ]

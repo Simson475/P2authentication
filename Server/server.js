@@ -2,11 +2,12 @@ const fs = require('fs'); //Giver os filfunktioner så vi kan skrive til og læs
 require("dotenv").config()
 const express = require("express");
 const app = express();
+const bodyParser = require('body-parser');
 const bcrypt = require("bcrypt");
 const passport = require("passport")
 const flash = require("express-flash")
 const session = require("express-session")
-const methodOverride = require("method-override")
+//const methodOverride = require("method-override")
 const path = require("path");
 
 
@@ -17,12 +18,18 @@ const path = require("path");
 //    key: fs.readFileSync('key.pem'),
 //    cert: fs.readFileSync('cert.pem')
 //};
+const logger = function(req, res, next) {
+    console.log(req.method + " request received at " + req.url)
+    next()
+}
 
-app.use(express.urlencoded({ extended: false })); //TODO find ud af hvad den gør
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })); //TODO find ud af hvad den gør
+app.use(logger);
 
 app.post("/validate", ((req, res) => { validator(req, res) })) //Kalder funktionen validator hvis post request på /validate
-
 app.post("/newUser", ((req, res) => { masterAccount(req, res) })) //lytter efter et post request på /newUser og kalder funktionen masterAccount
+
 
 app.listen(3000, () => { console.log("listening at 3000") }) //sætter serveren til at lytte på 3000
 
@@ -33,9 +40,8 @@ app.listen(3000, () => { console.log("listening at 3000") }) //sætter serveren 
  */
 async function validator(req, res) {
     res.writeHead(201, { "Content-Type": "application/json" }) //Skriver indholdstype i svaret til brugeren.
-
     let storedUserData = null;
-    let data = await loadData(req); //Indlæser data fra client request. Returnerer læsbar JSON information.
+    let data = req.body
     let database = JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
     for (let element of database) { //Itererer over databasen, bruger for bruger.
         if (data.username == element.username && data.password == element.hashValue) { //Tjekker om username og password genkendes  
@@ -66,7 +72,7 @@ async function validator(req, res) {
  */
 async function masterAccount(req, res) {
     res.writeHead(201, { "Content-type": "application/json" }) //TODO FIND UD AF FORMAT DER SENDES OG RET CONTENT TYPE Skriver header på res. til brugeren 
-    let data = await loadData(req); //Indlæser data fra client request. Returnerer læsbar JSON information.
+    let data = req.body
     let database = JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
 
     for (let element of database) { //Denne iterative kontrolstruktur tjekker om brugernavnet er taget.
@@ -77,24 +83,13 @@ async function masterAccount(req, res) {
     }
 
     database.push({ username: data.username, hashValue: data.password }); //Vi pusher hele elementet til slutningen af array i database.
-    fs.writeFile("database.json", JSON.stringify(database, null, 2), function(err, data) { //TODO fund ud af format for error handling her og lav en if statement
+    fs.writeFile(__dirname + "/database.json", JSON.stringify(database, null, 2), function(err, data) { //TODO fund ud af format for error handling her og lav en if statement
         /* STUB */
     });
 
-    fs.writeFile("./json/" + data.username + ".json", JSON.stringify(new Array(0), null, 2),
+    fs.writeFile(__dirname + "/json/" + data.username + ".json", JSON.stringify(new Array(0), null, 2),
         function(err, data) { //TODO fund ud af format for error handling her og lav en if statement //Opretter en dedikeret fil der skal indeholde fremtidige sites med passwords.
             res.end(JSON.stringify(true));
         });
-}
 
-/**
- * Loads data in bits and returns parsed to JSON.
- * @param {object} req 
- */
-async function loadData(req) {
-    let data = "";
-    await req.on("error", (err) => console.error(err)) //Denne funktion håndterer fejl og logge dem til konsollen
-        .on("data", (chunk) => data += chunk); //Når request modtager data skal den concatenate databrudstykkerne til ét stykke
-    data = JSON.parse(data); //Denne skal fortolke data til noget forståeligt JSON information.
-    return data;
 }

@@ -1,6 +1,7 @@
 //Event Listeners
 document.querySelector("form").addEventListener("submit", formSubmit)
-
+const cryptoRandomString = require('crypto-random-string');
+const fs = require('fs');
 
 /**
  * formsubmit takes information that is submitted and sends it to the server and resets the form
@@ -17,51 +18,94 @@ async function formSubmit(event) {
         document.getElementById("return").style.top = "225px";
         document.getElementById("firstPassword").style.borderColor = "#101010";
         document.getElementById("secondPassword").style.borderColor = "#101010";
-        document.getElementById("wrongPassword").style.display = "none"; 
-
+        document.getElementById("wrongPassword").style.display = "none";
+        /*generere peber streng*/
+        let pepperString = cryptoRandomString({length: 20, type: 'base64'});
+        console.log(pepperString);
+        /*konkatinere indtastet password med den pebrede streng*/
+        let pepperPassword = form.password1.value + pepperString;
+        let hashedPassword = hashing(pepperPassword);
 
 
         let jsondata = {
             username: form.username.value,
-            password: form.password1.value
+            password: hashedPassword 
         };
+        
 
         let answer = await fetch("http://127.0.0.1:3000/newUser", {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(jsondata, null, 2)
         });
 
         answer = await answer.json()
-        
 
-        if (answer){
-            console.log(answer);
-        }
-        else {
+
+        if (answer) {
+
+            //Generere en pepperstring og gemmer den i en json med brugernavnet
+           /*  savePepper(jsondata.username,pepperString); */
+
+    
+        } else { //hvis brugernavnet allerede eksi
             /*gør bodyen større så der er plads til et label mere, flytter knapperne ned, skifter border farver på password felterne og viser besked*/
             document.body.style.height = "280px";
             document.getElementById("create").style.top = "250px";
             document.getElementById("return").style.top = "250px";
-            document.getElementById("username").style.borderColor="#BA1919";
-            document.getElementById("inUse").style.display = "inline"; 
+            document.getElementById("username").style.borderColor = "#BA1919";
+            document.getElementById("inUse").style.display = "inline";
         }
 
         form.reset();
-    }
-    else{
+    } else { //hvis passwordsene er ens
         /*i tilfælde af at der tidligere er indtastet et eksisterende bruger navn (resetter)*/
-        document.getElementById("username").style.borderColor="#101010";
+        document.getElementById("username").style.borderColor = "#101010";
         document.body.style.height = "280px";
         document.getElementById("create").style.top = "250px";
         document.getElementById("return").style.top = "250px";
-        document.getElementById("inUse").style.display = "none"; 
+        document.getElementById("inUse").style.display = "none";
         /*gør bodyen større så der er plads til et label mere, flytter knapperne ned, skifter border farver på password felterne og viser besked*/
         document.body.style.height = "280px";
         document.getElementById("create").style.top = "250px";
         document.getElementById("return").style.top = "250px";
         document.getElementById("firstPassword").style.borderColor = "#BA1919";
         document.getElementById("secondPassword").style.borderColor = "#BA1919";
-        document.getElementById("wrongPassword").style.display = "inline"; 
+        document.getElementById("wrongPassword").style.display = "inline";
 
     }
 }
+/*  TODO: skal omskirves til chrome file system
+function savePepper(username,pepperString){
+    
+    fs.writeFileSync("../Pepper/ "+ username + ".json",JSON.stringify(pepperString), function(err){
+        if (err) {
+            throw err;
+        }
+        console.log("Added: " + username + ".json");
+        
+    });
+    
+} */
+
+function hashing(str){ //stjålet fra nettet: http://mediocredeveloper.com/wp/?p=55
+    len = str.length;
+    hash = 0;
+    for(i=1; i<=len; i++){
+        char = str.charCodeAt((i-1));
+        hash += char*Math.pow(31,(len-i));
+        hash = hash & hash; //javascript limitation to force to 32 bits
+    }
+    return Math.abs(hash);
+}
+
+
+
+
+
+
+
+
+
