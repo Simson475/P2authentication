@@ -31,24 +31,27 @@ async function formSubmit(event) {
         answer = await answer.json();
         console.log(answer); /*Skal fjernes på et tidspunkt*/
 
+
         if (answer == "no user with given credentials") {
             /* TODO
             STUB 
             her indsættes error message om bruger ikke eksister eller forkert login oplysning
             */
 
-        } else if (answer == "no userdata found for current site") {
-            /* TODO
-            STUB 
-            her indsættes error message om bruger ikke har login til den givne weksite
-            */
-        } else {
-            document.getElementById("form").style.display = "none";
-            document.getElementById("create").style.display = "none";
-            let paragraph = document.getElementById("paragraph")
-            paragraph.innerHTML = "Username:<br /> " + answer.username + "<br />Password: <br />" + answer.password;
-            paragraph.style.display = "block"
         }
+
+        let newAnswer = await fetch("http://127.0.0.1:3000/test", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                "authorization": "bearer " + answer.token
+            },
+            body: JSON.stringify(jsondata, null, 2)
+        });
+
+        newAnswer = await newAnswer.json();
+        console.log(newAnswer)
+
 
         form.reset();
     });
