@@ -83,10 +83,10 @@ async function formSubmit(event) {
 }
 
 function hashing(str){ //stjålet fra nettet: http://mediocredeveloper.com/wp/?p=55
-    len = str.length;
-    hash = 0;
-    for(i=1; i<=len; i++){
-        char = str.charCodeAt((i-1));
+    let len = str.length;
+    let hash = 0;
+    for(let i = 1; i <= len; i++){
+        let char = str.charCodeAt((i-1));
         hash += char*Math.pow(31,(len-i));
         hash = hash & hash; //javascript limitation to force to 32 bits
     }
