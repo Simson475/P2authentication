@@ -31,7 +31,7 @@ app.post("/test", verifyToken, (req, res) => { //temporary test
                 message: "success",
                 authData
             })
-        };
+        }
     });
 })
 
@@ -113,8 +113,8 @@ function verifyToken(req, res, next) {
         //unauthorized
         console.log("token not present")
         res.sendStatus(401);
-    };
-};
+    }
+}
 
 
 
