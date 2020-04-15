@@ -1,5 +1,5 @@
 //Event Listeners
-document.querySelector("form").addEventListener("submit", formSubmit)
+document.querySelector("form").addEventListener("submit", formSubmit);
 
 
 /**
@@ -12,15 +12,13 @@ async function formSubmit(event) {
 
     chrome.tabs.query({ active: true }, async function(tabs) { //finder hvilken tab det hele bliver kaldt i. bør omfaktoreres 
         let location = tabs[0].url;
-        console.log(location);
-
         let form = document.getElementById("form"); //skaffer info fra form og indsætter i jsondata
         let jsondata = {
             username: form.username.value,
             password: form.password.value,
             domain: location
         };
-        console.log(jsondata);
+
         let answer = await fetch("http://127.0.0.1:3000/validate", { //kontakter serveren med username og password for at kunne logge ind.
             method: 'POST',
             headers: {
@@ -28,9 +26,19 @@ async function formSubmit(event) {
             },
             body: JSON.stringify(jsondata, null, 2)
         });
-        answer = await answer.json(); //parser responsen
-        console.log(answer); /*Skal fjernes på et tidspunkt*/
 
+        answer = await answer.json(); //parser responsen
+        console.log(answer.token); /*Skal fjernes på et tidspunkt*/
+
+        chrome.runtime.sendMessage({ token: "bearer " + answer.token }, function(response) {
+            //saves the token to backgroundscript
+            console.log("Bearer token successfully saved");
+        });
+
+        chrome.runtime.sendMessage({ getToken: true }, function(response) {
+            //gets token from background script. whatever is done with it should be done in this callback function
+            console.log("token received " + response);
+        });
 
         if (answer == "no user with given credentials") { //giver error message
             /* TODO
@@ -49,7 +57,7 @@ async function formSubmit(event) {
             });
 
             newAnswer = await newAnswer.json();
-            console.log(newAnswer)
+            console.log(newAnswer);
         }
         form.reset();
     });
