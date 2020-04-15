@@ -10,46 +10,47 @@ async function formSubmit(event) {
     event.preventDefault();
 
 
-    chrome.tabs.query({ active: true }, async function(tabs) {
+    chrome.tabs.query({ active: true }, async function(tabs) { //finder hvilken tab det hele bliver kaldt i. bør omfaktoreres 
         let location = tabs[0].url;
         console.log(location);
 
-        let form = document.getElementById("form");
+        let form = document.getElementById("form"); //skaffer info fra form og indsætter i jsondata
         let jsondata = {
             username: form.username.value,
             password: form.password.value,
             domain: location
         };
         console.log(jsondata);
-        let answer = await fetch("http://127.0.0.1:3000/validate", {
+        let answer = await fetch("http://127.0.0.1:3000/validate", { //kontakter serveren med username og password for at kunne logge ind.
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(jsondata, null, 2)
         });
-        answer = await answer.json();
+        answer = await answer.json(); //parser responsen
         console.log(answer); /*Skal fjernes på et tidspunkt*/
 
-        if (answer == "no user with given credentials") {
+
+        if (answer == "no user with given credentials") { //giver error message
             /* TODO
             STUB 
             her indsættes error message om bruger ikke eksister eller forkert login oplysning
             */
 
-        } else if (answer == "no userdata found for current site") {
-            /* TODO
-            STUB 
-            her indsættes error message om bruger ikke har login til den givne weksite
-            */
         } else {
-            document.getElementById("form").style.display = "none";
-            document.getElementById("create").style.display = "none";
-            let paragraph = document.getElementById("paragraph")
-            paragraph.innerHTML = "Username:<br /> " + answer.username + "<br />Password: <br />" + answer.password;
-            paragraph.style.display = "block"
-        }
+            let newAnswer = await fetch("http://127.0.0.1:3000/test", { //sender test til server for at se om JWT er korrekt signed. bør fjernes at some point.
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "authorization": "bearer " + answer.token
+                },
+                body: JSON.stringify(jsondata, null, 2)
+            });
 
+            newAnswer = await newAnswer.json();
+            console.log(newAnswer)
+        }
         form.reset();
     });
 }
