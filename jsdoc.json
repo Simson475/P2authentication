@@ -1,6 +1,6 @@
 {
     "source": {
-        "include": "./PWMAN",
+        "include": ["./PWMAN", "./Server"],
         "includePattern": ".js$",
         "excludePattern": "(node_modules/|docs)"
     },
