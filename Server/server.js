@@ -2,9 +2,7 @@ const fs = require('fs'); //Giver os filfunktioner så vi kan skrive til og læs
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const bodyParser = require('body-parser');
 const bcrypt = require("bcrypt");
-const session = require("express-session");
 const jwt = require("jsonwebtoken");
 
 const logger = function(req, res, next) {
@@ -18,7 +16,7 @@ app.use(logger);
 
 app.post("/validate", ((req, res) => { login(req, res) })) //Kalder funktionen validator hvis post request på /validate
 app.post("/newUser", ((req, res) => { masterAccount(req, res) })) //lytter efter et post request på /newUser og kalder funktionen masterAccount
-
+app.post("/getPassword", verifyToken, ((req, res) => { getPassword(req, res) }))
 
 app.post("/test", verifyToken, (req, res) => { //temporary test
     console.log(req.token);
@@ -68,8 +66,8 @@ async function login(req, res) { //creates JWT for the user logging in.
 
 /**
  * Creates an account for a user in the Password Manager
- * @param {object} req 
- * @param {object} res 
+ * @param {Object} req req is the request the user sends to the server.
+ * @param {Object} res res is the response to send the user.
  */
 async function masterAccount(req, res) {
     res.writeHead(201, { "Content-type": "application/json" }) //TODO FIND UD AF FORMAT DER SENDES OG RET CONTENT TYPE Skriver header på res. til brugeren 
@@ -94,7 +92,12 @@ async function masterAccount(req, res) {
         });
 
 }
-
+/**
+ * Middleware that berifies an authorization token is received. it is the saved in req.token for future functions to user
+ * @param {Object} req req is the request the user sends to the server.
+ * @param {Object} res res is the response to send the user. only used if token is not present.
+ * @param {Object} next calls the next function (middleware or other function)
+ */
 function verifyToken(req, res, next) {
 
     //get the auth header value
@@ -116,6 +119,37 @@ function verifyToken(req, res, next) {
     };
 };
 
+/**
+ * Verifies token 
+ * @param {*} req 
+ * @param {*} res 
+ */
+function getPassword(req, res) {
+    jwt.verify(req.token, "secretkey", (err, authData) => { //verifies the authenticity of the token.
+        if (err) { //if error responds with authorization denied
+            console.log("error occured " + err)
+            res.sendStatus(401);
+        } else { //if no error responds with success and who logged in.
+            //authData.username tilgår brugerens username.
+            let storedUserData = JSON.parse(fs.readFileSync(__dirname + "/json/" + authData.username + ".json")); //indlæser brugerens personlige password-database.
+            if (req.body.domain == undefined) {
+                //error handling here
+                res.end(JSON.stringify("domain error"))
+                console.log("error in domain")
+            } else {
+                let domainArray = req.body.domain.split("/"); //Gemmer websitet uden "http(s)://"
+                let domainStripped = domainArray[2]; //gemmer delen af domænet der ikke indeholder http(s).
+                for (let element of storedUserData) { //Itererer over brugerens gemte domæner.
+                    if (domainStripped == element.domain) { //Tjekker om domænet eksisterer i databasen.
+                        res.end(JSON.stringify(element)); //Sender domænet, brugernavn og password tilbage.
+                        return;
+                    };
+                };
+                res.end(JSON.stringify("No login information for current website"));
+            };
+        };
+    });
+};
 
 
 /**
