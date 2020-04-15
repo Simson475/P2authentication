@@ -45,10 +45,14 @@ async function formSubmit(event) {
 
 
         if (answer) {
-
-            //Generere en pepperstring og gemmer den i en json med brugernavnet
-           /*  savePepper(jsondata.username,pepperString); */
-
+            //Gemmer den generede peberstreng i localstorage (er usikker på præcist hvor det er)
+            chrome.storage.local.set({key: pepperString}, function() {
+                console.log('Saved pepperString: ' + pepperString);
+              });
+            //Funktionen som henter den gemte peber streng fra local storage.
+              chrome.storage.local.get(['key'], function(result) {
+                console.log('Loaded pepperString: ' + result.key);
+              });
     
         } else { //hvis brugernavnet allerede eksi
             /*gør bodyen større så der er plads til et label mere, flytter knapperne ned, skifter border farver på password felterne og viser besked*/
@@ -77,18 +81,6 @@ async function formSubmit(event) {
 
     }
 }
-/*  TODO: skal omskirves til chrome file system
-function savePepper(username,pepperString){
-    
-    fs.writeFileSync("../Pepper/ "+ username + ".json",JSON.stringify(pepperString), function(err){
-        if (err) {
-            throw err;
-        }
-        console.log("Added: " + username + ".json");
-        
-    });
-    
-} */
 
 function hashing(str){ //stjålet fra nettet: http://mediocredeveloper.com/wp/?p=55
     len = str.length;
