@@ -5,7 +5,7 @@ chrome.runtime.sendMessage({ getToken: true }, function(response) {
 
     //gets token from background script. whatever is done with it should be done in this callback function
 
-    console.log("token received " + response);
+    console.log(response);
     if (response.token === null) return;
     else {
         //TODO REDIRECT USER
