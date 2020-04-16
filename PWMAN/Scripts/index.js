@@ -8,7 +8,8 @@ chrome.runtime.sendMessage({ getToken: true }, function(response) {
     console.log(response);
     if (response.token === null) return;
     else {
-        //TODO REDIRECT USER
+        //redirects til LoggedIn.html
+        window.location.href = '../HTML/LoggedIn.html';
     }
 });
 
@@ -69,9 +70,15 @@ async function formSubmit(event) {
                 chrome.runtime.sendMessage({ token: "bearer " + answer.token }, function(response) {
                     //saves the token to backgroundscript
                     console.log("Bearer token successfully saved");
-                    //TODOcheck if response.success==true. hvis den gør det. redirect. ellers error message.
-                    //TODO redirect user.
+                    if (response == true){ //Checker om response er true                        
+                        window.location.href = '../HTML/LoggedIn.html'; //redirects til LoggedIn.html
+                    }
+                    else{
+                        alert("*An error has occured*"); //Error message hvis response er false
+                    }
                 });
+                    
+                    
 
             }
             form.reset();
