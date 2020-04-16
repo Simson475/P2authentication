@@ -100,4 +100,3 @@ function hashing(str){ //stjålet fra nettet: http://mediocredeveloper.com/wp/?p
 
 
 
-
