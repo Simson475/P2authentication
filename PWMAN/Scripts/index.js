@@ -70,11 +70,11 @@ async function formSubmit(event) {
                 chrome.runtime.sendMessage({ token: "bearer " + answer.token }, function(response) {
                     //saves the token to backgroundscript
                     console.log("Bearer token successfully saved");
-                    if (response == true){ //Checker om response er true                        
+                    if (response.success == true){ //Checker om response er true                        
                         window.location.href = '../HTML/LoggedIn.html'; //redirects til LoggedIn.html
                     }
                     else{
-                        alert("*An error has occured*"); //Error message hvis response er false
+                        console.log("*An error has occured*"); //Error message hvis response er false
                     }
                 });
                     
@@ -84,8 +84,6 @@ async function formSubmit(event) {
             form.reset();
         })
 
-        
-        
 }
 
 //let newAnswer = await fetch("http://127.0.0.1:3000/test", { //sender test til server for at se om JWT er korrekt signed. bør fjernes at some point.
