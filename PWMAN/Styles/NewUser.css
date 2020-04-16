@@ -1,6 +1,6 @@
-body{
+body {
     color: white;
-    background-color:#292929;
+    background-color: #292929;
     /*Border*/
     border: solid orange;
     border-width: 2px;
@@ -9,20 +9,19 @@ body{
     height: 250px;
 }
 
-#h3{
+.h3 {
     position: absolute;
     top: 10px;
     left: 15px;
 }
 
-#userLabel{
+#userLabel {
     position: absolute;
     top: 50px;
     left: 20px;
-    
 }
 
-#username{
+#username {
     position: absolute;
     top: 75px;
     left: 20px;
@@ -31,23 +30,21 @@ body{
     /*Border*/
     border: solid #101010;
     border-width: 2px;
-
 }
 
-#passLabelFirst{
+#passLabelFirst {
     position: absolute;
     top: 110px;
     left: 20px;
-    
 }
-#passLabelSecond{
+
+#passLabelSecond {
     position: absolute;
     top: 170px;
     left: 20px;
-    
 }
 
-#firstPassword{
+#firstPassword {
     position: absolute;
     top: 135px;
     left: 20px;
@@ -56,9 +53,9 @@ body{
     /*Border*/
     border: solid #101010;
     border-width: 2px;
-
 }
-#secondPassword{
+
+#secondPassword {
     position: absolute;
     top: 190px;
     left: 20px;
@@ -67,63 +64,56 @@ body{
     /*Border*/
     border: solid #101010;
     border-width: 2px;
-
 }
 
-#create{
+#create {
     position: absolute;
     top: 225px;
     right: 20px;
     padding: 2px;
     color: black;
-    background-color:orange;
+    background-color: orange;
     /*Border on the button*/
     border: solid black;
     border-width: 1px;
     border-radius: 4px;
-
 }
-#create:hover{
+
+#create:hover {
     background-color: #E59400;
     border-color: #E59400;
     color: white;
     cursor: pointer;
 }
 
-#return{
+#return {
     position: absolute;
     top: 225px;
     left: 20px;
     padding: 2px;
     color: black;
-    background-color:orange;
+    background-color: orange;
     /*Border on the button*/
     border: solid black;
     border-width: 1px;
     border-radius: 4px;
     text-decoration: none;
 }
-#return:hover{
+
+#return:hover {
     background-color: #E59400;
     border-color: #E59400;
     color: white;
     cursor: pointer;
 }
 
-#Logo{
+#Logo {
     position: absolute;
     top: 20px;
     right: 25px;
 }
 
-#inUse{
-    display: none;
-    position: absolute;
-    top: 225px;
-    left: 20px;
-    color: red;
-}
-#wrongPassword{
+#inUse {
     display: none;
     position: absolute;
     top: 225px;
@@ -131,4 +121,15 @@ body{
     color: red;
 }
 
+#wrongPassword {
+    display: none;
+    position: absolute;
+    top: 225px;
+    left: 20px;
+    color: red;
+}
 
+#accountSuccess {
+    display: none;
+    top: 60px;
+}
