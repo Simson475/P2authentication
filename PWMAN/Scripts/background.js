@@ -12,5 +12,5 @@ chrome.runtime.onMessage.addListener(
         } else if (request.getToken === true) {
             console.log("sending token");
             sendResponse({ token: token });
-        };
-    });
+        }
+    })
