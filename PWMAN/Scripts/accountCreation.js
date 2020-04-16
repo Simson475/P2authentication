@@ -13,14 +13,14 @@ async function formSubmit(event) {
     /*Compare passwords*/
     if (form.password1.value == form.password2.value) {
         /*i tilfælde af tidligere ikke matchende password (resetter)*/
-        document.body.style.height = "250px";
-        document.getElementById("create").style.top = "225px";
-        document.getElementById("return").style.top = "225px";
-        document.getElementById("firstPassword").style.borderColor = "#101010";
-        document.getElementById("secondPassword").style.borderColor = "#101010";
-        document.getElementById("wrongPassword").style.display = "none";
+        //document.body.style.height = "250px";
+        //document.getElementById("create").style.top = "225px";
+        //document.getElementById("return").style.top = "225px";
+        //document.getElementById("firstPassword").style.borderColor = "#101010";
+        //document.getElementById("secondPassword").style.borderColor = "#101010";
+        //document.getElementById("wrongPassword").style.display = "none";
         /*generere peber streng*/
-        let pepperString = cryptoRandomString({length: 20, type: 'base64'});
+        let pepperString = cryptoRandomString({ length: 20, type: 'base64' });
         console.log(pepperString);
         /*konkatinere indtastet password med den pebrede streng*/
         let pepperPassword = form.password1.value + pepperString;
@@ -29,9 +29,9 @@ async function formSubmit(event) {
 
         let jsondata = {
             username: form.username.value,
-            password: hashedPassword 
+            password: hashedPassword
         };
-        
+
 
         let answer = await fetch("http://127.0.0.1:3000/newUser", {
             method: 'POST',
@@ -44,16 +44,24 @@ async function formSubmit(event) {
         answer = await answer.json()
 
 
-        if (answer) {
+        if (answer == true) {
             //Gemmer den generede peberstreng i localstorage (er usikker på præcist hvor det er)
-            chrome.storage.local.set({key: pepperString}, function() {
+            chrome.storage.local.set({ key: pepperString }, function() {
                 console.log('Saved pepperString: ' + pepperString);
-              });
+            });
             //Funktionen som henter den gemte peber streng fra local storage.
-              chrome.storage.local.get(['key'], function(result) {
+            chrome.storage.local.get(['key'], function(result) {
                 console.log('Loaded pepperString: ' + result.key);
-              });
-    
+            });
+            document.getElementById("accountCreation").style.display = "none";
+            document.getElementById("accountSuccess").style.display = "inline";
+
+            let returnButton = document.getElementById("return")
+            returnButton.style.position = "relative"
+            returnButton.style.top = "160px"
+            returnButton.style.fontSize = "1.3em";
+            returnButton.style.padding = "10px 20px 10px 20px"
+            returnButton.style.marginLeft = "18px"
         } else { //hvis brugernavnet allerede eksi
             /*gør bodyen større så der er plads til et label mere, flytter knapperne ned, skifter border farver på password felterne og viser besked*/
             document.body.style.height = "280px";
@@ -82,22 +90,13 @@ async function formSubmit(event) {
     }
 }
 
-function hashing(str){ //stjålet fra nettet: http://mediocredeveloper.com/wp/?p=55
+function hashing(str) { //stjålet fra nettet: http://mediocredeveloper.com/wp/?p=55
     let len = str.length;
     let hash = 0;
-    for(let i = 1; i <= len; i++){
-        let char = str.charCodeAt((i-1));
-        hash += char*Math.pow(31,(len-i));
+    for (let i = 1; i <= len; i++) {
+        let char = str.charCodeAt((i - 1));
+        hash += char * Math.pow(31, (len - i));
         hash = hash & hash; //javascript limitation to force to 32 bits
     }
     return Math.abs(hash);
 }
-
-
-
-
-
-
-
-
-
