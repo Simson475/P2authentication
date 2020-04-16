@@ -2,15 +2,19 @@
 document.querySelector("form").addEventListener("submit", formSubmit);
 
 chrome.runtime.sendMessage({ getToken: true }, function(response) {
-
+    let currentHtml = '../HTML/PopUp.html';
+    let NewHtml = '../HTML/LoggedIn.html';
     //gets token from background script. whatever is done with it should be done in this callback function
 
     console.log(response);
     if (response.token === null) return;
     else {
         //redirects til LoggedIn.html
-        window.location.href = '../HTML/LoggedIn.html';
+        window.location.assign = '../HTML/LoggedIn.html';
+
+        
     }
+    return;
 });
 
 /**
@@ -71,7 +75,7 @@ async function formSubmit(event) {
                     //saves the token to backgroundscript
                     console.log("Bearer token successfully saved");
                     if (response.success == true){ //Checker om response er true                        
-                        window.location.href = '../HTML/LoggedIn.html'; //redirects til LoggedIn.html
+                        window.location.assign = '../HTML/LoggedIn.html'; //redirects til LoggedIn.html
                     }
                     else{
                         console.log("*An error has occured*"); //Error message hvis response er false
@@ -107,3 +111,5 @@ function hashing(str){ //stjålet fra nettet: http://mediocredeveloper.com/wp/?p
     }
     return Math.abs(hash);
 }
+
+
