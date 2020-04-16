@@ -123,7 +123,6 @@ async function retrievePassword(event) {
     console.log("test")
         //gets token from background script. whatever is done with it should be done in this callback function
     chrome.runtime.sendMessage({ getToken: true }, async function(response) {
-
         console.log(response);
         if (response.token === null) return;
         else if (response.token === undefined) {
@@ -133,19 +132,39 @@ async function retrievePassword(event) {
         } else {
             console.log("User pressed the button.")
                 //kontakter serveren og beder om username og password for at kunne logge ind.
-            let answer = await fetch("http://127.0.0.1:3000/getPassword", {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    "authorization": response.token
-                },
-                body: JSON.stringify({ domain: "https://twitter.com" }, null, 2)
+            chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) {
+                // since only one tab should be active and in the current window at once
+                // the return variable should only have one entry
+                let activeTab = tabs[0];
+                let activeTabId = activeTab.id; // or do whatever you need
+            
+            
+                console.log(activeTab.url);
+            
+                let answer = await fetch("http://127.0.0.1:3000/getPassword", {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "authorization": response.token
+                    },
+                    body: JSON.stringify({ domain: activeTab.url }, null, 2)
+                });
+                answer = await answer.json()
+                console.log(answer);
+                
+                let username = document.getElementById("SignedIn-username");
+                let password = document.getElementById("SignedIn-password");
+                let button = document.getElementById("SignedIn-submit");
+                let page = document.getElementById("SignedIn2");
+                console.log(answer.username)
+                username.innerHTML = answer.username;
+                password.innerHTML = answer.password;
+
+                switchPage(button,page); 
             });
-            answer = await answer.json()
-            console.log(answer);
         }
     });
-}
+};
 
 //Changes display attribute of elements.
 function switchPage(hidePage, showPage) {
