@@ -9,16 +9,32 @@
 </head>
 
 <body>
-    <h3 id="h3">Password manager</h3>
-    <form id="form">
-        <label id="userLabel" for="username"><b>Username</b></label>
-        <input id="username" type="text" placeholder="Enter Username" name="username" required>
-        <label id="passLabel" for="password"><b>Password</b></label>
-        <input id="password" type="password" placeholder="Enter Password" name="password" required>
-        <input id="submit" type="submit" value="Get Password">
-    </form>
-    <p id="paragraph"></p>
-    <a id="create" href="NewUser.html"> New User</a>
+
+    <div id="LogIn">
+        <h3 id="LogIn-h3">Sign in</h3>
+        <form id="LogIn-form">
+            <label id="LogIn-userLabel" for="username"><b>Username</b></label>
+            <input id="LogIn-username" type="text" placeholder="Enter Username" name="username" required>
+            <label id="LogIn-passLabel" for="password"><b>Password</b></label>
+            <input id="LogIn-password" type="password" placeholder="Enter Password" name="password" required>
+            <input id="LogIn-submit" type="submit" value="Log in">
+            <a id="create" href="NewUser.html"> New User</a>
+            <p id="LogIn-paragraph"></p>
+        </form>
+    </div>
+
+    <div id="SignedIn">
+
+        <h3 id="SignedIn-h3">Logged in</h3>
+        <label id="SignedIn-userLabel" for="username"><b>Username</b></label>
+        <p id="SignedIn-username">username</p>
+        <label id="SignedIn-passLabel" for="password"><b>Password</b></label>
+        <p id="SignedIn-password">password</p>
+        <form>
+            <input id="SignedIn-submit" type="submit" value="Get Password">
+        </form>
+    </div>
+
     <div id="Logo"><img src="../Images/logo2.png" style="width: 50px;" alt="PWMAN"></div>
     <script src="../Scripts/index.js "></script>
 </body>
