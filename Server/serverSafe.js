@@ -5,7 +5,6 @@ const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const secretKey = "secretkey"
 const saltRounds = 10
 const logger = function(req, res, next) {
     console.log(req.method + " request received at " + req.url)
@@ -22,7 +21,7 @@ app.post("/getPassword", verifyToken, ((req, res) => { getPassword(req, res) }))
 
 app.post("/test", verifyToken, (req, res) => { //temporary test
     console.log(req.token);
-    jwt.verify(req.token, secretKey, (err, authData) => { //verifies the authenticity of the token.
+    jwt.verify(req.token, "secretkey", (err, authData) => { //verifies the authenticity of the token.
         if (err) { //if error responds with authorization denied
             console.log("error occured " + err)
             res.sendStatus(401);
@@ -45,12 +44,13 @@ app.listen(3000, () => { console.log("listening at 3000") }) //sætter serveren 
  */
 async function login(req, res) { //creates JWT for the user logging in.
     let data = req.body
+    console.log(data)
     let database = JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
     let user = null
+    console.log(data)
     for (let element of database) { //Itererer over databasen, bruger for bruger.
-        if (data.username == element.username) { //Tjekker om username og password genkendes  
-            const match = await bcrypt.compare(data.password.toString(), element.hashValue);
-            if (match) user = element //gemmer genkendt bruger
+        if (data.username == element.username && data.password == element.hashValue) { //Tjekker om username og password genkendes  
+            user = element //gemmer genkendt bruger
             break;
         }
     }
@@ -58,7 +58,7 @@ async function login(req, res) { //creates JWT for the user logging in.
     if (user == null) { //hvis brugeren ikke er fundet returner error.
         res.end(JSON.stringify("no user with given credentials")); //Tjekker om brugeren eksisterer
     } else { //laver JWT til brugeren ud fra vores secret key (i dette tilfælde "secretkey")
-        jwt.sign({ username: user.username, }, secretKey, { expiresIn: "1h" }, (err, token) => {
+        jwt.sign({ username: user.username, }, "secretkey", { expiresIn: "1h" }, (err, token) => {
             res.json({
                 token
             });
@@ -75,25 +75,23 @@ async function masterAccount(req, res) {
     res.writeHead(201, { "Content-type": "application/json" }) //TODO FIND UD AF FORMAT DER SENDES OG RET CONTENT TYPE Skriver header på res. til brugeren 
     let data = req.body
     let database = JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
-    console.log(data)
+
     for (let element of database) { //Denne iterative kontrolstruktur tjekker om brugernavnet er taget.
         if (data.username == element.username) {
             res.end(JSON.stringify(false)); //TODO indsæt token til 'Unavailable username'
             return; //Hvis username er taget er der ingen grund til at iterere videre   
         }
     }
-    bcrypt.hash(data.password.toString(), saltRounds).then(function(hash) {
-        // Store hash in your password DB.
-        database.push({ username: data.username, hashValue: hash }); //Vi pusher hele elementet til slutningen af array i database.
-        fs.writeFile(__dirname + "/database.json", JSON.stringify(database, null, 2), function(err, data) { //TODO fund ud af format for error handling her og lav en if statement
-            /* STUB */
-        });
-        fs.writeFile(__dirname + "/json/" + data.username + ".json", JSON.stringify(new Array(0), null, 2),
-            function(err, data) { //TODO fund ud af format for error handling her og lav en if statement //Opretter en dedikeret fil der skal indeholde fremtidige sites med passwords.
-                res.end(JSON.stringify(true));
-            });
+
+    database.push({ username: data.username, hashValue: data.password }); //Vi pusher hele elementet til slutningen af array i database.
+    fs.writeFile(__dirname + "/database.json", JSON.stringify(database, null, 2), function(err, data) { //TODO fund ud af format for error handling her og lav en if statement
+        /* STUB */
     });
 
+    fs.writeFile(__dirname + "/json/" + data.username + ".json", JSON.stringify(new Array(0), null, 2),
+        function(err, data) { //TODO fund ud af format for error handling her og lav en if statement //Opretter en dedikeret fil der skal indeholde fremtidige sites med passwords.
+            res.end(JSON.stringify(true));
+        });
 
 }
 /**
@@ -130,7 +128,7 @@ function verifyToken(req, res, next) {
 function getPassword(req, res) {
     let data = req.body
     console.log(data)
-    jwt.verify(req.token, secretKey, (err, authData) => { //verifies the authenticity of the token.
+    jwt.verify(req.token, "secretkey", (err, authData) => { //verifies the authenticity of the token.
         if (err) { //if error responds with authorization denied
             console.log("error occured " + err)
             res.sendStatus(401);
@@ -164,3 +162,47 @@ function getPassword(req, res) {
 //    key: fs.readFileSync('key.pem'),
 //    cert: fs.readFileSync('cert.pem')
 //};
+
+
+///**
+// * validates the user has an account with given username/password combo. if so. sends data back if not, sends error back
+// * @param {object} req req is users request sent to the server. includes username and password etc.
+// * @param {object} res res is response sent to user. used to send info back.
+// */
+//async function validator(req, res) {
+//    res.writeHead(201, { "Content-Type": "application/json" }) //Skriver indholdstype i svaret til brugeren.
+//    let storedUserData = null;
+//    let data = req.body
+//    let database = JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
+//    for (let element of database) { //Itererer over databasen, bruger for bruger.
+//        if (data.username == element.username && data.password == element.hashValue) { //Tjekker om username og password genkendes  
+//            storedUserData = JSON.parse(fs.readFileSync(__dirname + "/json/" + data.username + ".json")); //Hvis parret genkendes, indlæses brugerens personlige password-database.
+//            break;
+//        }
+//    }
+//
+//    if (storedUserData == null) {
+//        res.end(JSON.stringify("no user with given credentials")); //Tjekker om brugeren eksisterer
+//        return;
+//    }
+//
+//    let domainArray = data.domain.split("/"); //Gemmer websitet uden "http(s)://"
+//    let domainStripped = domainArray[2]; //gemmer delen af domænet der ikke indeholder http(s).
+//    for (let element of storedUserData) { //Itererer over brugerens gemte domæner.
+//        if (domainStripped == element.domain) { //Tjekker om domænet eksisterer i databasen.
+//            res.end(JSON.stringify(element)); //Sender domænet, brugernavn og password tilbage.
+//            return;
+//        }
+//    }
+//
+//    res.end(JSON.stringify("no userdata found for current site")); //Ender her hvis domænet ikke er gemt i den personlige database.
+//}
+
+bcrypt.hash("myPlaintextPassword", saltRounds).then(function(hash) {
+    // Store hash in your password DB.
+    console.log(hash)
+    bcrypt.compare("myPlaintextP2assword", hash).then(function(result) {
+        console.log(result)
+    });
+
+});
