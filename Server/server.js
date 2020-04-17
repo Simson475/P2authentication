@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 
 const secretKey = "secretkey"
 const saltRounds = 10
+
 const logger = function(req, res, next) {
     console.log(req.method + " request received at " + req.url)
     next()
@@ -16,24 +17,10 @@ app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: false })); //TODO find ud af hvad den gør
 app.use(logger);
 
-app.post("/validate", ((req, res) => { login(req, res) })) //Kalder funktionen validator hvis post request på /validate
-app.post("/newUser", ((req, res) => { masterAccount(req, res) })) //lytter efter et post request på /newUser og kalder funktionen masterAccount
-app.post("/getPassword", verifyToken, ((req, res) => { getPassword(req, res) }))
-
-app.post("/test", verifyToken, (req, res) => { //temporary test
-    console.log(req.token);
-    jwt.verify(req.token, secretKey, (err, authData) => { //verifies the authenticity of the token.
-        if (err) { //if error responds with authorization denied
-            console.log("error occured " + err)
-            res.sendStatus(401);
-        } else { //if no error responds with success and who logged in.
-            res.json({
-                message: "success",
-                authData
-            })
-        }
-    });
-})
+app.post("/validate", (async(req, res) => { login(req, res) })); //Kalder funktionen validator hvis post request på /validate
+app.post("/newUser", (async(req, res) => { masterAccount(req, res) })); //lytter efter et post request på /newUser og kalder funktionen masterAccount
+app.post("/getPassword", verifyToken, async(req, res) => { getPassword(req, res) });
+app.post("/updateInfo", verifyToken, async(req, res) => { addUserInfo(req, res) });
 
 app.listen(3000, () => { console.log("listening at 3000") }) //sætter serveren til at lytte på 3000
 
@@ -49,7 +36,7 @@ async function login(req, res) { //creates JWT for the user logging in.
     let user = null
     for (let element of database) { //Itererer over databasen, bruger for bruger.
         if (data.username == element.username) { //Tjekker om username og password genkendes  
-            const match = await bcrypt.compare(data.password.toString(), element.hashValue);
+            const match = await bcrypt.compare(data.password.toString(), element.hashValue); //returnerer true eller false
             if (match) user = element //gemmer genkendt bruger
             break;
         }
@@ -59,9 +46,10 @@ async function login(req, res) { //creates JWT for the user logging in.
         res.end(JSON.stringify("no user with given credentials")); //Tjekker om brugeren eksisterer
     } else { //laver JWT til brugeren ud fra vores secret key (i dette tilfælde "secretkey")
         jwt.sign({ username: user.username, }, secretKey, { expiresIn: "1h" }, (err, token) => {
-            res.json({
-                token
-            });
+            if (err) {
+                //TODO:some kind of error handling
+            }
+            res.json({ token });
         });
     }
 }
@@ -75,13 +63,14 @@ async function masterAccount(req, res) {
     res.writeHead(201, { "Content-type": "application/json" }) //TODO FIND UD AF FORMAT DER SENDES OG RET CONTENT TYPE Skriver header på res. til brugeren 
     let data = req.body
     let database = JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
-    console.log(data)
+
     for (let element of database) { //Denne iterative kontrolstruktur tjekker om brugernavnet er taget.
         if (data.username == element.username) {
             res.end(JSON.stringify(false)); //TODO indsæt token til 'Unavailable username'
             return; //Hvis username er taget er der ingen grund til at iterere videre   
         }
     }
+
     bcrypt.hash(data.password.toString(), saltRounds).then(function(hash) {
         // Store hash in your password DB.
         database.push({ username: data.username, hashValue: hash }); //Vi pusher hele elementet til slutningen af array i database.
@@ -89,7 +78,8 @@ async function masterAccount(req, res) {
             /* STUB */
         });
         fs.writeFile(__dirname + "/json/" + data.username + ".json", JSON.stringify(new Array(0), null, 2),
-            function(err, data) { //TODO fund ud af format for error handling her og lav en if statement //Opretter en dedikeret fil der skal indeholde fremtidige sites med passwords.
+            function(err, data) {
+                //TODO fund ud af format for error handling her og lav en if statement //Opretter en dedikeret fil der skal indeholde fremtidige sites med passwords.
                 res.end(JSON.stringify(true));
             });
     });
@@ -156,11 +146,40 @@ function getPassword(req, res) {
     });
 };
 
-
 /**
- *  Reads the privatekey and the certiface used for settings up https
+ * takes information about a new username, password on a new domain and writes it to the users Json file 
+ * @param {Object} req req is the request the user sends to the server.
+ * @param {Object} res res is the response to send the user. this either sends a 401, errormessages, false or true. responds true if everything went well
  */
-//const options = {
-//    key: fs.readFileSync('key.pem'),
-//    cert: fs.readFileSync('cert.pem')
-//};
+function addUserInfo(req, res) { //TODO check if user already has account for that domain then send error
+    let data = req.body
+    jwt.verify(req.token, secretKey, (err, authData) => { //verifies the authenticity of the token.
+        if (err) { // gives unauthorized error  
+            //TODO error handling goes here
+            res.sendStatus(401); // unauthorized 
+            console.log("error 1 in addUserInfo")
+        } else {
+            let storedUserData = JSON.parse(fs.readFileSync(__dirname + "/json/" + authData.username + ".json")); //indlæser brugerens personlige password-database.
+            if (data.domain === undefined || data.username === undefined || data.password === undefined) { //checks if we received all data
+                res.end("not all data received successfully") // respond error 
+                console.log("addUserInfo did not receive all data needed")
+            } else { // we recieved everything
+                storedUserData.push({ //get the new information pushed to the object 
+                    domain: data.domain,
+                    username: data.username,
+                    password: data.password
+                });
+                fs.writeFile(__dirname + "/json/" + authData.username + ".json", JSON.stringify(storedUserData, null, 2), // writes the changes to the Json file for the username 
+                    function(err, data) {
+                        if (err) {
+                            //TODO Error handling goes here 
+                            console.log("error 2 in addUserInfo")
+                            res.end(JSON.stringify(false)) //respond false
+                        } else {
+                            res.end(JSON.stringify(true)); // respond true we did not encounter any errors so everything went fine
+                        }
+                    });
+            }
+        }
+    })
+}
