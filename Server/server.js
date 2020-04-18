@@ -5,6 +5,7 @@ const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+//TODO implement secret in env
 const secretKey = "secretkey"
 const saltRounds = 10
 const port = 3000
@@ -31,21 +32,11 @@ app.listen(port, () => { console.log("listening at " + port) }) //sætter server
  * @param {object} res  res is the response the server sends to the user. This is used to send info back to the user including his copy of the JWT.
  */
 async function login(req, res) { //creates JWT for the user logging in.
-    let data = req.body
-    let database = JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
-    let user = null
-    for (let element of database) { //Itererer over databasen, bruger for bruger.
-        if (data.username == element.username) { //Tjekker om username og password genkendes  
-            const match = await bcrypt.compare(data.password.toString(), element.hashValue); //returnerer true eller false
-            if (match) user = element //gemmer genkendt bruger
-            break;
-        }
-    }
-
-    if (user == null) { //hvis brugeren ikke er fundet returner error.
+    let user = await findUser(req.body)
+    if (user == false) { //hvis brugeren ikke er fundet returner error.
         res.end(JSON.stringify("no user with given credentials")); //Tjekker om brugeren eksisterer
     } else { //laver JWT til brugeren ud fra vores secret key (i dette tilfælde "secretkey")
-        jwt.sign({ username: user.username, }, secretKey, { expiresIn: "1h" }, (err, token) => {
+        jwt.sign({ username: req.body.username, }, secretKey, { expiresIn: "1h" }, (err, token) => {
             if (err) {
                 //TODO:some kind of error handling
             } else {
@@ -53,6 +44,19 @@ async function login(req, res) { //creates JWT for the user logging in.
             }
         });
     }
+}
+
+/**
+ * checks our database for a user with current username and database. if found returns true, if not returns false
+ * @param {Object} user the user we want to validate is in our database
+ */
+async function findUser(user) {
+    //TODO chance all readFileSync to readFile. THIS IS NOT JUST REMOVING SYNC
+    let database = await JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
+    let found = database.find(element => { return element.username == user.username })
+
+    if (typeof found == "object" && bcrypt.compare(user.password.toString(), found.hashValue)) return true
+    else return false
 }
 
 /**
