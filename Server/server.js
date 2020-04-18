@@ -14,7 +14,6 @@ const logger = function(req, res, next) {
 }
 
 app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: false })); //TODO find ud af hvad den gør
 app.use(logger);
 
 app.post("/validate", (async(req, res) => { login(req, res) })); //Kalder funktionen validator hvis post request på /validate
@@ -48,8 +47,9 @@ async function login(req, res) { //creates JWT for the user logging in.
         jwt.sign({ username: user.username, }, secretKey, { expiresIn: "1h" }, (err, token) => {
             if (err) {
                 //TODO:some kind of error handling
+            } else {
+                res.json({ token });
             }
-            res.json({ token });
         });
     }
 }
@@ -79,8 +79,12 @@ async function masterAccount(req, res) {
         });
         fs.writeFile(__dirname + "/json/" + data.username + ".json", JSON.stringify(new Array(0), null, 2),
             function(err, data) {
-                //TODO fund ud af format for error handling her og lav en if statement //Opretter en dedikeret fil der skal indeholde fremtidige sites med passwords.
-                res.end(JSON.stringify(true));
+                //TODO find ud af format for error handling her og lav en if statement //Opretter en dedikeret fil der skal indeholde fremtidige sites med passwords.
+                if (err) {
+
+                } else {
+                    res.end(JSON.stringify(true));
+                }
             });
     });
 
@@ -155,17 +159,24 @@ function addUserInfo(req, res) { //TODO check if user already has account for th
     let data = req.body
     jwt.verify(req.token, secretKey, (err, authData) => { //verifies the authenticity of the token.
         if (err) { // gives unauthorized error  
-            //TODO error handling goes here
             res.sendStatus(401); // unauthorized 
-            console.log("error 1 in addUserInfo")
+            console.log("error in addUserInfo. token not verified")
         } else {
             let storedUserData = JSON.parse(fs.readFileSync(__dirname + "/json/" + authData.username + ".json")); //indlæser brugerens personlige password-database.
             if (data.domain === undefined || data.username === undefined || data.password === undefined) { //checks if we received all data
-                res.end("not all data received successfully") // respond error 
-                console.log("addUserInfo did not receive all data needed")
+
+                //TODO this is only to show us errors in development. should be simpler error message in finished product.
+                res.end("data not received succesfully. we received domain:" + data.domain + " and username: " + data.username + " and password im not showing") // respond error 
+                console.log("data not received succesfully. we received domain:" + data.domain + " and username: " + data.username + " and password: " + data.password)
             } else { // we recieved everything
+                //TODO error handling in case domain isnt in the right format (missing www, not with https etc.)
+
+                //splices domain so only primary domain remains
+                let domainArray = req.body.domain.split("/"); //Gemmer websitet uden "http(s)://"
+                let domainStripped = domainArray[2]; //gemmer delen af domænet der ikke indeholder http(s).
+
                 storedUserData.push({ //get the new information pushed to the object 
-                    domain: data.domain,
+                    domain: domainStripped,
                     username: data.username,
                     password: data.password
                 });
