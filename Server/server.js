@@ -51,11 +51,10 @@ async function login(req, res) { //creates JWT for the user logging in.
  * @param {Object} user the user we want to validate is in our database
  */
 async function findUser(user) {
-    //TODO chance all readFileSync to readFile. THIS IS NOT JUST REMOVING SYNC
+    //TODO change all readFileSync to readFile. THIS IS NOT JUST REMOVING SYNC
     let database = await JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
     let found = database.find(element => { return element.username == user.username })
-
-    if (typeof found == "object" && bcrypt.compare(user.password.toString(), found.hashValue)) return true
+    if (typeof found == "object" && await bcrypt.compare(user.password.toString(), found.hashValue)) return true
     else return false
 }
 
