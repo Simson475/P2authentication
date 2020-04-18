@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 
 const secretKey = "secretkey"
 const saltRounds = 10
+const port = 3000
 
 const logger = function(req, res, next) {
     console.log(req.method + " request received at " + req.url)
@@ -21,7 +22,7 @@ app.post("/newUser", (async(req, res) => { masterAccount(req, res) })); //lytter
 app.post("/getPassword", verifyToken, async(req, res) => { getPassword(req, res) });
 app.post("/updateInfo", verifyToken, async(req, res) => { addUserInfo(req, res) });
 
-app.listen(3000, () => { console.log("listening at 3000") }) //sætter serveren til at lytte på 3000
+app.listen(port, () => { console.log("listening at " + port) }) //sætter serveren til at lytte på 3000
 
 
 /**
