@@ -113,9 +113,6 @@ function hashing(str) { //stjålet fra nettet: http://mediocredeveloper.com/wp/?
     return Math.abs(hash);
 }
 
-function redirect(html) {
-    location.assign(html)
-}
 
 //---------LoggedIn.js---------------------------------------------------------------------------------------------------------------------------------
 
@@ -163,6 +160,10 @@ async function retrievePassword(event) {
         }
     });
 };
+
+//---------addWebsite.js---------------------------------------------------------------------------------------------------------------------------------
+
+
 
 //Changes display attribute of elements.
 function switchPage(hidePage, showPage) {
