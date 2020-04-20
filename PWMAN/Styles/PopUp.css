@@ -1,4 +1,4 @@
-        body {
+    body {
         color: white;
         background-color: #292929;
         /*Border*/
@@ -220,4 +220,27 @@
         font-size: 1.2em;border-radius: 4px;
     font-weight: bold;
     font-size: 1.2em;
-}
+    }
+    #SignedIn-website{
+        position: absolute;
+        top: 140px;
+        left: 70px;
+        padding: 5px;
+        color: black;
+        background-color: orange;
+        /*Border on the button*/
+        border: solid black;
+        border-width: 1px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+    #SignedIn-website:hover {
+        background-color: #E59400;
+        border-color: #E59400;
+        color: white;
+        cursor: pointer;
+    }
+
+
+   
+    

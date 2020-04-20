@@ -5,8 +5,10 @@ const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+//TODO implement secret in env
 const secretKey = "secretkey"
 const saltRounds = 10
+const port = 3000
 
 const logger = function(req, res, next) {
     console.log(req.method + " request received at " + req.url)
@@ -14,7 +16,6 @@ const logger = function(req, res, next) {
 }
 
 app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: false })); //TODO find ud af hvad den gør
 app.use(logger);
 
 app.post("/validate", (async(req, res) => { login(req, res) })); //Kalder funktionen validator hvis post request på /validate
@@ -22,7 +23,7 @@ app.post("/newUser", (async(req, res) => { masterAccount(req, res) })); //lytter
 app.post("/getPassword", verifyToken, async(req, res) => { getPassword(req, res) });
 app.post("/updateInfo", verifyToken, async(req, res) => { addUserInfo(req, res) });
 
-app.listen(3000, () => { console.log("listening at 3000") }) //sætter serveren til at lytte på 3000
+app.listen(port, () => { console.log("listening at " + port) }) //sætter serveren til at lytte på 3000
 
 
 /**
@@ -31,27 +32,30 @@ app.listen(3000, () => { console.log("listening at 3000") }) //sætter serveren 
  * @param {object} res  res is the response the server sends to the user. This is used to send info back to the user including his copy of the JWT.
  */
 async function login(req, res) { //creates JWT for the user logging in.
-    let data = req.body
-    let database = JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
-    let user = null
-    for (let element of database) { //Itererer over databasen, bruger for bruger.
-        if (data.username == element.username) { //Tjekker om username og password genkendes  
-            const match = await bcrypt.compare(data.password.toString(), element.hashValue); //returnerer true eller false
-            if (match) user = element //gemmer genkendt bruger
-            break;
-        }
-    }
-
-    if (user == null) { //hvis brugeren ikke er fundet returner error.
+    let user = await findUser(req.body)
+    if (user == false) { //hvis brugeren ikke er fundet returner error.
         res.end(JSON.stringify("no user with given credentials")); //Tjekker om brugeren eksisterer
     } else { //laver JWT til brugeren ud fra vores secret key (i dette tilfælde "secretkey")
-        jwt.sign({ username: user.username, }, secretKey, { expiresIn: "1h" }, (err, token) => {
+        jwt.sign({ username: req.body.username, }, secretKey, { expiresIn: "1h" }, (err, token) => {
             if (err) {
                 //TODO:some kind of error handling
+            } else {
+                res.json({ token });
             }
-            res.json({ token });
         });
     }
+}
+
+/**
+ * checks our database for a user with current username and database. if found returns true, if not returns false
+ * @param {Object} user the user we want to validate is in our database
+ */
+async function findUser(user) {
+    //TODO change all readFileSync to readFile. THIS IS NOT JUST REMOVING SYNC
+    let database = await JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
+    let found = database.find(element => { return element.username == user.username })
+    if (typeof found == "object" && await bcrypt.compare(user.password.toString(), found.hashValue)) return true
+    else return false
 }
 
 /**
@@ -79,8 +83,12 @@ async function masterAccount(req, res) {
         });
         fs.writeFile(__dirname + "/json/" + data.username + ".json", JSON.stringify(new Array(0), null, 2),
             function(err, data) {
-                //TODO fund ud af format for error handling her og lav en if statement //Opretter en dedikeret fil der skal indeholde fremtidige sites med passwords.
-                res.end(JSON.stringify(true));
+                //TODO find ud af format for error handling her og lav en if statement //Opretter en dedikeret fil der skal indeholde fremtidige sites med passwords.
+                if (err) {
+
+                } else {
+                    res.end(JSON.stringify(true));
+                }
             });
     });
 
@@ -155,17 +163,24 @@ function addUserInfo(req, res) { //TODO check if user already has account for th
     let data = req.body
     jwt.verify(req.token, secretKey, (err, authData) => { //verifies the authenticity of the token.
         if (err) { // gives unauthorized error  
-            //TODO error handling goes here
             res.sendStatus(401); // unauthorized 
-            console.log("error 1 in addUserInfo")
+            console.log("error in addUserInfo. token not verified")
         } else {
             let storedUserData = JSON.parse(fs.readFileSync(__dirname + "/json/" + authData.username + ".json")); //indlæser brugerens personlige password-database.
             if (data.domain === undefined || data.username === undefined || data.password === undefined) { //checks if we received all data
-                res.end("not all data received successfully") // respond error 
-                console.log("addUserInfo did not receive all data needed")
+
+                //TODO this is only to show us errors in development. should be simpler error message in finished product.
+                res.end("data not received succesfully. we received domain:" + data.domain + " and username: " + data.username + " and password im not showing") // respond error 
+                console.log("data not received succesfully. we received domain:" + data.domain + " and username: " + data.username + " and password: " + data.password)
             } else { // we recieved everything
+                //TODO error handling in case domain isnt in the right format (missing www, not with https etc.)
+
+                //splices domain so only primary domain remains
+                let domainArray = req.body.domain.split("/"); //Gemmer websitet uden "http(s)://"
+                let domainStripped = domainArray[2]; //gemmer delen af domænet der ikke indeholder http(s).
+
                 storedUserData.push({ //get the new information pushed to the object 
-                    domain: data.domain,
+                    domain: domainStripped,
                     username: data.username,
                     password: data.password
                 });
