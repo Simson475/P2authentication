@@ -36,8 +36,8 @@ async function formSubmit(event) {
         let form = document.getElementById("LogIn-form"); //skaffer info fra form og indsætter i jsondata
         let username = form.username.value;
         console.log(username);
-        let pepperPass = form.password.value + result.key;
-        let hashedPass = hashing(pepperPass);
+        let pepperPass = form.password.value.concat(result.key); //concatinere passord og den hentede peber
+        let hashedPass = hashCode(pepperPass);
         console.log("key: " + result.key);
         console.log("med peber: " + pepperPass);
         console.log("hashed: " + hashedPass);
@@ -102,16 +102,10 @@ async function formSubmit(event) {
 
 //newAnswer = await newAnswer.json();
 //console.log(newAnswer);
-function hashing(str) { //stjålet fra nettet: http://mediocredeveloper.com/wp/?p=55
-    len = str.length;
-    hash = 0;
-    for (i = 1; i <= len; i++) {
-        char = str.charCodeAt((i - 1));
-        hash += char * Math.pow(31, (len - i));
-        hash = hash & hash; //javascript limitation to force to 32 bits
-    }
-    return Math.abs(hash);
-}
+function hashCode(str) { //stjålet fra nettet
+    return str.split('').reduce((prevHash, currVal) =>
+      (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
+  }
 
 
 //---------LoggedIn.js---------------------------------------------------------------------------------------------------------------------------------
