@@ -23,8 +23,8 @@ async function formSubmit(event) {
         let pepperString = cryptoRandomString({ length: 20, type: 'base64' });
         console.log(pepperString);
         /*konkatinere indtastet password med den pebrede streng*/
-        let pepperPassword = form.password1.value + pepperString;
-        let hashedPassword = hashing(pepperPassword);
+        let pepperPassword = form.password1.value.concat(pepperString); //concatinere password og peber
+        let hashedPassword = hashCode(pepperPassword);
 
 
         let jsondata = {
@@ -90,13 +90,7 @@ async function formSubmit(event) {
     }
 }
 
-function hashing(str) { //stjålet fra nettet: http://mediocredeveloper.com/wp/?p=55
-    let len = str.length;
-    let hash = 0;
-    for (let i = 1; i <= len; i++) {
-        let char = str.charCodeAt((i - 1));
-        hash += char * Math.pow(31, (len - i));
-        hash = hash & hash; //javascript limitation to force to 32 bits
-    }
-    return Math.abs(hash);
-}
+function hashCode(str) { //stjålet fra nettet
+    return str.split('').reduce((prevHash, currVal) =>
+      (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
+  }
