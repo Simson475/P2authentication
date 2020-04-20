@@ -57,14 +57,14 @@ async function formSubmit(event) {
             body: JSON.stringify(jsondata, null, 2)
         });
 
-        answer = await answer.json(); //parser responsen
+        answer = await answer.json(); //parses the response
         console.log(answer); /*Skal fjernes på et tidspunkt*/
 
 
         if (answer == "no user with given credentials") { //giver error message
             /* TODO
             STUB 
-            her indsættes error message om bruger ikke eksister eller forkert login oplysning
+            Insert error message on if user exists or the login information was false.
             */
 
         } else {
@@ -72,13 +72,14 @@ async function formSubmit(event) {
             chrome.runtime.sendMessage({ token: "bearer " + answer.token }, function(response) {
                 //saves the token to backgroundscript
                 console.log("Bearer token successfully saved");
-                if (response.success == true) { //Checker om response er true                        
-                    //Changes display attribute of elements.
+                if (response.success == true) {
+                    //Variables used in switchPage            
                     let ShownPage = document.getElementById("LogIn");
                     let NewPage = document.getElementById("SignedIn");
+                    //Changes display attribute of elements.
                     switchPage(ShownPage, NewPage);
                 } else {
-                    console.log("*An error has occured*"); //Error message hvis response er false
+                    console.log("*An error has occured*"); //Error message if the response is false.
                 }
             });
 
@@ -130,17 +131,12 @@ async function retrievePassword(event) {
             console.log("response.token is undefined")
             return;
         } else {
-            console.log("User pressed the button.")
-                //kontakter serveren og beder om username og password for at kunne logge ind.
-            chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) {
+            chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) { //Henter information om den aktive tab.
                 // since only one tab should be active and in the current window at once
                 // the return variable should only have one entry
-                let activeTab = tabs[0];
-                let activeTabId = activeTab.id; // or do whatever you need
+                let activeTab = tabs[0];            
             
-            
-                console.log(activeTab.url);
-            
+                //Contacts server and requests username and password for the domain passed in the body
                 let answer = await fetch("http://127.0.0.1:3000/getPassword", {
                     method: 'POST',
                     headers: {
@@ -149,18 +145,20 @@ async function retrievePassword(event) {
                     },
                     body: JSON.stringify({ domain: activeTab.url }, null, 2)
                 });
+                //parses the response
                 answer = await answer.json()
-                console.log(answer);
                 
+                //Defines variables for useage in switchPage and for insertion of password and username
                 let username = document.getElementById("SignedIn-username");
                 let password = document.getElementById("SignedIn-password");
                 let button = document.getElementById("SignedIn-submit");
                 let page = document.getElementById("SignedIn2");
-                console.log(answer.username)
+                //inserts the username and passwords, in the relevant paragraph.
                 username.innerHTML = answer.username;
                 password.innerHTML = answer.password;
 
-                switchPage(button,page); 
+                //hides the button and shows the page.
+                switchPage(button,page);  
             });
         }
     });
