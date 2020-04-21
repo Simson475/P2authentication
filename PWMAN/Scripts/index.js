@@ -3,14 +3,9 @@ document.getElementById("LogIn-form").addEventListener("submit", formSubmit);
 document.getElementById("SignedIn-submit").addEventListener("click", retrievePassword);
 chrome.runtime.sendMessage({ getToken: true }, function(response) { //gets token from background script. whatever is done with it should be done in this callback function
 
-
-    console.log(response);
     if (response.token === null) return;
     else {
-        //TODOredirect til LoggedIn.html
-        let ShownPage = document.getElementById("LogIn");
-        let NewPage = document.getElementById("SignedIn");
-        switchPage(ShownPage, NewPage);
+        retrieveElementInformationCSS("SignIn");
     }
     return;
 });
@@ -22,34 +17,22 @@ chrome.runtime.sendMessage({ getToken: true }, function(response) { //gets token
 async function formSubmit(event) {
     event.preventDefault();
 
-    let form = document.getElementById("LogIn-form"); //skaffer info fra form og indsætter i jsondata
-    console.log(form.username.value);
+    let form = document.getElementById("LogIn-form"); //defines form
 
-    //Funktionen som henter den gemte peber streng fra local storage.
+    chrome.storage.local.get(['key'], async function(result) { //The function to load the saved pepper string from local storage (idk from where).
 
-    /*let pepper = chrome.storage.local.get(['key'], function(result) {
-        let noget = JSON.stringify(result.key);
-        return noget;
-    });*/
-    chrome.storage.local.get(['key'], async function(result) {
-
-        let form = document.getElementById("LogIn-form"); //skaffer info fra form og indsætter i jsondata
+        let form = document.getElementById("LogIn-form"); //Gets information from form and inserts in the object jsondata
         let username = form.username.value;
-        console.log(username);
-        let pepperPass = form.password.value.concat(result.key); //concatinere passord og den hentede peber
+        let pepperPass = form.password.value.concat(result.key); //concatinates password with the loaded pepper
         let hashedPass = hashCode(pepperPass);
-        console.log("key: " + result.key);
-        console.log("med peber: " + pepperPass);
-        console.log("hashed: " + hashedPass);
 
         let jsondata = {
             username: form.username.value,
             password: hashedPass,
             domain: location
         };
-        console.log(jsondata);
 
-        let answer = await fetch("http://127.0.0.1:3000/validate", { //kontakter serveren med username og password for at kunne logge ind.
+        let answer = await fetch("http://127.0.0.1:3000/validate", { //Contacts the serveren with username and password to log in.
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -58,63 +41,30 @@ async function formSubmit(event) {
         });
 
         answer = await answer.json(); //parses the response
-        console.log(answer); /*Skal fjernes på et tidspunkt*/
 
+        if (answer == "no user with given credentials") { //Incase the login information was false
 
-        if (answer == "no user with given credentials") { //giver error message
-            /* TODO
-            STUB 
-            Insert error message on if user exists or the login information was false.
-            */
-
+            incorrectInfoCSS(); //Displays an error message in case the entered username or password is wrong.
+            
         } else {
-
-            chrome.runtime.sendMessage({ token: "bearer " + answer.token }, function(response) {
-                //saves the token to backgroundscript
+            chrome.runtime.sendMessage({ token: "bearer " + answer.token }, function(response) { //saves the token to backgroundscript
                 console.log("Bearer token successfully saved");
-                if (response.success == true) {
-                    //Variables used in switchPage            
-                    let ShownPage = document.getElementById("LogIn");
-                    let NewPage = document.getElementById("SignedIn");
-                    //Changes display attribute of elements.
-                    switchPage(ShownPage, NewPage);
+                if (response.success == true) {         
+                    retrieveElementInformationCSS("SignIn"); //Variables used in switchPage   
                 } else {
                     console.log("*An error has occured*"); //Error message if the response is false.
                 }
             });
-
-
-
         }
         form.reset();
     })
 
 }
 
-//let newAnswer = await fetch("http://127.0.0.1:3000/test", { //sender test til server for at se om JWT er korrekt signed. bør fjernes at some point.
-//    method: 'POST',
-//    headers: {
-//        'Content-Type': 'application/json',
-//        "authorization": "bearer " + answer.token
-//    },
-//    body: JSON.stringify(jsondata, null, 2)
-//});
-
-//newAnswer = await newAnswer.json();
-//console.log(newAnswer);
-function hashCode(str) { //stjålet fra nettet
-    return str.split('').reduce((prevHash, currVal) =>
-      (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
-  }
-
-
-//---------LoggedIn.js---------------------------------------------------------------------------------------------------------------------------------
-
-async function retrievePassword(event) {
+async function retrievePassword(event) { // LoggedIn script (listens for click on getpassword button)
     event.preventDefault()
-    console.log("test")
-        //gets token from background script. whatever is done with it should be done in this callback function
-    chrome.runtime.sendMessage({ getToken: true }, async function(response) {
+        
+    chrome.runtime.sendMessage({ getToken: true }, async function(response) { //gets token from background script. whatever is done with it should be done in this callback function
         console.log(response);
         if (response.token === null) return;
         else if (response.token === undefined) {
@@ -122,7 +72,7 @@ async function retrievePassword(event) {
             console.log("response.token is undefined")
             return;
         } else {
-            chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) { //Henter information om den aktive tab.
+            chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) { //Collects information on the active tab.
                 // since only one tab should be active and in the current window at once
                 // the return variable should only have one entry
                 let activeTab = tabs[0];            
@@ -138,31 +88,56 @@ async function retrievePassword(event) {
                 });
                 //parses the response
                 answer = await answer.json()
+                retrieveElementInformationCSS("retrievePassword", answer); 
                 
-                //Defines variables for useage in switchPage and for insertion of password and username
-                let username = document.getElementById("SignedIn-username");
-                let password = document.getElementById("SignedIn-password");
-                let button = document.getElementById("SignedIn-submit");
-                let page = document.getElementById("SignedIn2");
-                //inserts the username and passwords, in the relevant paragraph.
-                username.innerHTML = answer.username;
-                password.innerHTML = answer.password;
-
-                //hides the button and shows the page.
-                switchPage(button,page);  
             });
         }
     });
 };
 
-//---------addWebsite.js---------------------------------------------------------------------------------------------------------------------------------
+//---------Subfunctions---------------------------------------------------------------------------------------------------------------------------------
 
-
-
-//Changes display attribute of elements.
-function switchPage(hidePage, showPage) {
-
+function switchPage(hidePage, showPage) { //Changes display attribute of elements.
     hidePage.style.display = "none";
     showPage.style.display = "inline";
+}
 
+function retrieveElementInformationCSS(X, answer){//Defines variables for useage in switchPage and for insertion of password and username
+    switch (X) {
+        case "retrievePassword":
+            let username = document.getElementById("SignedIn-username");
+            let password = document.getElementById("SignedIn-password");
+            let button = document.getElementById("SignedIn-submit"); //button
+            let page = document.getElementById("SignedIn2"); //SignedInPage
+            document.getElementById("SignedIn-website").style.display = "none"; //Hides the add new login button
+            username.innerHTML = answer.username; //inserts the username in the relevant paragraph.
+            password.innerHTML = answer.password; //inserts the passwords in the relevant paragraph.
+            
+            switchPage(button, page); //Changes display attribute of elements.
+            break;
+        case "SignIn":
+            let hidePage = document.getElementById("LogIn");
+            let showPage = document.getElementById("SignedIn");
+            switchPage(hidePage, showPage); //Changes display attribute of elements.
+            break;
+    
+        default:
+            console.log("Something went wrong!")
+            break;
+    }
+}
+
+function incorrectInfoCSS(){
+    let fieldUsername = document.getElementById("LogIn-username");
+    let fieldPassword = document.getElementById("LogIn-password");
+    let messageP = document.getElementById("LogIn-paragraph");
+
+    fieldUsername.style.borderColor = "red";
+    fieldPassword.style.borderColor = "red";
+    messageP.style.display = "inline";
+}
+
+function hashCode(str) { //stolen from the internet
+    return str.split('').reduce((prevHash, currVal) =>
+      (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
 }
