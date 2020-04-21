@@ -1,34 +1,10 @@
 [
   {
-    "username": "Daniel",
-    "hashValue": 46123764
-  },
-  {
-    "username": "Fatima",
-    "hashValue": 13579246
-  },
-  {
     "username": "Jacob",
     "hashValue": 8888
   },
   {
-    "username": "Jakob",
-    "hashValue": 87659876
-  },
-  {
-    "username": "Laurits",
-    "hashValue": 19328754
-  },
-  {
-    "username": "Mathias",
-    "hashValue": 65431298
-  },
-  {
     "username": "Simon",
     "hashValue": 8888
-  },
-  {
-    "username": "123",
-    "hashValue": "123"
   }
 ]

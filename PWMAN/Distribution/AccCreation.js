@@ -14509,7 +14509,7 @@ module.exports={
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.5.2.tgz",
   "_shasum": "05c5678d7173c049d8ca433552224a495d0e3762",
   "_spec": "elliptic@^6.0.0",
-  "_where": "C:\\Users\\Jacobs fucking lort\\AppData\\Roaming\\npm\\node_modules\\watchify\\node_modules\\browserify-sign",
+  "_where": "C:\\Users\\Lauri\\AppData\\Roaming\\npm\\node_modules\\watchify\\node_modules\\browserify-sign",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -22493,28 +22493,17 @@ async function formSubmit(event) {
     let form = document.getElementById("form");
     /*Compare passwords*/
     if (form.password1.value == form.password2.value) {
-        /*i tilfælde af tidligere ikke matchende password (resetter)*/
-        //document.body.style.height = "250px";
-        //document.getElementById("create").style.top = "225px";
-        //document.getElementById("return").style.top = "225px";
-        //document.getElementById("firstPassword").style.borderColor = "#101010";
-        //document.getElementById("secondPassword").style.borderColor = "#101010";
-        //document.getElementById("wrongPassword").style.display = "none";
-        /*generere peber streng*/
-        let pepperString = cryptoRandomString({ length: 20, type: 'base64' });
-        console.log(pepperString);
-        /*konkatinere indtastet password med den pebrede streng*/
-        let pepperPassword = form.password1.value.concat(pepperString); //concatinere password og peber
+        
+        let pepperString = cryptoRandomString({ length: 20, type: 'base64' }); //generates a pepper string
+        let pepperPassword = form.password1.value.concat(pepperString); //concatinates the password with pepper
         let hashedPassword = hashCode(pepperPassword);
 
-
-        let jsondata = {
+        let jsondata = { //An object containing the username and hashed password.
             username: form.username.value,
             password: hashedPassword
         };
 
-
-        let answer = await fetch("http://127.0.0.1:3000/newUser", {
+        let answer = await fetch("http://127.0.0.1:3000/newUser", { //Henter response for modifikation af database.
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -22524,58 +22513,55 @@ async function formSubmit(event) {
 
         answer = await answer.json()
 
-
-        if (answer == true) {
-            //Gemmer den generede peberstreng i localstorage (er usikker på præcist hvor det er)
-            chrome.storage.local.set({ key: pepperString }, function() {
-                console.log('Saved pepperString: ' + pepperString);
+        if (answer == true) { //In case the username is not already in use.
+            chrome.storage.local.set({ key: pepperString }, function() { //Saves the generated pepper in the local storage (idk where)
+                savedUserCorrectCSS();
             });
-            //Funktionen som henter den gemte peber streng fra local storage.
-            chrome.storage.local.get(['key'], function(result) {
-                console.log('Loaded pepperString: ' + result.key);
-            });
-            document.getElementById("accountCreation").style.display = "none";
-            document.getElementById("accountSuccess").style.display = "inline";
-
-            let returnButton = document.getElementById("return")
-            returnButton.style.position = "relative"
-            returnButton.style.top = "160px"
-            returnButton.style.fontSize = "1.3em";
-            returnButton.style.padding = "10px 20px 10px 20px"
-            returnButton.style.marginLeft = "18px"
-        } else { //hvis brugernavnet allerede eksi
-            /*gør bodyen større så der er plads til et label mere, flytter knapperne ned, skifter border farver på password felterne og viser besked*/
-            document.body.style.height = "280px";
-            document.getElementById("create").style.top = "250px";
-            document.getElementById("return").style.top = "250px";
-            document.getElementById("username").style.borderColor = "#BA1919";
-            document.getElementById("inUse").style.display = "inline";
+        } else { //In case the username is already in use on the database.
+            userExistCSS();
         }
 
         form.reset();
-    } else { //hvis passwordsene er ens
-        /*i tilfælde af at der tidligere er indtastet et eksisterende bruger navn (resetter)*/
-        document.getElementById("username").style.borderColor = "#101010";
-        document.body.style.height = "280px";
-        document.getElementById("create").style.top = "250px";
-        document.getElementById("return").style.top = "250px";
-        document.getElementById("inUse").style.display = "none";
-        /*gør bodyen større så der er plads til et label mere, flytter knapperne ned, skifter border farver på password felterne og viser besked*/
-        document.body.style.height = "280px";
-        document.getElementById("create").style.top = "250px";
-        document.getElementById("return").style.top = "250px";
-        document.getElementById("firstPassword").style.borderColor = "#BA1919";
-        document.getElementById("secondPassword").style.borderColor = "#BA1919";
-        document.getElementById("wrongPassword").style.display = "inline";
-
+    } else { //In case the passwords is not identical
+        passwordsNotIdenticalCSS();
     }
 }
 
-function hashCode(str) { //stjålet fra nettet
+function hashCode(str) { //Stolen from the internet.
     return str.split('').reduce((prevHash, currVal) =>
       (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
-  }
+}
 
+function savedUserCorrectCSS() { //Changes the CSS settings for when the user is saved correct
+    let returnButton = document.getElementById("return");
+    document.getElementById("accountCreation").style.display = "none";
+    document.getElementById("accountSuccess").style.display = "inline";
+    returnButton.style.position = "relative";
+    returnButton.style.top = "160px";
+    returnButton.style.fontSize = "1.3em";
+    returnButton.style.padding = "10px 20px 10px 20px";
+    returnButton.style.marginLeft = "18px";
+}
+
+function userExistCSS() { // Changes the CSS in case that a user already exist.
+    document.body.style.height = "280px";
+    document.getElementById("create").style.top = "250px";
+    document.getElementById("return").style.top = "250px";
+    document.getElementById("username").style.borderColor = "#BA1919";
+    document.getElementById("inUse").style.display = "inline";
+}
+
+function passwordsNotIdenticalCSS() { //Changes the CSS in case the password doesnt match.
+    //Makes the body bigger, so there is room for a label, moves the buttons down, changes border colors on  the password fields and display the message.
+    document.getElementById("username").style.borderColor = "#101010";
+    document.body.style.height = "280px";
+    document.getElementById("create").style.top = "250px";
+    document.getElementById("return").style.top = "250px";
+    document.getElementById("inUse").style.display = "none";
+    document.getElementById("firstPassword").style.borderColor = "#BA1919";
+    document.getElementById("secondPassword").style.borderColor = "#BA1919";
+    document.getElementById("wrongPassword").style.display = "inline";
+}
 },{"crypto-random-string":158,"fs":46}],158:[function(require,module,exports){
 'use strict';
 const crypto = require('crypto');
