@@ -52,6 +52,14 @@
         border: solid #101010;
         border-width: 2px;
     }
+    #LogIn-paragraph{
+        position: absolute;
+        top: 145px;
+        left: 20px;
+        display: none;
+        color: red;
+
+    }
     
     #create {
         position: absolute;
