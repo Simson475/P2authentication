@@ -34,12 +34,14 @@ async function addAccount(event){
                 });
                 answer = await answer.json() //answer from the server
 
-                if (answer == true){ //if the server responded with true, everything has been stored in the database. 
+                if (answer.error != undefined){ //Checks if the answer is a error message
+                    console.log(answer.error);
+                    failedAccountCreationCSS();
+                    
+                
+                }else{ //If there was no error message.
                     console.log("Account added");
                     successAccountCreationCSS();
-                }
-                else { //lets the user know that the account was NOT added successfully.
-                    failedAccountCreationCSS();
                 }
                 form.reset();
             })   

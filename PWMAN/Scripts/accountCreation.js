@@ -32,16 +32,18 @@ async function formSubmit(event) {
 
         answer = await answer.json()
 
-        if (answer == true) { //In case the username is not already in use
-            
-            chrome.storage.local.set({[jsondata.username]: pepperString }, function() { //Saves the generated pepper in the property of the username in local storage (idk where)
-                savedUserCorrectCSS();
-            });
-        } else { //In case the username is already in use on the database.
+        if (answer.error != undefined){ //Checks if the answer is a error message (In case the username is already in use on the database.)
+            console.log(answer.error);
             document.getElementById("wrongPassword").style.display = "none";
             document.getElementById("firstPassword").style.borderColor = "#101010";
             document.getElementById("secondPassword").style.borderColor = "#101010";
             userExistCSS();
+            
+        
+        }else{ //If there was no error message.
+            chrome.storage.local.set({[jsondata.username]: pepperString }, function() { //Saves the generated pepper in the property of the username in local storage (idk where)
+                savedUserCorrectCSS();
+            });
         }
 
         form.reset();
