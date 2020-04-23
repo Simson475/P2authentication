@@ -1,7 +1,6 @@
-//Event Listeners
-document.querySelector("form").addEventListener("submit", formSubmit)
-const cryptoRandomString = require('crypto-random-string');
-const fs = require('fs');
+document.querySelector("form").addEventListener("submit", formSubmit) //Event Listener
+const cryptoRandomString = require('crypto-random-string'); //Require module with the help of browserify/watchify.
+const fs = require('fs'); //Require module with the help of browserify/watchify.
 
 /**
  * formsubmit takes information that is submitted and sends it to the server and resets the form
@@ -9,45 +8,54 @@ const fs = require('fs');
  */
 async function formSubmit(event) {
     event.preventDefault()
-    let form = document.getElementById("form");
-    /*Compare passwords*/
-    if (form.password1.value == form.password2.value) {
+    let form = document.getElementById("form"); //Set variable to an element from NewUser.html. Done to obtain password and username submitted by user.
+    
+    if (form.password1.value == form.password2.value) { // Compare Passwords
 
-        let pepperString = cryptoRandomString({ length: 20, type: 'base64' }); //generates a pepper string
-        let pepperPassword = form.password1.value.concat(pepperString); //concatinates the password with pepper
-        let hashedPassword = hashCode(pepperPassword);
+        let pepperString = cryptoRandomString({ length: 20, type: 'base64' }); //generates a pepper string.
+        let pepperPassword = form.password1.value.concat(pepperString); //concatinates the password with pepper.
+        let hashedPassword = hashCode(pepperPassword); // Set a variable equal to the return value of our hashCode subfunction. 
 
         let jsondata = { //An object containing the username and hashed password.
             username: form.username.value,
             password: hashedPassword
         };
 
-        let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/newUser", { //Henter response for modifikation af database.
-            method: 'POST',
+        let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/newUser", { //Fetch respons from server to modify the database
+            method: 'POST', // Fetch method used to send data to the server to update the database.
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(jsondata, null, 2)
+            body: JSON.stringify(jsondata, null, 2) //Data to send to the server.
         });
 
         answer = await answer.json()
 
-
-
-        if (answer == true) { //In case the username is not already in use
+        if (answer.error != undefined){ //Checks if the answer is a error message (In case the username is already in use on the database.)
+            console.log(answer.error);
+            document.getElementById("wrongPassword").style.display = "none"; // Not to have two error messages on top of eachother
+            document.getElementById("firstPassword").style.borderColor = "#101010";
+            document.getElementById("secondPassword").style.borderColor = "#101010";
+            userExistCSS();
             
+        
+        }else{ //If there was no error message.
             chrome.storage.local.set({[jsondata.username]: pepperString }, function() { //Saves the generated pepper in the property of the username in local storage (idk where)
                 savedUserCorrectCSS();
             });
-        } else { //In case the username is already in use on the database.
-            userExistCSS();
         }
 
-        form.reset();
+        form.reset(); //Reset the forms to allow for new input.
+
     } else { //In case the passwords is not identical
+        document.getElementById("inUse").style.display = "none"; // Not to have two error messages on top of eachother
+        document.getElementById("username").style.borderColor = "#101010";
+
         passwordsNotIdenticalCSS();
-    }
+        }
 }
+
+//---------Subfunctions---------------------------------------------------------------------------------------------------------------------------------
 
 function hashCode(str) { //Stolen from the internet.
     return str.split('').reduce((prevHash, currVal) =>

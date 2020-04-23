@@ -40,11 +40,12 @@ async function formSubmit(event) {
 
         answer = await answer.json(); //parses the response
 
-        if (answer == "no user with given credentials") { //Incase the login information was false
-
+        if (answer.error != undefined){ //Checks if the answer is a error message
+            console.log(answer);
             incorrectInfoCSS(); //Displays an error message in case the entered username or password is wrong.
-
-        } else {
+            
+        
+        }else {
             chrome.runtime.sendMessage({ token: "bearer " + answer.token }, function(response) { //saves the token to backgroundscript
                 console.log("Bearer token successfully saved");
                 if (response.success == true) {
@@ -88,6 +89,8 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
 
                 if (answer.error != undefined){ //Checks if the answer is a error message
                     console.log(answer);
+                    retrieveElementInformationCSS("Error", answer);
+                    
                 
                 }else{ //If there was no error message.
                 
@@ -124,6 +127,11 @@ function retrieveElementInformationCSS(X, answer) { //Defines variables for usea
             let showPage = document.getElementById("SignedIn");
             switchPage(hidePage, showPage); //Changes display attribute of elements.
             break;
+        case "Error":
+            let button2 = document.getElementById("SignedIn-submit"); //button
+            let errorMessage = document.getElementById("error");
+            
+            switchPage(button2, errorMessage);
 
         default:
             console.log("Something went wrong!")
