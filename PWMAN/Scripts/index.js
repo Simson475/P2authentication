@@ -83,8 +83,7 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
                         "Content-Type": "application/json",
                         "authorization": response.token
                     },
-                    body: JSON.stringify({ domain: activeTa
-                        b.url }, null, 2)
+                    body: JSON.stringify({ domain: activeTab.url }, null, 2)
                 });
                 answer = await answer.json() //parses the response
 
