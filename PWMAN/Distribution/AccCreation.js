@@ -14509,7 +14509,7 @@ module.exports={
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.5.2.tgz",
   "_shasum": "05c5678d7173c049d8ca433552224a495d0e3762",
   "_spec": "elliptic@^6.0.0",
-  "_where": "C:\\Users\\Lauri\\AppData\\Roaming\\npm\\node_modules\\watchify\\node_modules\\browserify-sign",
+  "_where": "C:\\Users\\Jacobs fucking lort\\AppData\\Roaming\\npm\\node_modules\\watchify\\node_modules\\browserify-sign",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -22493,7 +22493,7 @@ async function formSubmit(event) {
     let form = document.getElementById("form");
     /*Compare passwords*/
     if (form.password1.value == form.password2.value) {
-        
+
         let pepperString = cryptoRandomString({ length: 20, type: 'base64' }); //generates a pepper string
         let pepperPassword = form.password1.value.concat(pepperString); //concatinates the password with pepper
         let hashedPassword = hashCode(pepperPassword);
@@ -22513,8 +22513,11 @@ async function formSubmit(event) {
 
         answer = await answer.json()
 
-        if (answer == true) { //In case the username is not already in use.
-            chrome.storage.local.set({ key: pepperString }, function() { //Saves the generated pepper in the local storage (idk where)
+
+
+        if (answer == true) { //In case the username is not already in use
+            
+            chrome.storage.local.set({[jsondata.username]: pepperString }, function() { //Saves the generated pepper in the property of the username in local storage (idk where)
                 savedUserCorrectCSS();
             });
         } else { //In case the username is already in use on the database.
@@ -22529,7 +22532,7 @@ async function formSubmit(event) {
 
 function hashCode(str) { //Stolen from the internet.
     return str.split('').reduce((prevHash, currVal) =>
-      (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
+        (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
 }
 
 function savedUserCorrectCSS() { //Changes the CSS settings for when the user is saved correct
