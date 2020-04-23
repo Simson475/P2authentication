@@ -55,6 +55,8 @@ async function formSubmit(event) {
         }
 }
 
+//---------Subfunctions---------------------------------------------------------------------------------------------------------------------------------
+
 function hashCode(str) { //Stolen from the internet.
     return str.split('').reduce((prevHash, currVal) =>
         (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
