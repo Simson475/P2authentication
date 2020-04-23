@@ -22520,13 +22520,16 @@ async function formSubmit(event) {
             });
         } else { //In case the username is already in use on the database.
             document.getElementById("wrongPassword").style.display = "none";
+            document.getElementById("firstPassword").style.borderColor = "#101010";
+            document.getElementById("secondPassword").style.borderColor = "#101010";
             userExistCSS();
         }
 
         form.reset();
     } else { //In case the passwords is not identical
         document.getElementById("inUse").style.display = "none";
-        
+        document.getElementById("username").style.borderColor = "#101010";
+
         passwordsNotIdenticalCSS();
         }
 }
