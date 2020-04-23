@@ -30,7 +30,7 @@ async function formSubmit(event) {
             domain: location
         };
 
-        let answer = await fetch("http://127.0.0.1:3000/validate", { //Contacts the serveren with username and password to log in.
+        let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/validate", { //Contacts the serveren with username and password to log in.
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
                 let activeTab = tabs[0];
 
                 //Contacts server and requests username and password for the domain passed in the body
-                let answer = await fetch("http://127.0.0.1:3000/getPassword", {
+                let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/getPassword", {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json",
@@ -84,9 +84,15 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
                     },
                     body: JSON.stringify({ domain: activeTab.url }, null, 2)
                 });
-                //parses the response
-                answer = await answer.json()
+                answer = await answer.json() //parses the response
+
+                if (answer.error != undefined){ //Checks if the answer is a error message
+                    console.log(answer);
+                
+                }else{ //If there was no error message.
+                
                 retrieveElementInformationCSS("retrievePassword", answer);
+                }
 
             });
         }
