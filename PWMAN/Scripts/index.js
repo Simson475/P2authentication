@@ -88,6 +88,8 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
 
                 if (answer.error != undefined){ //Checks if the answer is a error message
                     console.log(answer);
+                    retrieveElementInformationCSS("Error", answer);
+                    
                 
                 }else{ //If there was no error message.
                 
@@ -124,6 +126,11 @@ function retrieveElementInformationCSS(X, answer) { //Defines variables for usea
             let showPage = document.getElementById("SignedIn");
             switchPage(hidePage, showPage); //Changes display attribute of elements.
             break;
+        case "Error":
+            let button2 = document.getElementById("SignedIn-submit"); //button
+            let errorMessage = document.getElementById("error");
+            
+            switchPage(button2, errorMessage);
 
         default:
             console.log("Something went wrong!")
