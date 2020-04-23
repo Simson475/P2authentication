@@ -40,11 +40,12 @@ async function formSubmit(event) {
 
         answer = await answer.json(); //parses the response
 
-        if (answer == "no user with given credentials") { //Incase the login information was false
-
+        if (answer.error != undefined){ //Checks if the answer is a error message
+            console.log(answer);
             incorrectInfoCSS(); //Displays an error message in case the entered username or password is wrong.
-
-        } else {
+            
+        
+        }else {
             chrome.runtime.sendMessage({ token: "bearer " + answer.token }, function(response) { //saves the token to backgroundscript
                 console.log("Bearer token successfully saved");
                 if (response.success == true) {
@@ -82,7 +83,8 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
                         "Content-Type": "application/json",
                         "authorization": response.token
                     },
-                    body: JSON.stringify({ domain: activeTab.url }, null, 2)
+                    body: JSON.stringify({ domain: activeTa
+                        b.url }, null, 2)
                 });
                 answer = await answer.json() //parses the response
 
