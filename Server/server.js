@@ -1,15 +1,57 @@
-const fs = require('fs'); //Giver os filfunktioner så vi kan skrive til og læse fra databasen
 require("dotenv").config();
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const mysql = require("mysql");
+const util = require('util');
 //TODO implement secret in env
-const secretKey = "secretkey"
-const saltRounds = 10
-const port = 3000
+const secretKey = "secretkey";
+const saltRounds = 10;
+const port = 3180;
 
+
+/**
+ * Promisify wrapper
+ * TODO
+ * @param {Object} login 
+ */
+function makeDb(login) {
+    const connection = mysql.createConnection(login);
+    return {
+        query(sql, args) {
+            return util.promisify(connection.query)
+                .call(connection, sql, args);
+        },
+        close() {
+            return util.promisify(connection.end).call(connection);
+        }
+    };
+}
+
+const local = {
+    host: "localhost",
+    user: "root",
+    password: "Password1234",
+    database: "PWMAN"
+}
+
+const online = {
+    host: "localhost",
+    user: "sw2b2-23@student.aau.dk",
+    password: "ss5fNRfsdNXSaryL",
+    database: "sw2b2_23"
+}
+
+const db = makeDb(online);
+
+/**
+ * Middleware
+ * TODO
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 const logger = function(req, res, next) {
     console.log(req.method + " request received at " + req.url)
     next()
@@ -32,10 +74,10 @@ app.listen(port, () => { console.log("listening at " + port) }) //sætter server
  * @param {object} res  res is the response the server sends to the user. This is used to send info back to the user including his copy of the JWT.
  */
 async function login(req, res) { //creates JWT for the user logging in.
-    let user = await findUser(req.body)
-    if (user == false) { //hvis brugeren ikke er fundet returner error.
-        res.end(JSON.stringify("no user with given credentials")); //Tjekker om brugeren eksisterer
-    } else { //laver JWT til brugeren ud fra vores secret key (i dette tilfælde "secretkey")
+    let data = req.body
+    let user = await findUserDB(data)
+        // user.length == 1 when the user we're looking for exist
+    if (user.length == 1 && await bcrypt.compare(data.password.toString(), user[0].hashValue)) {
         jwt.sign({ username: req.body.username, }, secretKey, { expiresIn: "1h" }, (err, token) => {
             if (err) {
                 //TODO:some kind of error handling
@@ -43,19 +85,10 @@ async function login(req, res) { //creates JWT for the user logging in.
                 res.json({ token });
             }
         });
+    } else {
+        //TODO change to res.send OBS HAS TO CHANGE IN index.js TOO
+        res.json("no user with given credentials")
     }
-}
-
-/**
- * checks our database for a user with current username and database. if found returns true, if not returns false
- * @param {Object} user the user we want to validate is in our database
- */
-async function findUser(user) {
-    //TODO change all readFileSync to readFile. THIS IS NOT JUST REMOVING SYNC
-    let database = await JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
-    let found = database.find(element => { return element.username == user.username })
-    if (typeof found == "object" && await bcrypt.compare(user.password.toString(), found.hashValue)) return true
-    else return false
 }
 
 /**
@@ -64,36 +97,40 @@ async function findUser(user) {
  * @param {Object} res res is the response to send the user.
  */
 async function masterAccount(req, res) {
-    res.writeHead(201, { "Content-type": "application/json" }) //TODO FIND UD AF FORMAT DER SENDES OG RET CONTENT TYPE Skriver header på res. til brugeren 
     let data = req.body
-    let database = JSON.parse(fs.readFileSync(__dirname + "/database.json")); //Indlæser databasen fra filen database.json
+    let user = await findUserDB(data) //checks if user exists in out mySQL database
+    if (user.length > 0) { //if the user exists the length is > 0 send false to client(user is not created)
+        res.send(false)
+    } else {
+        //TODO DET ER HER VI ER IGANG MED REGEX
+        bcrypt.hash(data.password.toString(), saltRounds)
+            .then(async function(hash) {
+                // Store hash in your password DB.
 
-    for (let element of database) { //Denne iterative kontrolstruktur tjekker om brugernavnet er taget.
-        if (data.username == element.username) {
-            res.end(JSON.stringify(false)); //TODO indsæt token til 'Unavailable username'
-            return; //Hvis username er taget er der ingen grund til at iterere videre   
-        }
-    }
+                console.log(mysql.escape(data.username))
+                    //TODO sanitize input from user with mySQL.escape (second query is causing trouble with it)
+                await db.query("INSERT INTO loginTable SET ?", { username: mysql.escape(data.username), hashValue: hash }) //mysql.escape is used to escape when we accept user input, so they can't give the server input.
+                currentUser = await findUserDB(data)
+                await db.query("CREATE TABLE user" + currentUser[0].id + "( domain VARCHAR(255), username VARCHAR(255),password VARCHAR(255), PRIMARY KEY(domain))")
+                    //console.log("user saved in DB " + data.username)
+                res.send(true)
 
-    bcrypt.hash(data.password.toString(), saltRounds).then(function(hash) {
-        // Store hash in your password DB.
-        database.push({ username: data.username, hashValue: hash }); //Vi pusher hele elementet til slutningen af array i database.
-        fs.writeFile(__dirname + "/database.json", JSON.stringify(database, null, 2), function(err, data) { //TODO fund ud af format for error handling her og lav en if statement
-            /* STUB */
-        });
-        fs.writeFile(__dirname + "/json/" + data.username + ".json", JSON.stringify(new Array(0), null, 2),
-            function(err, data) {
-                //TODO find ud af format for error handling her og lav en if statement //Opretter en dedikeret fil der skal indeholde fremtidige sites med passwords.
-                if (err) {
-
-                } else {
-                    res.end(JSON.stringify(true));
-                }
             });
-    });
-
-
+    }
 }
+
+
+/**
+ * TODO
+ * @param {Object} data 
+ */
+async function findUserDB(data) {
+    let sql = "SELECT * FROM loginTable WHERE username= \"" + mysql.escape(data.username) + "\""
+    let result = await db.query(sql)
+    return result
+}
+
+
 /**
  * Middleware that verifies an authorization token is received. it is the saved in req.token for future functions to user
  * @param {Object} req req is the request the user sends to the server.
@@ -125,32 +162,35 @@ function verifyToken(req, res, next) {
  * @param {Object} req req is the request the user sends to the server.
  * @param {Object} res res is the response to send the user. this either sends a 401, error handling, or username/password
  */
-function getPassword(req, res) {
+async function getPassword(req, res) {
+
     let data = req.body
-    console.log(data)
-    jwt.verify(req.token, secretKey, (err, authData) => { //verifies the authenticity of the token.
+    jwt.verify(req.token, secretKey, async(err, authData) => { //verifies the authenticity of the token.
+
+        let user = await findUserDB(authData);
         if (err) { //if error responds with authorization denied
             console.log("error occured " + err)
-            res.sendStatus(401);
-        } else { //if no error responds with success and who logged in.
-            //authData.username tilgår brugerens username.
-            let storedUserData = JSON.parse(fs.readFileSync(__dirname + "/json/" + authData.username + ".json")); //indlæser brugerens personlige password-database.
-            if (req.body.domain == undefined) {
-                //error handling here
-                res.end(JSON.stringify("domain error"))
-                console.log("error in domain")
+            res.sendStatus(401); //status 401 stands for unauthotized
+        } else if (data.domain == undefined) {
+            //error handling here
+            res.send("domain error")
+            console.log("error in domain")
+        } else if (user.length == 1) {
+            let domainArray = req.body.domain.split("/"); //Gemmer websitet uden "http(s)://"
+            let domainStripped = domainArray[2]; //gemmer delen af domænet der ikke indeholder http(s).
+            let sql = "SELECT * FROM user" + user[0].id + " WHERE domain= \"" + mysql.escape(domainStripped) + "\""
+            let result = await db.query(sql)
+            if (result[0] != undefined && result.length == 1) {
+                //TODO check if there is data for domain, if not do error handling
+                res.json(result[0]) //returns username and password
             } else {
-                let domainArray = req.body.domain.split("/"); //Gemmer websitet uden "http(s)://"
-                let domainStripped = domainArray[2]; //gemmer delen af domænet der ikke indeholder http(s).
-                for (let element of storedUserData) { //Itererer over brugerens gemte domæner.
-                    if (domainStripped == element.domain) { //Tjekker om domænet eksisterer i databasen.
-                        res.end(JSON.stringify(element)); //Sender domænet, brugernavn og password tilbage.
-                        return;
-                    };
-                };
-                res.end(JSON.stringify("No login information for current website"));
-            };
-        };
+                console.log("test")
+                res.json({ error: "no login data for domain" })
+            }
+        } else {
+            res.send("error getting info from DB")
+            console.log("error getting info from DB in get password")
+        }
     });
 };
 
@@ -159,42 +199,49 @@ function getPassword(req, res) {
  * @param {Object} req req is the request the user sends to the server.
  * @param {Object} res res is the response to send the user. this either sends a 401, errormessages, false or true. responds true if everything went well
  */
-function addUserInfo(req, res) { //TODO check if user already has account for that domain then send error
+async function addUserInfo(req, res) { //TODO check if user already has account for that domain then send error
     let data = req.body
-    jwt.verify(req.token, secretKey, (err, authData) => { //verifies the authenticity of the token.
+    jwt.verify(req.token, secretKey, async(err, authData) => { //verifies the authenticity of the token.
         if (err) { // gives unauthorized error  
             res.sendStatus(401); // unauthorized 
             console.log("error in addUserInfo. token not verified")
-        } else {
-            let storedUserData = JSON.parse(fs.readFileSync(__dirname + "/json/" + authData.username + ".json")); //indlæser brugerens personlige password-database.
-            if (data.domain === undefined || data.username === undefined || data.password === undefined) { //checks if we received all data
+        } else if (data.domain === undefined || data.username === undefined || data.password === undefined) { //checks if we received all data
 
-                //TODO this is only to show us errors in development. should be simpler error message in finished product.
-                res.end("data not received succesfully. we received domain:" + data.domain + " and username: " + data.username + " and password im not showing") // respond error 
-                console.log("data not received succesfully. we received domain:" + data.domain + " and username: " + data.username + " and password: " + data.password)
-            } else { // we recieved everything
-                //TODO error handling in case domain isnt in the right format (missing www, not with https etc.)
+            //TODO this is only to show us errors in development. should be simpler error message in finished product.
+            res.end("data not received succesfully. we received domain:" + data.domain + " and username: " + data.username + " and password im not showing") // respond error 
+            console.log("data not received succesfully. we received domain:" + data.domain + " and username: " + data.username + " and password: " + data.password)
 
-                //splices domain so only primary domain remains
-                let domainArray = req.body.domain.split("/"); //Gemmer websitet uden "http(s)://"
-                let domainStripped = domainArray[2]; //gemmer delen af domænet der ikke indeholder http(s).
+        } else { // we recieved everything
+            //TODO error handling in case domain isnt in the right format (missing www, not with https etc.)
+            //splices domain so only primary domain remains
+            let domainArray = req.body.domain.split("/"); //Gemmer websitet uden "http(s)://"
+            let domainStripped = domainArray[2]; //gemmer delen af domænet der ikke indeholder http(s).
 
-                storedUserData.push({ //get the new information pushed to the object 
-                    domain: domainStripped,
-                    username: data.username,
-                    password: data.password
-                });
-                fs.writeFile(__dirname + "/json/" + authData.username + ".json", JSON.stringify(storedUserData, null, 2), // writes the changes to the Json file for the username 
-                    function(err, data) {
-                        if (err) {
-                            //TODO Error handling goes here 
-                            console.log("error 2 in addUserInfo")
-                            res.end(JSON.stringify(false)) //respond false
-                        } else {
-                            res.end(JSON.stringify(true)); // respond true we did not encounter any errors so everything went fine
-                        }
-                    });
+            //Checks the database to see if the user already has stored login-data for the website
+            let user = await findUserDB(authData)
+            console.log(user)
+            if (user.length == 1) {
+                let sql = "SELECT * FROM user" + user[0].id + " WHERE domain= \"" + mysql.escape(domainStripped) + "\""
+                let result = await db.query(sql)
+                console.log(result)
+                console.log(result.length)
+                    //todo change to send or make it as error message. needs to be implemented in client side too.
+                if (result.length == 1) res.json("userdata for domain already submitted")
+                else { //If the username doesn't exist in the database the new input is added.
+
+                    //mysql.escape is used to escape when we accept user input, so they can't give the server input. 
+                    let parameter = { domain: mysql.escape(domainStripped), username: mysql.escape(data.username), password: mysql.escape(data.password) }
+                    db.query("INSERT INTO user" + user[0].id + " SET ?", parameter)
+                        .then(
+                            //TODO error handling
+                            res.send(true)
+                        )
+                }
+            } else {
+                console.log("user length is not 1 it is " + user.length)
+                res.send(false)
             }
+
         }
     })
 }
