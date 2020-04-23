@@ -24,7 +24,7 @@ async function addAccount(event){
                     domain: location
                 };
         
-                let answer = await fetch("http://127.0.0.1:3000/updateInfo", { //Sends a fetch request to the server with the identifying token and the jsondata object
+                let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/updateInfo", { //Sends a fetch request to the server with the identifying token and the jsondata object
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json",

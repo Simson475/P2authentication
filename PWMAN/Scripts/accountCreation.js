@@ -22,7 +22,7 @@ async function formSubmit(event) {
             password: hashedPassword
         };
 
-        let answer = await fetch("http://127.0.0.1:3000/newUser", { //Henter response for modifikation af database.
+        let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/newUser", { //Henter response for modifikation af database.
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
