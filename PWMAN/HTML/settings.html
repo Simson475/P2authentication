@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Styles/settings.css">
+    <title>Password Manager</title>
+</head>
+
+<body>
+    <h3 id="h3">Settings</h3>
+
+    <div id = "menu">
+        <input id="importButton" type="submit" value="Import Account">
+        <input id="exportButton" type="submit" value="Export Account">
+    </div>
+
+    <div id="Import">
+        <form id="importForm">
+            <label id="importUserLabel" for="username"><b>Username</b></label>
+            <input id="importUsername" type="text" placeholder="Enter Username" name="username" required>
+            <label id="importPepperLabel" for="pepper"><b>Pepper</b></label>
+            <input id="importPepper" type="text" placeholder="Enter pepper" name="pepper">
+            <input id="importAccount" type="submit" value="Import">
+            <p id="importSucces"> The account has been imported.</p>
+            <div id = "importWarning">
+                <p id = "warning">Warning!</p>
+                <p id = "warningMessage"> Your about to overwrite the existing pepper for this account.</p>
+            </div>
+        </form>
+        
+    </div>
+    <div id="Export">
+        <label id="exportPepperLabel" for="pepper"><b>Pepper</b></label>
+        <p id="exportPepper"></p>
+        <p id="loginSucces">You are now logged in. Please return to settings</p>
+
+        <form id="exportForm">
+            <label id="exportUserLabel" for="username"><b>Username</b></label>
+            <input id="exportUsername" type="text" placeholder="Enter Username" name="username" required>
+            <label id="exportPassLabel" for="password"><b>Password</b></label>
+            <input id="exportPassword" type="password" placeholder="Enter Password" name="password" required>
+            <input id="exportAccountButton" type="submit" value="Export">
+            
+        </form>
+       
+    </div>
+
+    <a id="returnPop" href="popup.html"> Back</a>
+    <a id="returnSettings" href="settings.html"> Back</a>
+    <div id="Logo"><img src="../Images/logo2.png" style="width: 50px;" alt="PWMAN"></div>
+    <script src="../Scripts/settings.js"></script>
+    <!--refere til andet script-->
+</body>
+</html>
+
+
+

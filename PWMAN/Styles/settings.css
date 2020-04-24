@@ -1,0 +1,277 @@
+body {
+    color: white;
+    background-color: #292929;
+    /*Border*/
+    border: solid orange;
+    border-width: 2px;
+    border-radius: 4px;
+    width: 200px;
+    height: 250px;
+}
+#Logo {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+}
+#menu{
+    display: inline;
+}
+#h3{
+    top: 10px;
+    left: 15px;
+}
+
+#importButton{
+    position: absolute;
+    top: 75px;
+    left: 40px;
+    padding-left: 25px;
+    padding-right: 25px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+}
+
+#importButton:hover{
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
+
+#exportButton{
+    position: absolute;
+    top: 100px;
+    left: 40px;
+    padding-left: 25px;
+    padding-right: 25px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+}
+
+#exportButton:hover{
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
+
+#Import{
+    display: none;
+}
+
+#Export{
+    display: none;
+}
+
+#importUserLabel {
+    position: absolute;
+    top: 75px;
+    left: 20px;
+}
+
+#importUsername {
+    position: absolute;
+    top: 100px;
+    left: 20px;
+    color: black;
+    background-color: #FFB732;
+    /*Border*/
+    border: solid #101010;
+    border-width: 2px;
+}
+
+#importPepperLabel{
+    position: absolute;
+    top: 135px;
+    left: 20px;
+}
+
+#importPepper{
+    position: absolute;
+    top: 160px;
+    left: 20px;
+    color: black;
+    background-color: #FFB732;
+    /*Border*/
+    border: solid #101010;
+    border-width: 2px;
+}
+
+#importAccount{
+    position: absolute;
+    top: 230px;
+    right: 20px;
+    padding: 2px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+    
+#importAccount:hover {
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
+
+#importWarning{
+    display: none;
+    top: 60px;
+}
+
+#importSucces{
+    display: none;
+    top: 60px;
+}
+
+#exportForm{
+    display: none;
+}
+
+#exportUserLabel{
+    position: absolute;
+    top: 75px;
+    left: 20px;
+}
+
+#exportUsername{
+    position: absolute;
+    top: 100px;
+    left: 20px;
+    color: black;
+    background-color: #FFB732;
+    /*Border*/
+    border: solid #101010;
+    border-width: 2px;
+}
+
+#exportPassLabel{
+    position: absolute;
+    top: 135px;
+    left: 20px;
+    
+}
+
+#exportPassword{
+    position: absolute;
+    top: 160px;
+    left: 20px;
+    color: black;
+    background-color: #FFB732;
+    /*Border*/
+    border: solid #101010;
+    border-width: 2px;
+}
+
+#exportAccountButton{
+    position: absolute;
+    top: 230px;
+    right: 20px;
+    padding: 2px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+#exportAccount:hover {
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
+    
+#importAccount:hover {
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
+
+
+#exportPepperLabel{
+    position: absolute;
+    display: none;
+    top: 75px;
+    left: 20px;
+}
+#exportPepper{
+    display: none;
+    position: absolute;
+    top: 90px;
+    left: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: black;
+    background-color: #FFB732;
+    /*Border*/
+    border: solid #101010;
+    border-width: 2px;
+
+}
+
+#loginSucces{
+    display: none;
+    color: white;
+    top: 60px;
+}
+
+#returnPop {
+    position: absolute;
+    display: inline;
+    top: 230px;
+    left: 20px;
+    padding: 2px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+#returnPop:hover {
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
+
+#returnSettings {
+    position: absolute;
+    display: none;
+    display: inline;
+    top: 230px;
+    left: 20px;
+    padding: 2px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+#returnSettings:hover {
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
