@@ -131,8 +131,8 @@ async function masterAccount(req, res) { //Checks for if an account already exci
  * @param {Object} data data should have a property.username that has the current users username.
  */
 async function findUserDB(data) { //looks up a given user in the database tables.
-    let sql = "SELECT * FROM loginTable WHERE username= \"" + mysql.escape(data.username) + "\""; // Select a table from the table loginTable with the username data.username
-    let result = await db.query(sql); //sends query to DB
+    let sql = "SELECT * FROM loginTable WHERE username= \"" + mysql.escape(data.username) + "\"", // Select a table from the table loginTable with the username data.username
+        result = await db.query(sql); //sends query to DB
     return result; //returns all the stored data for the user
 }
 
@@ -165,13 +165,14 @@ function verifyToken(req, res, next) {
  * @param {Object} res res is the response to send the user. this either sends a 401, error handling, or username/password
  */
 async function getPassword(req, res) {
-    let data = req.body
+
     jwt.verify(req.token, secretKey, async(err, authData) => { //verifies the authenticity of the token.
         try {
-            let user = await findUserDB(authData); //stores the collected userdata in user
-            let domainStripped = data.domain.split("/")[2]; //gemmer delen af domænet der ikke indeholder http(s).
-            let sql = "SELECT * FROM user" + user[0].id + " WHERE domain= \"" + mysql.escape(domainStripped) + "\""; //looks up the Domain under the userID to see if there is stored info for the website.
-            let userData = (await db.query(sql))[0]; //stores the table data in position 0 as userdata.
+            let data = req.body,
+                user = await findUserDB(authData), //stores the collected userdata in user
+                domainStripped = data.domain.split("/")[2], //gemmer delen af domænet der ikke indeholder http(s).
+                sql = "SELECT * FROM user" + user[0].id + " WHERE domain= \"" + mysql.escape(domainStripped) + "\"", //looks up the Domain under the userID to see if there is stored info for the website.
+                userData = (await db.query(sql))[0]; //stores the table data in position 0 as userdata.
 
             //error handling
             if (err) throw "Token invalid";
@@ -199,12 +200,11 @@ async function getPassword(req, res) {
  * @param {Object} res res is the response to send the user. this either sends a 401, errormessages, false or true. responds true if everything went well
  */
 async function addUserInfo(req, res) {
-    let data = req.body;
-
     jwt.verify(req.token, secretKey, async(err, authData) => { //verifies the authenticity of the token.
         try {
-            let user = await findUserDB(authData), //find current user.
-                domainStripped = req.body.domain.split("/")[2], //gemmer delen af domænet der ikke indeholder http(s).
+            let data = req.body,
+                user = await findUserDB(authData), //find current user.
+                domainStripped = data.domain.split("/")[2], //gemmer delen af domænet der ikke indeholder http(s).
                 sql = "SELECT * FROM user" + user[0].id + " WHERE domain= \"" + mysql.escape(domainStripped) + "\"", //finds the table with the userID given and where the domain is domainStripped.
                 result = await db.query(sql); //sends query to server.
 
