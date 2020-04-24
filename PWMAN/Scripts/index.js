@@ -2,12 +2,8 @@
 document.getElementById("LogIn-form").addEventListener("submit", formSubmit);
 document.getElementById("SignedIn-submit").addEventListener("click", retrievePassword);
 chrome.runtime.sendMessage({ getToken: true }, function(response) { //gets token from background script. whatever is done with it should be done in this callback function
-
     if (response.token === null) return;
-    else {
-        retrieveElementInformationCSS("SignIn");
-    }
-    return;
+    else retrieveElementInformationCSS("SignIn");
 });
 
 /**
@@ -17,8 +13,6 @@ chrome.runtime.sendMessage({ getToken: true }, function(response) { //gets token
 async function formSubmit(event) {
     event.preventDefault();
 
-    let form = document.getElementById("LogIn-form");  //Gets information from form and inserts in the object jsondata  
-
     chrome.storage.local.get([form.username.value], async function(result) { //The function to load the saved pepper string from the property username in local storage (idk from where).
         let form = document.getElementById("LogIn-form"); //Gets information from form and inserts in the object jsondata       
         let pepperPass = form.password.value.concat(result[form.username.value]); //concatinates password with the loaded pepper
@@ -26,8 +20,7 @@ async function formSubmit(event) {
 
         let jsondata = { //An object containing the username and hashed password.
             username: form.username.value,
-            password: hashedPass,
-            domain: location
+            password: hashedPass
         };
 
         let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/validate", { //Contacts the serveren with username and password to log in.
@@ -35,17 +28,17 @@ async function formSubmit(event) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(jsondata, null, 2)
+            body: JSON.stringify(jsondata)
         });
 
         answer = await answer.json(); //parses the response
 
-        if (answer.error != undefined){ //Checks if the answer is a error message
+        if (answer.error != undefined) { //Checks if the answer is a error message
             console.log(answer);
             incorrectInfoCSS(); //Displays an error message in case the entered username or password is wrong.
-            
-        
-        }else {
+
+
+        } else {
             chrome.runtime.sendMessage({ token: "bearer " + answer.token }, function(response) { //saves the token to backgroundscript
                 console.log("Bearer token successfully saved");
                 if (response.success == true) {
@@ -65,7 +58,7 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
 
     chrome.runtime.sendMessage({ getToken: true }, async function(response) { //gets token from background script. whatever is done with it should be done in this callback function
         console.log(response);
-        if (response.token === null) return;
+        if (response.token === null) return; // todo error handling
         else if (response.token === undefined) {
             //STUB ERROR HANDLING
             console.log("response.token is undefined")
@@ -83,18 +76,18 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
                         "Content-Type": "application/json",
                         "authorization": response.token
                     },
-                    body: JSON.stringify({ domain: activeTab.url }, null, 2)
+                    body: JSON.stringify({ domain: activeTab.url })
                 });
                 answer = await answer.json() //parses the response
 
-                if (answer.error != undefined){ //Checks if the answer is a error message
+                if (answer.error != undefined) { //Checks if the answer is a error message
                     console.log(answer);
                     retrieveElementInformationCSS("Error", answer);
-                    
-                
-                }else{ //If there was no error message.
-                
-                retrieveElementInformationCSS("retrievePassword", answer);
+
+
+                } else { //If there was no error message.
+
+                    retrieveElementInformationCSS("retrievePassword", answer);
                 }
 
             });
@@ -109,6 +102,8 @@ function switchPage(hidePage, showPage) { //Changes display attribute of element
     showPage.style.display = "inline";
 }
 
+
+//TODO bør nok omskrives til individuelle funktioner. der er alligevel intet overlap mellem cases
 function retrieveElementInformationCSS(X, answer) { //Defines variables for useage in switchPage and for insertion of password and username
     switch (X) {
         case "retrievePassword":
@@ -130,9 +125,9 @@ function retrieveElementInformationCSS(X, answer) { //Defines variables for usea
         case "Error":
             let button2 = document.getElementById("SignedIn-submit"); //button
             let errorMessage = document.getElementById("error");
-            
-            switchPage(button2, errorMessage);
 
+            switchPage(button2, errorMessage);
+            break;
         default:
             console.log("Something went wrong!")
             break;
