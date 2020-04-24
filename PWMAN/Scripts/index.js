@@ -13,6 +13,8 @@ chrome.runtime.sendMessage({ getToken: true }, function(response) { //gets token
 async function formSubmit(event) {
     event.preventDefault();
 
+    let form = document.getElementById("LogIn-form"); //Gets information from form and inserts in the object jsondata       
+
     chrome.storage.local.get([form.username.value], async function(result) { //The function to load the saved pepper string from the property username in local storage (idk from where).
         let form = document.getElementById("LogIn-form"); //Gets information from form and inserts in the object jsondata       
         let pepperPass = form.password.value.concat(result[form.username.value]); //concatinates password with the loaded pepper
