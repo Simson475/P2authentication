@@ -53,6 +53,10 @@ async function formSubmit(event) {
 
 }
 
+/**
+ * TODO
+ * @param {*} event 
+ */
 async function retrievePassword(event) { // LoggedIn script (listens for click on getpassword button)
     event.preventDefault()
 
@@ -97,6 +101,12 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
 
 //---------Subfunctions---------------------------------------------------------------------------------------------------------------------------------
 
+
+/**
+ * TODO
+ * @param {*} hidePage 
+ * @param {*} showPage 
+ */
 function switchPage(hidePage, showPage) { //Changes display attribute of elements.
     hidePage.style.display = "none";
     showPage.style.display = "inline";
@@ -134,6 +144,10 @@ function retrieveElementInformationCSS(X, answer) { //Defines variables for usea
     }
 }
 
+
+/**
+ * TODO
+ */
 function incorrectInfoCSS() {
     let fieldUsername = document.getElementById("LogIn-username");
     let fieldPassword = document.getElementById("LogIn-password");
@@ -144,6 +158,11 @@ function incorrectInfoCSS() {
     messageP.style.display = "inline";
 }
 
+
+/**
+ * TODO
+ * @param {*} str 
+ */
 function hashCode(str) { //stolen from the internet
     return str.split('').reduce((prevHash, currVal) =>
         (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
