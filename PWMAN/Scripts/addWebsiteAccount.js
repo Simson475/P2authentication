@@ -25,7 +25,7 @@ async function addAccount(event){
                 };
         
                 let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/updateInfo", { //Sends a fetch request to the server with the identifying token and the jsondata object
-                    method: 'POST',
+                    method: 'POST', // Fetch method used to send data to the server to update the database.
                     headers: {
                         "Content-Type": "application/json",
                         "authorization": response.token
@@ -48,11 +48,11 @@ async function addAccount(event){
         }  
     })
 }
-/**
- * generatePassword generates a random string of a length between 15 to 20 characters by using math.random 
- * to choose a random character in an array of all the characters that we allow to be used in a password. 
- */
-function generatePassword() {
+printsURL();
+
+//---------Subfunctions---------------------------------------------------------------------------------------------------------------------------------
+
+function generatePassword() { // Generates a random string of a length between 15 to 20 characters by using math.random to choose a random character in an array of all the characters that we allow to be used in a password.
     let password = [], str = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Y', 'Z'];
     let passLength = Math.floor(Math.random() * 5) + 15; //the constant 15 is arbitrarily chosen as the minimum length for the password, Math.random * 5 varies the password length by up to 5 characters.
     for (let i = 0; i < passLength; i++) {
@@ -61,10 +61,7 @@ function generatePassword() {
     return password.join(''); //Joins together the array 'password' into a string.
 }
 
-/**
- * printsURL simply prints to the screen the URL of the current site for clarity in the account creation.
- */
-function printsURL() {
+function printsURL() { // printsURL simply prints to the screen the URL of the current site for clarity in the account creation.
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         // since only one tab should be active and in the current window at once
         // the return variable should only have one entry
@@ -75,12 +72,8 @@ function printsURL() {
         document.getElementById("URLgoesHere").innerHTML = location; //Writes the address to the password manager window.
     })
 }
-printsURL();
 
-/**
- * successAccountCreationCSS alters the styes of the page after a succesful creation.
- */
-function successAccountCreationCSS(){
+function successAccountCreationCSS(){ // successAccountCreationCSS alters the styes of the page after a succesful creation.
     let message = document.getElementById("h3");
     let form = document.getElementById("form");
     form.style.display = "none";
@@ -94,12 +87,10 @@ function successAccountCreationCSS(){
     returnButton.style.marginLeft = "18px";
     
 }
-/**
- * failedAccountCreationCSS alters the styes of the page after a failed creation.
- */
-function failedAccountCreationCSS(){
+
+function failedAccountCreationCSS(){ // failedAccountCreationCSS alters the styles of the page after a failed creation.
     let message = document.getElementById("h3");
     message.innerHTML = "Error - account not added";
-    message.style.display = "inline"; //viser error message
+    message.style.display = "inline"; // Shows error message
 }
-                    
+             
