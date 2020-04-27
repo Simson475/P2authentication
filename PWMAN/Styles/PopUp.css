@@ -279,6 +279,26 @@
         cursor: pointer;
     }
 
+    #Settings {
+        position: absolute;
+        top: 180px;
+        left: 90px;
+        padding: 2px;
+        color: black;
+        background-color: orange;
+        /*Border on the button*/
+        border: solid black;
+        border-width: 1px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+    #Settings:hover {
+        background-color: #E59400;
+        border-color: #E59400;
+        color: white;
+        cursor: pointer;
+    }
+
 
    
     
