@@ -44,6 +44,7 @@ const online = { //mysql server hosted on university server.
 
 const db = makeDb(online); //makes the database connection. and allows us to make queries to the database chosen.
 
+
 /**
  * Middleware
  * console.logs the request method used and the request url send.
@@ -79,8 +80,8 @@ async function login(req, res) { //creates JWT for the user logging in.
         let data = req.body,
             user = await findUserDB(data); //Waits for the findUserDB function to return an answer
 
-        if (user.length == 1 && await bcrypt.compare(data.password.toString(), user[0].hashValue)) { //Waits for the bcrypt hashing to be finished.
-            jwt.sign({ username: data.username, }, secretKey, { expiresIn: "1h" }, (err, token) => { //Creates a JasonWebToken for the user and sets the expire time to 1 hour.
+        if (user.length === 1 && await bcrypt.compare(data.password.toString(), user[0].hashValue)) { //Waits for the bcrypt hashing to be finished.
+            jwt.sign({ username: data.username, id: user[0].id }, secretKey, { expiresIn: "1h" }, (err, token) => { //Creates a JasonWebToken for the user and sets the expire time to 1 hour.
                 try {
                     if (err) throw "error during signing of webtoken"; //if JWT is not signed, throw err
                     else res.json({ token }); //send the signed token to client
@@ -94,7 +95,7 @@ async function login(req, res) { //creates JWT for the user logging in.
             throw "No user with given credentials"; //if username or password is not corrent throw error
         }
     } catch (err) {
-        errorHandling(err, res);
+        await errorHandling(err, res);
     }
 }
 
@@ -115,13 +116,13 @@ async function masterAccount(req, res) { //Checks for if an account already exci
         else {
             bcrypt.hash(data.password.toString(), saltRounds).then(async function(hash) { //after password is hashed calls the funtion with the hashed password stored in hash
                 await db.query("INSERT INTO loginTable SET ?", { username: mysql.escape(data.username), hashValue: hash }); //mysql.escape is used to escape when we accept user input, so they can't give the server input.
-                currentUser = await findUserDB(data); //finds the ID for the user
+                let currentUser = await findUserDB(data); //finds the ID for the user
                 await db.query("CREATE TABLE user" + currentUser[0].id + "( domain VARCHAR(255), username VARCHAR(255),password VARCHAR(255), PRIMARY KEY(domain))"); //Creates a table for the user in the loginTable
                 res.send(true);
             });
         }
     } catch (err) {
-        errorHandling(err, res);
+        await errorHandling(err, res);
     }
 }
 
@@ -131,9 +132,13 @@ async function masterAccount(req, res) { //Checks for if an account already exci
  * @param {Object} data data should have a property.username that has the current users username.
  */
 async function findUserDB(data) { //looks up a given user in the database tables.
-    let sql = "SELECT * FROM loginTable WHERE username= \"" + mysql.escape(data.username) + "\"", // Select a table from the table loginTable with the username data.username
-        result = await db.query(sql); //sends query to DB
-    return result; //returns all the stored data for the user
+    if (data.username !== undefined) {
+        let sql = "SELECT * FROM loginTable WHERE username= \"" + mysql.escape(data.username) + "\""; // Select a table from the table loginTable with the username data.username
+        return await db.query(sql); //sends query to DB
+    } else if (data.id !== undefined) {
+        let sql = "SELECT * FROM loginTable WHERE id= " + data.id; // Select a table from the table loginTable with the username data.username
+        return await db.query(sql); //sends query to DB 
+    } else { throw "no info for findUserDB" }
 }
 
 
@@ -141,19 +146,18 @@ async function findUserDB(data) { //looks up a given user in the database tables
  * Middleware that verifies an authorization token is received. it is the saved in req.token for future functions to user
  * @param {Object} req req is the request the user sends to the server.
  * @param {Object} res res is the response to send the user. only used if token is not present.
- * @param {Object} next calls the next function (middleware or other function)
+ * @param {Function} next calls the next function (middleware or other function)
  */
 function verifyToken(req, res, next) {
     const bearerHeader = req.headers["authorization"]; //get the auth header value
 
     //error handling
-    if (typeof bearerHeader == "undefined") res.sendStatus(401); //status 401 stands for unauthorized} { //check if bearer is undefined
+    if (typeof bearerHeader === "undefined") res.sendStatus(401); //status 401 stands for unauthorized} { //check if bearer is undefined
 
     //if no errors recieved
     else {
         const bearer = bearerHeader.split(" "); //split at the space
-        const bearerToken = bearer[1]; //get token from array
-        req.token = bearerToken; //set the token
+        req.token = bearer[1]; //set the token
         next(); //next function
     }
 }
@@ -169,29 +173,28 @@ async function getPassword(req, res) {
     jwt.verify(req.token, secretKey, async(err, authData) => { //verifies the authenticity of the token.
         try {
             let data = req.body,
-                user = await findUserDB(authData), //stores the collected userdata in user
-                domainStripped = data.domain.split("/")[2], //gemmer delen af domænet der ikke indeholder http(s).
-                sql = "SELECT * FROM user" + user[0].id + " WHERE domain= \"" + mysql.escape(domainStripped) + "\"", //looks up the Domain under the userID to see if there is stored info for the website.
+                domainStripped = data.domain.split("/")[2], //saves the part of the domain that doesn't include http(s).
+                sql = "SELECT * FROM user" + authData.id + " WHERE domain= \"" + mysql.escape(domainStripped) + "\"", //looks up the Domain under the userID to see if there is stored info for the website.
                 userData = (await db.query(sql))[0]; //stores the table data in position 0 as userdata.
 
             //error handling
             if (err) throw "Token invalid";
-            else if (data.domain == undefined) throw "domain not found";
-            else if (user.length != 1) throw "error getting info from DB";
-            else if (userData == undefined) throw "no login data for domain";
+            else if (data.domain === undefined) throw "domain not found";
+            else if (userData === undefined) throw "no login data for domain";
 
-            //if no errors recieved
+            //if no errors received
             else {
                 userData.domain = userData.domain.split("'")[1]; //strips ' (the sql protection)
                 userData.username = userData.username.split("'")[1]; //strips ' (the sql protection)
                 userData.password = userData.password.split("'")[1]; //strips ' (the sql protection)
                 res.json(userData); //returns username and password
             }
+
         } catch (err) {
-            errorHandling(err, res);
+            await errorHandling(err, res);
         }
     });
-};
+}
 
 
 /**
@@ -204,24 +207,24 @@ async function addUserInfo(req, res) {
         try {
             let data = req.body,
                 user = await findUserDB(authData), //find current user.
-                domainStripped = data.domain.split("/")[2], //gemmer delen af domænet der ikke indeholder http(s).
-                sql = "SELECT * FROM user" + user[0].id + " WHERE domain= \"" + mysql.escape(domainStripped) + "\"", //finds the table with the userID given and where the domain is domainStripped.
+                domainStripped = data.domain.split("/")[2], //saves the part of the domain that doesn't include http(s).
+                sql = "SELECT * FROM user" + authData.id + " WHERE domain= \"" + mysql.escape(domainStripped) + "\"", //finds the table with the userID given and where the domain is domainStripped.
                 result = await db.query(sql); //sends query to server.
 
             //error handling
             if (err) throw "Token invalid";
             else if (data.domain === undefined || data.username === undefined || data.password === undefined) throw "Data was not filled correctly"; //if userdata is not received properly of if any is missing throw error
-            else if (user.length != 1) throw user.length < 1 ? "no user with given credentials" : "more than one user found contact support"; //if no user was found, or more than one was found, throw error.
+            else if (user.length !== 1) throw user.length < 1 ? "no user with given credentials" : "more than one user found contact support"; //if no user was found, or more than one was found, throw error.
             else if (result.length == 1) throw "userdata for domain already submitted"; //if userdata is found for current domain, throw error
 
             //if no errors recieved
             else { // we recieved everything
                 let parameter = { domain: mysql.escape(domainStripped), username: mysql.escape(data.username), password: mysql.escape(data.password) }; //creates object we want to save in DB
-                db.query("INSERT INTO user" + user[0].id + " SET ?", parameter) //inserts data into the users personal table
+                db.query("INSERT INTO user" + authData.id + " SET ?", parameter) //inserts data into the users personal table
                     .then(res.send(true)); //responds with true when data is inserted
             }
         } catch (err) {
-            errorHandling(err, res);
+            await errorHandling(err, res);
         }
     })
 
@@ -236,11 +239,11 @@ async function addUserInfo(req, res) {
 async function confirmUsername(req, res) {
     jwt.verify(req.token, secretKey, async(err, authData) => { //verifies the authenticity of the token.
         try {
-            if (err || authData.username == undefined) throw "Token invalid";
+            if (err || authData.username === undefined) throw "Token invalid";
             else res.json({ username: authData.username });
 
         } catch (err) {
-            errorHandling(err, res);
+            await errorHandling(err, res);
         }
     })
 
@@ -250,6 +253,7 @@ async function confirmUsername(req, res) {
 /**
  * is called when an error is caught. responds to client with given error and console logs it.
  * @param {Object} err includes whatever went wrong in the program
+ * @param {Object} res sends response using this object.
  */
 async function errorHandling(err, res) { //generalizaed error handling.
     res.json({ error: err }); //respond to client with error message thrown above
