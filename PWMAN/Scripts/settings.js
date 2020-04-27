@@ -1,30 +1,9 @@
 document.getElementById("importButton").addEventListener("click", importPageCSS);
-document.getElementById("importAccount").addEventListener("submit", importAccount);
+document.getElementById("importAccountButton").addEventListener("click", importFunction);
 document.getElementById("exportButton").addEventListener("click", exportAccount);
 document.getElementById("exportAccountButton").addEventListener("click", exportAccountLogin);
 
 document.getElementById("returnSettings").style.display ="none";
-
-function importAccount(){
-
-    let username = form.username.value;
-    let pepperString = form.pepper;
-
-    chrome.storage.local.get([username], async function(result) {
-
-        if (result[username] != null){ //denne brugers pepperstring er allerede gemt.
-            let warning  = document.getElementById("importWarning");
-            importPage.style.display = "none";
-            warning.style.display = "inline"
-
-
-        }else{
-            chrome.storage.local.set({[username]:pepperString}, function(){
-                 document.getElementById("importSucces").style.display = "inline";
-            })
-        }
-    });
-}
 
 function exportAccount(){
 
@@ -57,9 +36,11 @@ function exportAccount(){
                 }
             });
             
-                    
+            
             answer = await answer.json(); //parses the response
 
+            console.log(answer);
+            console.log(answer.username);
             console.log(answer.error);
 
             if (answer.error != undefined){
@@ -69,9 +50,8 @@ function exportAccount(){
             else{
                 
                 chrome.storage.local.get([answer.username], function(result) {
-                    console.log(result);
-                    console.log(answer.username);
-                    exportSuccesCSS(result, answer.username);
+                    console.log(result[answer.username]);
+                    exportSuccesCSS(result[answer.username])
                 });
             }
         }
@@ -80,7 +60,7 @@ function exportAccount(){
 
 }
 
-function exportAccountLogin(){
+function exportAccountLogin(event){
     event.preventDefault();
 
     let form = document.getElementById("exportForm");  //Gets information from form and inserts in the object jsondata  
@@ -108,7 +88,7 @@ function exportAccountLogin(){
 
         if (answer.error != undefined){ //Checks if the answer is a error message
             console.log(answer);
-            incorrectInfoCSS(); //Displays an error message in case the entered username or password is wrong.
+            console.log("server sendte error"); //Displays an error message in case the entered username or password is wrong.
             
         
         }else {
@@ -145,7 +125,7 @@ function importPageCSS(){ //Funtion to show the import menu
 function exportLoggedInCss(){
     let exportForm = document.getElementById("exportForm");
     let loginSucces =  document.getElementById("loginSucces");
-    let returnButton = document.getElementById("return");
+    let returnButton = document.getElementById("returnSettings");
     loginSucces.style.display = "inline";
     exportForm.style.display = "none";
     returnButton.innerHTML = "Settings";
@@ -157,13 +137,13 @@ function exportLoggedInCss(){
 
 }
 
-function exportSuccesCSS(result, username){
+function exportSuccesCSS(result){
     let paragraph = document.getElementById("exportPepper");
     let pepperLabel = document.getElementById("exportPepperLabel");
     let page = document.getElementById("Export");
 
     pepperLabel.style.display = "inline";
-    paragraph.innerHTML = result[username]; //puts the pepperstring in the paragraph
+    paragraph.innerHTML = result; //puts the pepperstring in the paragraph
     paragraph.style.display = "inline";
     page.style.display = "inline";  //shows the pepper.
 
@@ -187,5 +167,39 @@ function hashCode(str) { //stolen from the internet
     return str.split('').reduce((prevHash, currVal) =>
         (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
 }
+
+function importFunction(event){
+    console.log("yay");
+    event.preventDefault();
+    
+    let form = document.getElementById("importForm");
+
+    let username = form.username.value;
+    let pepperString = form.pepper.value;
+
+    console.log(pepperString);
+
+    chrome.storage.local.get([username], async function(result) {
+        console.log(result);
+        
+        if (result[username] != null){ //denne brugers pepperstring er allerede gemt.
+            let warning  = document.getElementById("importWarning");
+            let importPage = document.getElementById("importForm");
+            importPage.style.display = "none";
+            warning.style.display = "inline"
+            console.log("exist");
+
+
+        }else{
+            chrome.storage.local.set({[username]: pepperString}, function(){
+                 document.getElementById("importSucces").style.display = "inline";
+            });
+            console.log("added");
+        }
+    });
+    form.reset();
+}
+
+
 
    
