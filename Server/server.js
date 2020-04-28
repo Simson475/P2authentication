@@ -5,10 +5,9 @@ const bcrypt = require("bcrypt"); //allows encryption using hashes and compariso
 const jwt = require("jsonwebtoken"); // allows jsonwebtoken authorization
 const mysql = require("mysql"); //allows communication with database (mysql)
 const util = require('util'); //used for promisify wrapper of mysql queries
-//TODO implement secret in env
-const secretKey = "secretkey"; //the key used when signing JSon
-const saltRounds = 10; //amount of rounds brypt uses
-const port = 3180; //port server is hosted on'
+const secretKey = process.env.SESSION_SECRET; //the key used when signing JSon this key is loaded from .env
+const saltRounds = process.env.SALT_ROUNDS; //amount of rounds brypt uses
+const port = process.env.PORT; //port server is hosted on'
 
 
 /**
@@ -42,8 +41,9 @@ const online = { //mysql server hosted on university server.
     database: "sw2b2_23"
 };
 
-const db = makeDb(online); //makes the database connection. and allows us to make queries to the database chosen.
 
+//connects to onineDB of online. else connects to offline.
+const db = process.env.PRODUCTION === "true" ? makeDb(online) : makeDb(local)
 
 /**
  * Middleware
@@ -178,7 +178,7 @@ async function getPassword(req, res) {
                 userData = (await db.query(sql))[0]; //stores the table data in position 0 as userdata.
 
             //error handling
-            if (err) throw "Token invalid";
+            if (err) res.sendStatus(401);
             else if (data.domain === undefined) throw "domain not found";
             else if (userData === undefined) throw "no login data for domain";
 
@@ -212,7 +212,7 @@ async function addUserInfo(req, res) {
                 result = await db.query(sql); //sends query to server.
 
             //error handling
-            if (err) throw "Token invalid";
+            if (err) res.sendStatus(401);
             else if (data.domain === undefined || data.username === undefined || data.password === undefined) throw "Data was not filled correctly"; //if userdata is not received properly of if any is missing throw error
             else if (user.length !== 1) throw user.length < 1 ? "no user with given credentials" : "more than one user found contact support"; //if no user was found, or more than one was found, throw error.
             else if (result.length == 1) throw "userdata for domain already submitted"; //if userdata is found for current domain, throw error
@@ -239,7 +239,7 @@ async function addUserInfo(req, res) {
 async function confirmUsername(req, res) {
     jwt.verify(req.token, secretKey, async(err, authData) => { //verifies the authenticity of the token.
         try {
-            if (err || authData.username === undefined) throw "Token invalid";
+            if (err || authData.username === undefined) res.sendStatus(401);
             else res.json({ username: authData.username });
 
         } catch (err) {
