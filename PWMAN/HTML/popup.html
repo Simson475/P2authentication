@@ -33,17 +33,27 @@
             <p id="SignedIn-password"></p>
         </div>
         <form>
-            <input id="SignedIn-submit" type="submit" value="Get Password">
+            <input id="SignedIn-submit" type="Submit" value="Get Password">
         </form>
         <div id = "error">
             <p id= "errorMessage">You have not added a login for this website</p>
             <a id="return" href="popup.html"> Back</a>
         </div>
         <a id="SignedIn-website" href="addWebsiteAccount.html"> Add new login</a>
+        <input id="LogoutButton" type="submit" value="Logout">
         
     </div>
 
+    <div id = "Logout">
+        <h3 id = "Logout-h3">Logged out</h3>
+        <p id ="Logout-paragraph">You have successfully been logged out</p>
+        <a id="goToLogin" href="popup.html"> Go to Login</a>
+
+    </div>
+
+
     <a id="Settings" href="settings.html"> Settings</a>
+    
     <div id="Logo"><img src="../Images/logo2.png" style="width: 50px;" alt="PWMAN"></div>
     <script src="../Scripts/index.js "></script>
 </body>
