@@ -192,7 +192,7 @@
     
     #SignedIn-submit {
         position: absolute;
-        top: 95px;
+        top: 70px;
         left: 55px;
         padding: 10px;
         color: black;
@@ -242,9 +242,11 @@
 
     #SignedIn-website{
         position: absolute;
-        top: 145px;
-        left: 65px;
+        top: 120px;
+        left: 58px;
         padding: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
         color: black;
         background-color: orange;
         /*Border on the button*/
@@ -282,7 +284,7 @@
     #Settings {
         position: absolute;
         top: 180px;
-        left: 90px;
+        left: 92px;
         padding: 2px;
         color: black;
         background-color: orange;
@@ -299,6 +301,57 @@
         cursor: pointer;
     }
 
+    #LogoutButton {
+        position: absolute;
+        top: 160px;
+        left: 50px;
+        padding: 5px;
+        color: black;
+        background-color: orange;
+        /*Border on the button*/
+        border: solid black;    
+        border-width: 1px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    #LogoutButton:hover {
+        background-color: #E59400;
+        border-color: #E59400;
+        color: white;
+        cursor: pointer;
+    }
+
+    #Logout-paragraph{
+        position: absolute;
+        top: 65px;
+        left:20px;
+    }
+
+    #goToLogin {
+        position: absolute;
+        top: 120px;
+        left: 68px;
+        color: black;
+        padding: 10px;
+        background-color: orange;
+        /*Border on the button*/
+        border: solid black;
+        border-width: 1px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    #goToLogin:hover {
+        background-color: #E59400;
+        border-color: #E59400;
+        color: white;
+        cursor: pointer;
+    }
+
+    #Logout {
+        display: none;
+    }
 
    
     

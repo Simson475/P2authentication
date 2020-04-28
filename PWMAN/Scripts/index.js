@@ -1,6 +1,7 @@
 //Event Listeners
 document.getElementById("LogIn-form").addEventListener("submit", formSubmit);
 document.getElementById("SignedIn-submit").addEventListener("click", retrievePassword);
+document.getElementById("LogoutButton").addEventListener("click", clearToken);
 chrome.runtime.sendMessage({ getToken: true }, function(response) { //gets token from background script. whatever is done with it should be done in this callback function
     if (response.token === null) return;
     else retrieveElementInformationCSS("SignIn");
@@ -123,6 +124,11 @@ function retrieveElementInformationCSS(X, answer) { //Defines variables for usea
             let password = document.getElementById("SignedIn-password");
             let button = document.getElementById("SignedIn-submit"); //button
             let page = document.getElementById("SignedIn2"); //SignedInPage
+            let logoutButton = document.getElementById("LogoutButton");
+            let settingsButton = document.getElementById("Settings");
+
+            settingsButton.style.display = "none";
+            logoutButton.style.display = "none";
             document.getElementById("SignedIn-website").style.display = "none"; //Hides the add new login button
             username.innerHTML = answer.username; //inserts the username in the relevant paragraph.
             password.innerHTML = answer.password; //inserts the passwords in the relevant paragraph.
@@ -132,11 +138,21 @@ function retrieveElementInformationCSS(X, answer) { //Defines variables for usea
         case "SignIn":
             let hidePage = document.getElementById("LogIn");
             let showPage = document.getElementById("SignedIn");
+            let settingsButton2 = document.getElementById("Settings");
+            settingsButton2.style.top = "160px";
+            settingsButton2.style.left = "110px";
+            settingsButton2.style.padding = "5px";
+            settingsButton2.style.paddingBottom = "4px";
             switchPage(hidePage, showPage); //Changes display attribute of elements.
             break;
         case "Error":
             let button2 = document.getElementById("SignedIn-submit"); //button
             let errorMessage = document.getElementById("error");
+            let logoutButton2 = document.getElementById("LogoutButton");
+            let settingsButton3 = document.getElementById("Settings");
+
+            logoutButton2.style.display = "none";
+            settingsButton3.style.display = "none";
 
             switchPage(button2, errorMessage);
             break;
@@ -168,4 +184,23 @@ function incorrectInfoCSS() {
 function hashCode(str) { //stolen from the internet
     return str.split('').reduce((prevHash, currVal) =>
         (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
+}
+
+function clearToken() { //Logout function: reset the token to null
+
+    chrome.runtime.sendMessage({ token: null }, function(response) { //Sets the token to null (logged out)
+        if (response.success == true) {
+            let signedInPage = document.getElementById("SignedIn");
+            let logoutPage = document.getElementById("Logout");
+            let settingsButton = document.getElementById("Settings");
+
+            settingsButton.style.display = "none";
+            switchPage(signedInPage, logoutPage); //Hides the signed-in page and shows logout 
+        } else {
+            console.log("*An error has occured*"); //Error message if the response is false.
+        }
+    });
+
+    
+    
 }
