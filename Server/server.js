@@ -27,6 +27,7 @@ function makeDb(login) {
     };
 }
 
+
 const local = { //local development server on simon PC
     host: "localhost",
     user: "root",
@@ -114,12 +115,13 @@ async function masterAccount(req, res) { //Checks for if an account already exci
         if (user.length > 0) throw "username already in use"; //if a user is found with current username throw error
 
         else {
-            bcrypt.hash(data.password.toString(), saltRounds).then(async function(hash) { //after password is hashed calls the funtion with the hashed password stored in hash
-                await db.query("INSERT INTO loginTable SET ?", { username: mysql.escape(data.username), hashValue: hash }); //mysql.escape is used to escape when we accept user input, so they can't give the server input.
-                let currentUser = await findUserDB(data); //finds the ID for the user
-                await db.query("CREATE TABLE user" + currentUser[0].id + "( domain VARCHAR(255), username VARCHAR(255),password VARCHAR(255), PRIMARY KEY(domain))"); //Creates a table for the user in the loginTable
-                res.send(true);
-            });
+            bcrypt.hash(data.password.toString(), +saltRounds) // + laver saltrounds fra string til number
+                .then(async function(hash) { //after password is hashed calls the funtion with the hashed password stored in hash
+                    await db.query("INSERT INTO loginTable SET ?", { username: mysql.escape(data.username), hashValue: hash }); //mysql.escape is used to escape when we accept user input, so they can't give the server input.
+                    let currentUser = await findUserDB(data); //finds the ID for the user
+                    await db.query("CREATE TABLE user" + currentUser[0].id + "( domain VARCHAR(255), username VARCHAR(255),password VARCHAR(255), PRIMARY KEY(domain))"); //Creates a table for the user in the loginTable
+                    res.send(true);
+                });
         }
     } catch (err) {
         await errorHandling(err, res);
@@ -214,11 +216,11 @@ async function addUserInfo(req, res) {
             //error handling
             if (err) res.sendStatus(401);
             else if (data.domain === undefined || data.username === undefined || data.password === undefined) throw "Data was not filled correctly"; //if userdata is not received properly of if any is missing throw error
-            else if (user.length !== 1) throw user.length < 1 ? "no user with given credentials" : "more than one user found contact support"; //if no user was found, or more than one was found, throw error.
-            else if (result.length == 1) throw "userdata for domain already submitted"; //if userdata is found for current domain, throw error
+            else if (user.length !== 1) throw user.length < 1 ? "No user with given credentials please log out and back in" : "More than one user found contact support"; //if no user was found, or more than one was found, throw error.
+            else if (result.length == 1) throw "Account already created for this website"; //if userdata is found for current domain, throw error
 
             //if no errors recieved
-            else { // we recieved everything
+            else {
                 let parameter = { domain: mysql.escape(domainStripped), username: mysql.escape(data.username), password: mysql.escape(data.password) }; //creates object we want to save in DB
                 db.query("INSERT INTO user" + authData.id + " SET ?", parameter) //inserts data into the users personal table
                     .then(res.send(true)); //responds with true when data is inserted
