@@ -40,7 +40,7 @@ async function addAccount(event) {
 
                 if (answer.error != undefined) { //Checks if the answer is a error message
                     console.log(answer.error);
-                    failedAccountCreationCSS();
+                    failedAccountCreationCSS(answer.error);
 
                 } else { //If there was no error message.
                     console.log("Account added");
@@ -104,8 +104,14 @@ function successAccountCreationCSS() { // successAccountCreationCSS alters the s
 /**
  * TODO
  */
-function failedAccountCreationCSS() { // failedAccountCreationCSS alters the styles of the page after a failed creation.
-    let message = document.getElementById("h3");
-    message.innerHTML = "Error - account not added";
-    message.style.display = "inline"; // Shows error message
+function failedAccountCreationCSS(err) { // failedAccountCreationCSS alters the styles of the page after a failed creation.
+    let addPage = document.getElementById("addWebsite");
+    let errorPage = document.getElementById("error");
+    let message = document.getElementById("errorMessage");
+
+    addPage.style.display ="none";
+    errorPage.style.display = "inline";
+
+    message.innerHTML = err;
+
 }
