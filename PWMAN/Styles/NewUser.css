@@ -6,7 +6,7 @@ body {
     border-width: 2px;
     border-radius: 4px;
     width: 200px;
-    height: 250px;
+    height: 280px;
 }
 
 .h3 {
@@ -68,7 +68,7 @@ body {
 
 #create {
     position: absolute;
-    top: 225px;
+    top: 260px;
     right: 20px;
     padding: 2px;
     color: black;
@@ -88,7 +88,7 @@ body {
 
 #return {
     position: absolute;
-    top: 225px;
+    top: 260px;
     left: 20px;
     padding: 2px;
     color: black;
@@ -132,4 +132,15 @@ body {
 #accountSuccess {
     display: none;
     top: 60px;
+}
+
+#pepperMessage{
+    position: absolute;
+    top: 210px;
+    left: 16px;
+}
+
+#pepperExpl{
+    color: grey;
+    text-decoration: none;
 }

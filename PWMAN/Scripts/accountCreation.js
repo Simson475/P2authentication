@@ -74,19 +74,21 @@ function savedUserCorrectCSS() { //Changes the CSS settings for when the user is
 }
 
 function userExistCSS() { // Changes the CSS in case that a user already exist.
-    document.body.style.height = "280px";
-    document.getElementById("create").style.top = "250px";
-    document.getElementById("return").style.top = "250px";
+    document.body.style.height = "310px";
+    document.getElementById("pepperMessage").style.top = "235px";
+    document.getElementById("create").style.top = "290px";
+    document.getElementById("return").style.top = "290px";
     document.getElementById("username").style.borderColor = "#BA1919";
     document.getElementById("inUse").style.display = "inline";
 }
 
 function passwordsNotIdenticalCSS() { //Changes the CSS in case the password doesnt match.
     //Makes the body bigger, so there is room for a label, moves the buttons down, changes border colors on  the password fields and display the message.
+    document.body.style.height = "310px";
     document.getElementById("username").style.borderColor = "#101010";
-    document.body.style.height = "280px";
-    document.getElementById("create").style.top = "250px";
-    document.getElementById("return").style.top = "250px";
+    document.getElementById("pepperMessage").style.top = "235px";
+    document.getElementById("create").style.top = "290px";
+    document.getElementById("return").style.top = "290px";
     document.getElementById("inUse").style.display = "none";
     document.getElementById("firstPassword").style.borderColor = "#BA1919";
     document.getElementById("secondPassword").style.borderColor = "#BA1919";
