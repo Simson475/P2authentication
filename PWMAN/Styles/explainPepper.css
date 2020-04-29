@@ -1,0 +1,12 @@
+body {
+    color: white;
+    background-color: #292929;
+    /*Border*/
+    border: solid orange;
+    border-width: 2px;
+    border-radius: 4px;
+    width: 200px;
+    height: 325px;
+}
+
+
