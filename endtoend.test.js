@@ -10,16 +10,14 @@ async function initialize() {
         ]
     });
     //finds our extensions id using the extension name from manifest.json
-    const extensionName = "Password Manager"
+    const name = "Password Manager"
         //TODO browser.targets?
     const targets = await browser.targets();
-    const extensionTarget = await targets.find(({ _targetInfo }) => {
-        return _targetInfo.title === extensionName && _targetInfo.type === 'background_page';
+    const extensionProcess = await targets.find(({ _targetInfo }) => {
+        return _targetInfo.title === name && _targetInfo.type === 'background_page';
     });
-    const extensionUrl = extensionTarget._targetInfo.url;
-    const extensionID = extensionUrl.split('/')[2];
+    const extensionID = extensionProcess._targetInfo.url.split('/')[2];
 
-    //running the actual test
     return { browser, extensionID };
 }
 
