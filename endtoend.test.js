@@ -1,9 +1,7 @@
 const puppeteer = require('puppeteer');
 const extensionPath = __dirname + "/PWMAN"
 
-
-test("should say username already exists", async() => {
-    //initialize pupeteer browser
+async function initialize() {
     const browser = await puppeteer.launch({
         headless: false, // extension are allowed only in the head-full mode
         args: [
@@ -22,6 +20,13 @@ test("should say username already exists", async() => {
     const extensionID = extensionUrl.split('/')[2];
 
     //running the actual test
+    return { browser, extensionID };
+}
+
+test("should say username already exists", async() => {
+    //initialize pupeteer browser
+    const { browser, extensionID } = await initialize()
+
     const extensionPopupHtml = './HTML/popup.html'
     const page = await browser.newPage();
     await page.goto(`chrome-extension://${extensionID}/${extensionPopupHtml}`);
@@ -46,25 +51,7 @@ test("should say username already exists", async() => {
 test("should say passwords doesn't match", async() => {
 
     //initialize pupeteer browser
-    const browser = await puppeteer.launch({
-        headless: false, // extension are allowed only in the head-full mode
-        args: [
-            `--disable-extensions-except=${extensionPath}`,
-            `--load-extension=${extensionPath}`
-        ]
-    });
-
-    //finds our extensions id using the extension name from manifest.json
-    const extensionName = "Password Manager"
-
-    //TODO browser.targets?
-    const targets = await browser.targets();
-    const extensionTarget = await targets.find(({ _targetInfo }) => {
-        return _targetInfo.title === extensionName && _targetInfo.type === 'background_page';
-    });
-
-    const extensionUrl = extensionTarget._targetInfo.url;
-    const extensionID = extensionUrl.split('/')[2];
+    const { browser, extensionID } = await initialize()
 
     //running the actual test
     const extensionPopupHtml = './HTML/popup.html'
@@ -91,25 +78,7 @@ test("should say passwords doesn't match", async() => {
 test("should import pepper and login to Dennis, try to create new login on page that already has a login, and then go to facebook to see if it inputs correct data", async() => {
 
     //initialize pupeteer browser
-    const browser = await puppeteer.launch({
-        headless: false, // extension are allowed only in the head-full mode
-        args: [
-            `--disable-extensions-except=${extensionPath}`,
-            `--load-extension=${extensionPath}`
-        ]
-    });
-
-    //finds our extensions id using the extension name from manifest.json
-    const extensionName = "Password Manager"
-
-    //TODO browser.targets?
-    const targets = await browser.targets();
-    const extensionTarget = await targets.find(({ _targetInfo }) => {
-        return _targetInfo.title === extensionName && _targetInfo.type === 'background_page';
-    });
-
-    const extensionUrl = extensionTarget._targetInfo.url;
-    const extensionID = extensionUrl.split('/')[2];
+    const { browser, extensionID } = await initialize()
 
     //running the actual test
     const extensionPopupHtml = './HTML/popup.html'
@@ -136,7 +105,7 @@ test("should import pepper and login to Dennis, try to create new login on page 
     await page.click("input#LogIn-password")
     await page.type("input#LogIn-password", "1234")
     await page.click("input#LogIn-submit")
-    await page.waitFor(2000); // arbitrary wait time.
+    await page.waitFor(1500); // arbitrary wait time.
 
     //checks to make sure the login page is hidden when logged in.
     const secondCheck = await page.$eval('div#LogIn', (elem) => {
