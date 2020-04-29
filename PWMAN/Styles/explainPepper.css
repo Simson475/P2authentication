@@ -6,7 +6,28 @@ body {
     border-width: 2px;
     border-radius: 4px;
     width: 200px;
-    height: 325px;
+    height: 360px;
+}
+
+#returnNewUser {
+    position: absolute;
+    top: 338px;
+    left: 18px;
+    padding: 2px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+#returnNewUser:hover {
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
 }
 
 
