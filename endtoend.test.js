@@ -33,9 +33,9 @@ test("should say username already exists", async() => {
     await page.click("input#username")
     await page.type("input#username", "test")
     await page.click("input#firstPassword")
-    await page.type("input#firstPassword", "1234")
+    await page.type("input#firstPassword", "Hejsa1234")
     await page.click("input#secondPassword")
-    await page.type("input#secondPassword", "1234")
+    await page.type("input#secondPassword", "Hejsa1234")
     await page.click("input#create")
     await page.waitFor(3000); // arbitrary wait time.
     const result = await page.$eval('label#inUse', (elem) => {
