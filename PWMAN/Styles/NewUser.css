@@ -144,3 +144,11 @@ body {
     color: grey;
     text-decoration: none;
 }
+
+#conditions{
+    display: none;
+    position: absolute;
+    top: 225px;
+    left: 16px;
+    color: red;
+}
