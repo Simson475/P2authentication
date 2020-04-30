@@ -63,11 +63,36 @@ body {
     cursor: pointer;
 }
 
+#deleteButton{
+    position: absolute;
+    top: 125px;
+    left: 40px;
+    padding-left: 25px;
+    padding-right: 27px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+}
+#deleteButton:hover{
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
+
 #Import{
     display: none;
 }
 
 #Export{
+    display: none;
+}
+#Delete{
     display: none;
 }
 
@@ -275,3 +300,4 @@ body {
     color: white;
     cursor: pointer;
 }
+

@@ -1,7 +1,6 @@
 document.getElementById("importButton").addEventListener("click", importPageCSS);
 document.getElementById("importAccountButton").addEventListener("click", importFunction);
 document.getElementById("exportButton").addEventListener("click", exportAccount);
-document.getElementById("exportAccountButton").addEventListener("click", exportAccountLogin);
 
 document.getElementById("returnSettings").style.display ="none";
 
@@ -103,8 +102,6 @@ function exportAccountLogin(event){
         }
         form.reset();
     })
-
-
 
 
 
