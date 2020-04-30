@@ -6,7 +6,7 @@ body {
     border-width: 2px;
     border-radius: 4px;
     width: 200px;
-    height: 280px;
+    height: 250px;
 }
 
 #deleteUserLabel{
@@ -68,7 +68,7 @@ body {
 #ReturnSettings {
 
     position: absolute;
-    top: 260px;
+    top: 230px;
     left: 20px;
     padding: 2px;
     color: black;
@@ -96,7 +96,7 @@ body {
 
 #AuthDeleteButton{
     position: absolute;
-    top: 261px;
+    top: 231px;
     left: 150px;
     color: black;
     padding: 2px;

@@ -1,6 +1,7 @@
 document.getElementById("importButton").addEventListener("click", importPageCSS);
 document.getElementById("importAccountButton").addEventListener("click", importFunction);
 document.getElementById("exportButton").addEventListener("click", exportAccount);
+document.getElementById("answerYes").addEventListener("click", overwrite);
 
 document.getElementById("returnSettings").style.display ="none";
 
@@ -104,7 +105,6 @@ function exportAccountLogin(event){
     })
 
 
-
 }
 //------SubFuncktions--------------------------------------------------------------------------------------------------
 function importPageCSS(){ //Funtion to show the import menu
@@ -117,6 +117,35 @@ function importPageCSS(){ //Funtion to show the import menu
     menu.style.display ="none"; //hides the menupage
     importPage.style.display = "inline"; //show the import page
     
+}
+
+function importFunction(event){
+    event.preventDefault();
+    
+    let form = document.getElementById("importForm");
+
+    let username = form.username.value;
+    let pepperString = form.pepper.value;
+
+
+    chrome.storage.local.get([username], async function(result) {
+        console.log(result);
+        
+        if (result[username] != null){ //denne brugers pepperstring er allerede gemt.
+            let warning  = document.getElementById("importWarning");
+            let importPage = document.getElementById("importForm");
+            let returnButton = document.getElementById("returnSettings");
+            returnButton.style.display ="none";
+            importPage.style.display = "none";
+            warning.style.display = "inline"  
+
+
+        }else{
+            overwrite();
+            console.log("added");
+        }
+    });
+    form.reset();
 }
 
 function exportLoggedInCss(){
@@ -165,38 +194,25 @@ function hashCode(str) { //stolen from the internet
         (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
 }
 
-function importFunction(event){
-    console.log("yay");
-    event.preventDefault();
-    
-    let form = document.getElementById("importForm");
 
+function overwrite(){
+
+    let form = document.getElementById("importForm");
     let username = form.username.value;
     let pepperString = form.pepper.value;
 
-    console.log(pepperString);
-
-    chrome.storage.local.get([username], async function(result) {
-        console.log(result);
-        
-        if (result[username] != null){ //denne brugers pepperstring er allerede gemt.
-            let warning  = document.getElementById("importWarning");
-            let importPage = document.getElementById("importForm");
-            importPage.style.display = "none";
-            warning.style.display = "inline"
-            console.log("exist");
-
-
-        }else{
-            chrome.storage.local.set({[username]: pepperString}, function(){
-                 document.getElementById("importSucces").style.display = "inline";
-            });
-            console.log("added");
-        }
-    });
-    form.reset();
+    chrome.storage.local.set({[username]: pepperString}, function(){
+        pepperImportedCSS();
+        console.log("pepper has been overwritten")
+   });
 }
 
+function pepperImportedCSS() {
+    document.getElementById("importSuccess").style.display = "inline";
+    document.getElementById("answerYes").style.display = "none";
+    document.getElementById("answerNo").style.display = "none";
+    document.getElementById("returnSettings").style.display = "inline";
+}
 
 
    
