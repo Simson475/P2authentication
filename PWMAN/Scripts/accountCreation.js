@@ -10,7 +10,8 @@ async function formSubmit(event) {
     event.preventDefault()
     let form = document.getElementById("form"); //Set variable to an element from NewUser.html. Done to obtain password and username submitted by user.
     
-    if (form.password1.value == form.password2.value && checkRegex(form.password1.value) == true) { // Compare Passwords
+
+    if (form.password1.value == form.password2.value && checkRegex(form.password1.value) === true) { // Compare Passwords
 
         let pepperString = cryptoRandomString({ length: 20, type: 'base64' }); //generates a pepper string.
         let pepperPassword = form.password1.value.concat(pepperString); //concatinates the password with pepper.
@@ -47,27 +48,26 @@ async function formSubmit(event) {
 
         form.reset(); //Reset the forms to allow for new input.
 
-    } else { 
-        if (form.password1.value != form.password2.value) {
-            //In case the passwords is not identical
-            document.getElementById("inUse").style.display = "none"; // Not to have two error messages on top of eachother
-            document.getElementById("username").style.borderColor = "#101010";
 
-            passwordsNotIdenticalCSS();
-        }
-        else {
-            console.log("The password did not fullfill our requirements.")
+    } else{ 
+        if (form.password1.value !== form.password2.value){
+          //In case the passwords is not identical
+          document.getElementById("inUse").style.display = "none"; // Not to have two error messages on top of eachother
+          document.getElementById("username").style.borderColor = "#101010";
+  
+          passwordsNotIdenticalCSS();
+        } else {
+          console.log("Your password doesn't fulfill our conditions.")
         }
     }
-        
 }
 
 //---------Subfunctions---------------------------------------------------------------------------------------------------------------------------------
-
 function checkRegex(password) {
     let regex = /(?=.{8,}$)((?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]))/;
     return regex.test(password)
-}
+  }
+  
 
 function hashCode(str) { //Stolen from the internet.
     return str.split('').reduce((prevHash, currVal) =>
