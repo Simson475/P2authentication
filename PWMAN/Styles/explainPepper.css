@@ -6,12 +6,12 @@ body {
     border-width: 2px;
     border-radius: 4px;
     width: 200px;
-    height: 360px;
+    height: 330px;
 }
 
 #returnNewUser {
     position: absolute;
-    top: 338px;
+    top: 308px;
     left: 18px;
     padding: 2px;
     color: black;
