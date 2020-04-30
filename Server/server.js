@@ -67,7 +67,7 @@ app.post("/newUser", (async(req, res) => { masterAccount(req, res) })); //when p
 app.post("/getPassword", verifyToken, async(req, res) => { getPassword(req, res) }); //when post request happens to /getPassword, run verifyToken and then getPassword function
 app.post("/updateInfo", verifyToken, async(req, res) => { addUserInfo(req, res) }); //when post request happens to /updateInfo, run verifyToken and then addUserInfo function
 app.post("/confirmUsername", verifyToken, async(req, res) => { confirmUsername(req, res) });
-
+app.post("/deleteAccount", verifyToken, async(req, res) => { deleteAccount(req, res) });
 app.listen(port, () => { console.log("listening at " + port) }); //Sets the server to listen to port 3180
 
 
@@ -217,7 +217,7 @@ async function addUserInfo(req, res) {
             if (err) res.sendStatus(401);
             else if (data.domain === undefined || data.username === undefined || data.password === undefined) throw "Data was not filled correctly"; //if userdata is not received properly of if any is missing throw error
             else if (user.length !== 1) throw user.length < 1 ? "No user with given credentials please log out and back in" : "More than one user found contact support"; //if no user was found, or more than one was found, throw error.
-            else if (result.length == 1) throw "Account already created for this website"; //if userdata is found for current domain, throw error
+            else if (result.length === 1) throw "Account already created for this website"; //if userdata is found for current domain, throw error
 
             //if no errors recieved
             else {
@@ -229,7 +229,6 @@ async function addUserInfo(req, res) {
             await errorHandling(err, res);
         }
     })
-
 }
 
 
@@ -248,7 +247,27 @@ async function confirmUsername(req, res) {
             await errorHandling(err, res);
         }
     })
+}
 
+/**
+ * Used to delete a master account from the database
+ * @param {Object} req request to the server. This includes the authorization header to be verified
+ * @param {Object} res object that sends the response to the user. Used to send either error or confirmation message
+ */
+async function deleteAccount(req, res) {
+    jwt.verify(req.token, secretKey, async(err, authData) => { //verifies the authenticity of the token.
+        try {
+            if (err || authData.username === undefined || authData.id === undefined) res.sendStatus(401);
+
+            else {
+                db.query("DROP TABLE user" + authData.id) //inserts data into the users personal table
+                db.query("DELETE FROM loginTable WHERE id= " + authData.id) //inserts data into the users personal table
+                res.send(true)
+            }
+        } catch (err) {
+            await errorHandling(err, res);
+        }
+    })
 }
 
 
