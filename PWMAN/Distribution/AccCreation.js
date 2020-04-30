@@ -14509,7 +14509,7 @@ module.exports={
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.5.2.tgz",
   "_shasum": "05c5678d7173c049d8ca433552224a495d0e3762",
   "_spec": "elliptic@^6.0.0",
-  "_where": "C:\\Users\\Lauri\\AppData\\Roaming\\npm\\node_modules\\watchify\\node_modules\\browserify-sign",
+  "_where": "C:\\Users\\mathi\\AppData\\Roaming\\npm\\node_modules\\watchify\\node_modules\\browserify-sign",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -22491,7 +22491,7 @@ async function formSubmit(event) {
     event.preventDefault()
     let form = document.getElementById("form"); //Set variable to an element from NewUser.html. Done to obtain password and username submitted by user.
     
-    if (form.password1.value == form.password2.value) { // Compare Passwords
+    if (form.password1.value == form.password2.value && checkRegex(form.password1.value) === true) { // Compare Passwords
 
         let pepperString = cryptoRandomString({ length: 20, type: 'base64' }); //generates a pepper string.
         let pepperPassword = form.password1.value.concat(pepperString); //concatinates the password with pepper.
@@ -22524,20 +22524,26 @@ async function formSubmit(event) {
             chrome.storage.local.set({[jsondata.username]: pepperString }, function() { //Saves the generated pepper in the property of the username in local storage (idk where)
                 savedUserCorrectCSS();
             });
-        }
-
+        }  
         form.reset(); //Reset the forms to allow for new input.
-
-    } else { //In case the passwords is not identical
-        document.getElementById("inUse").style.display = "none"; // Not to have two error messages on top of eachother
-        document.getElementById("username").style.borderColor = "#101010";
-
-        passwordsNotIdenticalCSS();
+    } else{ 
+        if (form.password1.value !== form.password2.value){
+          //In case the passwords is not identical
+          document.getElementById("inUse").style.display = "none"; // Not to have two error messages on top of eachother
+          document.getElementById("username").style.borderColor = "#101010";
+  
+          passwordsNotIdenticalCSS();
+        } else {
+          console.log("Your password doesn't fulfill our conditions.")
         }
+    }
 }
 
 //---------Subfunctions---------------------------------------------------------------------------------------------------------------------------------
-
+function checkRegex(password) {
+    let regex = /(?=.{8,}$)((?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]))/;
+    return regex.test(password)
+  }
 function hashCode(str) { //Stolen from the internet.
     return str.split('').reduce((prevHash, currVal) =>
         (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
