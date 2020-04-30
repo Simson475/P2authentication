@@ -51,15 +51,11 @@ async function formSubmit(event) {
         form.reset(); //Reset the forms to allow for new input.
 
 
-    } else {
-        if (form.password1.value !== form.password2.value) {
-            //In case the passwords is not identical
-            document.getElementById("inUse").style.display = "none"; // Not to have two error messages on top of eachother
-            document.getElementById("username").style.borderColor = "#101010";
-
-            passwordsNotIdenticalCSS();
+    } else{ 
+        if (form.password1.value !== form.password2.value){
+          passwordsNotIdenticalCSS();
         } else {
-            console.log("Your password doesn't fulfill our conditions.")
+            conditionCSS();
         }
     }
 }
@@ -94,10 +90,17 @@ function userExistCSS() { // Changes the CSS in case that a user already exist.
     document.getElementById("return").style.top = "290px";
     document.getElementById("username").style.borderColor = "#BA1919";
     document.getElementById("inUse").style.display = "inline";
+    document.getElementById("conditions").style.display = "none"; //in case the user earlier didnt meet the requirements. 
 }
 
 function passwordsNotIdenticalCSS() { //Changes the CSS in case the password doesnt match.
     //Makes the body bigger, so there is room for a label, moves the buttons down, changes border colors on  the password fields and display the message.
+    
+    //In case the passwords is not identical
+    document.getElementById("inUse").style.display = "none"; // Not to have two error messages on top of eachother
+    document.getElementById("username").style.borderColor = "#101010";
+
+    document.getElementById("conditions").style.display = "none"; //in case the user earlier didnt meet the requirements. 
     document.body.style.height = "310px";
     document.getElementById("username").style.borderColor = "#101010";
     document.getElementById("pepperMessage").style.top = "235px";
@@ -107,4 +110,14 @@ function passwordsNotIdenticalCSS() { //Changes the CSS in case the password doe
     document.getElementById("firstPassword").style.borderColor = "#BA1919";
     document.getElementById("secondPassword").style.borderColor = "#BA1919";
     document.getElementById("wrongPassword").style.display = "inline";
+}
+
+function conditionCSS () {
+    document.body.style.height = "350px";
+    document.getElementById("pepperMessage").style.top = "270px";
+    document.getElementById("create").style.top = "320px";
+    document.getElementById("return").style.top = "320px";
+    document.getElementById("conditions").style.display = "inline";
+    document.getElementById("wrongPassword").style.display = "none";
+    document.getElementById("inUse").style.display = "none";
 }

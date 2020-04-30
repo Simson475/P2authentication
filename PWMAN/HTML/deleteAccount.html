@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Password Manager</title>
+        <link rel="stylesheet" href="../styles/deleteAccount.css">
+    </head>
+
+    <body>
+        <h3>Delete Account</h3>
+            <form id="deleteForm">
+                <label id="deleteUserLabel" for="username"><b>Username</b></label>
+                <input id="deleteUsername" type="text" placeholder="Enter Username" name="username" required>
+                <label id="deletePassLabel" for="password"><b>Password</b></label>
+                <input id="deletePassword" type="password" placeholder="Enter Password" name="password" required>
+                <input id="deleteAccountButton" type="submit" value="Login">
+            </form>
+            <p id="loginSucces">You are now logged in. Please return to settings</p>
+            
+            <div id="deletePage">
+                <form id="deletePageForm">
+                    <p id="deleteMes">Deleting your account can not be undone and restoration of your saved password will be impossible. </p>
+                    <p id="Remember">Remember to change all password, to all accounts, you have saved in this password manager.</p>
+                    <p id=deletionLabel>To delete your account type "DELETE" </p>
+                    <input id="AuthDelete" type="text" placeholder="Write here" name="AUTH" required>
+                    <input id="AuthDeleteButton" type="submit" value="Submit">
+                </form>
+            </div>
+
+            <p id="deletionMessage"></p>
+            <a id="BackButton" href="popup.html">Back</a>
+
+            <a id="ReturnSettings" href="settings.html">Back</a>
+            
+
+        <script src="../Scripts/deleteAccount.js"></script> 
+    </body>
+
+</html>
