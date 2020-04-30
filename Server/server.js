@@ -67,7 +67,7 @@ app.post("/newUser", (async(req, res) => { masterAccount(req, res) })); //when p
 app.post("/getPassword", verifyToken, async(req, res) => { getPassword(req, res) }); //when post request happens to /getPassword, run verifyToken and then getPassword function
 app.post("/updateInfo", verifyToken, async(req, res) => { addUserInfo(req, res) }); //when post request happens to /updateInfo, run verifyToken and then addUserInfo function
 app.post("/confirmUsername", verifyToken, async(req, res) => { confirmUsername(req, res) });
-app.post("/deleteAccount", verifyToken, async(req, res) => { deleteAccount(req, res) });
+app.delete("/deleteAccount", verifyToken, async(req, res) => { deleteAccount(req, res) });
 app.listen(port, () => { console.log("listening at " + port) }); //Sets the server to listen to port 3180
 
 
@@ -137,9 +137,11 @@ async function findUserDB(data) { //looks up a given user in the database tables
     if (data.username !== undefined) {
         let sql = "SELECT * FROM loginTable WHERE username= \"" + mysql.escape(data.username) + "\""; // Select a table from the table loginTable with the username data.username
         return await db.query(sql); //sends query to DB
+
     } else if (data.id !== undefined) {
         let sql = "SELECT * FROM loginTable WHERE id= " + data.id; // Select a table from the table loginTable with the username data.username
         return await db.query(sql); //sends query to DB 
+
     } else { throw "no info for findUserDB" }
 }
 
