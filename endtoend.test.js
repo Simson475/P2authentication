@@ -21,6 +21,7 @@ async function initialize() {
     return { browser, extensionID };
 }
 
+
 test("should say username already exists", async() => {
     //initialize pupeteer browser
     const { browser, extensionID } = await initialize()
@@ -37,7 +38,7 @@ test("should say username already exists", async() => {
     await page.type("input#secondPassword", "1234")
     await page.click("input#create")
     await page.waitFor(3000); // arbitrary wait time.
-    result = await page.$eval('label#inUse', (elem) => {
+    const result = await page.$eval('label#inUse', (elem) => {
         return window.getComputedStyle(elem).getPropertyValue('display')
     })
 
@@ -45,6 +46,7 @@ test("should say username already exists", async() => {
     expect(result).toBe("block");
 
 }, 10000)
+
 
 test("should say passwords doesn't match", async() => {
 
@@ -63,7 +65,7 @@ test("should say passwords doesn't match", async() => {
     await page.click("input#secondPassword")
     await page.type("input#secondPassword", "4321")
     await page.click("input#create")
-    result = await page.$eval('label#wrongPassword', (elem) => {
+    const result = await page.$eval('label#wrongPassword', (elem) => {
         return window.getComputedStyle(elem).getPropertyValue('display')
     })
 
@@ -129,9 +131,8 @@ test("should import pepper and login to Dennis, try to create new login on page 
     expect(fourthCheck).toBe("Simon");
 
     const fifthCheck = await page.$eval('input#pass', elem => elem.value)
-    console.log(fifthCheck)
     expect(fifthCheck).toBe("eHXZzquUIuXPsSaLy");
 
     await browser.close()
 
-}, 10000)
+}, 15000)
