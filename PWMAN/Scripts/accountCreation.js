@@ -10,6 +10,7 @@ async function formSubmit(event) {
     event.preventDefault()
     let form = document.getElementById("form"); //Set variable to an element from NewUser.html. Done to obtain password and username submitted by user.
     
+
     if (form.password1.value == form.password2.value && checkRegex(form.password1.value) === true) { // Compare Passwords
 
         let pepperString = cryptoRandomString({ length: 20, type: 'base64' }); //generates a pepper string.
@@ -47,6 +48,7 @@ async function formSubmit(event) {
 
         form.reset(); //Reset the forms to allow for new input.
 
+
     } else{ 
         if (form.password1.value !== form.password2.value){
           //In case the passwords is not identical
@@ -66,6 +68,7 @@ function checkRegex(password) {
     return regex.test(password)
   }
   
+
 function hashCode(str) { //Stolen from the internet.
     return str.split('').reduce((prevHash, currVal) =>
         (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
