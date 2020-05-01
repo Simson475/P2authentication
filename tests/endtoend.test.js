@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const extensionPath = __dirname + "/PWMAN"
+const extensionPath = __dirname + "/../PWMAN"
 
 async function initialize() {
     const browser = await puppeteer.launch({

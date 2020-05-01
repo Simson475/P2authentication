@@ -9,7 +9,7 @@ const fs = require('fs'); //Require module with the help of browserify/watchify.
 async function formSubmit(event) {
     event.preventDefault()
     let form = document.getElementById("form"); //Set variable to an element from NewUser.html. Done to obtain password and username submitted by user.
-    
+
 
     if (form.password1.value == form.password2.value && checkRegex(form.password1.value) === true) { // Compare Passwords
 
@@ -32,16 +32,18 @@ async function formSubmit(event) {
 
         answer = await answer.json()
 
-        if (answer.error != undefined){ //Checks if the answer is a error message (In case the username is already in use on the database.)
+        if (answer.error != undefined) { //Checks if the answer is a error message (In case the username is already in use on the database.)
             console.log(answer.error);
             document.getElementById("wrongPassword").style.display = "none"; // Not to have two error messages on top of eachother
             document.getElementById("firstPassword").style.borderColor = "#101010";
             document.getElementById("secondPassword").style.borderColor = "#101010";
             userExistCSS();
-            
-        
-        }else{ //If there was no error message.
-            chrome.storage.local.set({[jsondata.username]: pepperString }, function() { //Saves the generated pepper in the property of the username in local storage (idk where)
+
+
+        } else { //If there was no error message.
+            chrome.storage.local.set({
+                [jsondata.username]: pepperString
+            }, function() { //Saves the generated pepper in the property of the username in local storage (idk where)
                 savedUserCorrectCSS();
             });
         }
@@ -62,8 +64,8 @@ async function formSubmit(event) {
 function checkRegex(password) {
     let regex = /(?=.{8,}$)((?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]))/;
     return regex.test(password)
-  }
-  
+}
+
 
 function hashCode(str) { //Stolen from the internet.
     return str.split('').reduce((prevHash, currVal) =>
