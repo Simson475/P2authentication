@@ -156,9 +156,10 @@ body {
     top: 60px;
 }
 
-#importSucces{
+#importSuccess{
     display: none;
     top: 60px;
+    color: red;
 }
 
 #exportForm{
@@ -301,3 +302,49 @@ body {
     cursor: pointer;
 }
 
+#answerNo {
+    position: absolute;
+    display: none;
+    display: inline;
+    top: 230px;
+    left: 20px;
+    padding: 2px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+    text-decoration: none;
+
+}
+
+#answerNo:Hover {
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
+
+#answerYes {
+    position: absolute;
+    display: none;
+    display: inline;
+    top: 230px;
+    left: 170px;
+    padding: 2px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+#answerYes:Hover {
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}

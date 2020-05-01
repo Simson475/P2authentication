@@ -23,13 +23,17 @@
             <input id="importUsername" type="text" placeholder="Enter Username" name="username" required>
             <label id="importPepperLabel" for="pepper"><b>Pepper</b></label>
             <input id="importPepper" type="text" placeholder="Enter pepper" name="pepper">
-            <input id="importAccountButton" type="submit" value="Import">
-            <div id = "importWarning">
-                <p id = "warning">Warning!</p>
-                <p id = "warningMessage"> Your about to overwrite the existing pepper for this account.</p>
-            </div>
+            <input id="importAccountButton" type="submit" value="Import"> 
         </form>
-        <p id="importSucces"> The account has been imported.</p>
+        <div id = "importWarning">
+            <p id = "warning">Warning!</p>
+            <p id = "warningMessage"> Your about to overwrite the existing pepper for this account.</p>
+            <p id = "warningMessage2"> This could effect the login process on other devices. </p>
+            <p id = "question"> Are you sure you want to overwrite?</p>
+            <a id = "answerNo"  href = "settings.html"> No </a>
+            <input id = "answerYes" type="submit" value="Yes">
+        </div>
+        <p id="importSuccess"> The account has been imported.</p>
         
     </div>
     <div id="Export">

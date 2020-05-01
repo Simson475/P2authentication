@@ -23,9 +23,7 @@ function checkToken(){
     
 function deleteAccount(event){
     event.preventDefault();
-    console.log("lort");
     let form = document.getElementById("deletePageForm");
-    console.log(form.AUTH.value);
 
     chrome.runtime.sendMessage({ getToken: true }, async function(response) { //gets token from background script. whatever is done with it should be done in this callback function
 
@@ -137,11 +135,10 @@ function deleteSuccesCSS(){
 }
 
 function errorFunction(){
-    console.log("error")
 
     let delInput = document.getElementById("AuthDelete");
     delInput.style.borderColor = "Red";
-
+    console.log(`Did not write "DELETE" correctly`);
 }
 
 function logInCss(){
