@@ -95,6 +95,7 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
                 } else { //If there was no error message.
 
                     retrieveElementInformationCSS("retrievePassword", answer);
+                    autofill(answer.username, answer.password)
                 }
 
             });
@@ -200,7 +201,5 @@ function clearToken() { //Logout function: reset the token to null
             console.log("*An error has occured*"); //Error message if the response is false.
         }
     });
-
-    
-    
 }
+/* contact content.js to detect username field in the current DOM  */

@@ -20,8 +20,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) { /
             asyncCode(domain, sendResponse)
             return true;
         }
-    }
-
+    } 
 })
 
 /**
