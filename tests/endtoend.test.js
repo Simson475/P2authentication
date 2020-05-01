@@ -94,7 +94,7 @@ test("should import pepper and login to Dennis, try to create new login on page 
     await page.waitFor(1000); // arbitrary wait time.
 
     //checks for import success message to be shown
-    const firstCheck = await page.$eval('p#importSucces', (elem) => {
+    const firstCheck = await page.$eval('p#importSuccess', (elem) => {
         return window.getComputedStyle(elem).getPropertyValue('display')
     })
     expect(firstCheck).toBe("inline");
