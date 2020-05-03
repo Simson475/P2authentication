@@ -2,38 +2,39 @@
 
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../Styles/addWebsiteAccount.css">
-        <title> Password Manager</title>
-    </head>
-    
-    <body>
-        
-        <div id ="addWebsite">
-            <h3 id="h3">Add new account for </h3>
-            <p id="URLgoesHere"></p>
-            <form id="form">
-                <label id="usernameLabel" for ="username">Enter username</label>
-                <input id="username" type="text" placeholder="Enter username" name ="username" required>
-                <label id="passwordLabel" for="password">Password is being generated.</label>
-                <input id="website" type="submit" value="Submit">
-            </form>
-            <a id="return" href="popup.html"> Back</a>
-        </div>
-        <div id = "error">
-            <h3>Account not added</h3>
-            <p id ="errorMessage"></p>
-            <a id="errorReturn" href="popup.html"> Back</a>
-        </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Styles/addWebsiteAccount.css">
+    <title> Password Manager</title>
+</head>
+
+<body>
+
+    <div id="addWebsite">
+        <h3 id="h3">Add new account for </h3>
+        <p id="URLgoesHere"></p>
+        <form id="form">
+            <label id="usernameLabel" for="username">Enter username</label>
+            <input id="username" type="text" placeholder="Enter username" name="username" required>
+            <label id="passwordLabel" for="password">Password is being generated.</label>
+            <input id="website" type="submit" display="none" value="Submit">
+        </form>
+        <button id="AutofillPassword" >Autofill password </button>
+        <a id="return" href="popup.html"> Back</a>
+    </div>
+    <div id="error">
+        <h3>Account not added</h3>
+        <p id="errorMessage"></p>
+        <a id="errorReturn" href="popup.html"> Back</a>
+    </div>
 
 
     <div>
         <div id="Logo"><img src="../Images/logo2.png" style="width: 50px;" alt="PWMAN"></div>
     </div>
-        <script src="../Scripts/addWebsiteAccount.js"></script>
-    </body>
+    <script src="../Scripts/addWebsiteAccount.js"></script>
+</body>
 
 
 </html>

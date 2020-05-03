@@ -1,7 +1,7 @@
 console.log("'we up and running' - Message from content.js");
 
-let domaindomain = location.href
-chrome.runtime.sendMessage({ getToken: true }, async function(response) {
+let domaindomain = location.href //TODO fix variable name!!
+chrome.runtime.sendMessage({ getToken: true }, async function(response) { //AUTOFILL FUNKTIONEN
     if (response.token === null) {
         console.log("du er ikke logget ind")
         return;
@@ -25,6 +25,21 @@ chrome.runtime.sendMessage({ getToken: true }, async function(response) {
     }
 })
 
+chrome.runtime.onMessage.addListener(async function(request, sender, sendResponse) { //AUTOFILL ON SIGN UP
+    if (request.autofillPassword !== undefined) {
+
+        const activeForm = parentForm(document.activeElement) //Finds the last active form - meant to find the sign up sheet.
+        let password = findPasswordFieldInForm(activeForm)    //Finds the password field.
+        password.value = request.autofillPassword;            
+        password.innerHTML = request.autofillPassword;
+
+        await sendResponse({ autofillListenerResponse: true })
+    } else {
+        
+        console.log("Response from content.js failed.")
+        await sendResponse({ autofillListenerResponse: false })    //TODO ERROR HANDLING
+    }
+})
 
 /**
  * TODO
@@ -36,8 +51,8 @@ function autofill(username, password) {
     fieldPairs[0].value = username;
     fieldPairs[0].innerHTML = username;
     fieldPairs[1].value = password;
+    fieldPairs[1].innerHTML = password;
 }
-
 
 /**
  * TODO Function that finds the closest parent node with the name="form".
@@ -89,4 +104,12 @@ function correctField(pswd) {
         }
         pswdLength--
     }
+}
+
+function findPasswordFieldInForm(form) {
+    let inputFields = form.getElementsByTagName('input');
+    for (elem of inputFields) {
+        if (elem.type === "password") return elem
+    }
+    return false;
 }
