@@ -71,7 +71,7 @@ function exportAccountLogin(event) {
             domain: location
         };
 
-        let answer = postRequest("/validate", jsondata);
+        let answer = await postRequest("/validate", jsondata);
 
         answer = await answer.json(); //parses the response
 
