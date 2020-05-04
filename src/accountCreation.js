@@ -1,6 +1,6 @@
 document.querySelector("form").addEventListener("submit", formSubmit) //Event Listener
 const cryptoRandomString = require('crypto-random-string'); //Require module with the help of browserify/watchify.
-const fs = require('fs'); //Require module with the help of browserify/watchify.
+const { hashCode, checkRegex, postRequest } = require("./util.js")
 
 /**
  * formsubmit takes information that is submitted and sends it to the server and resets the form
@@ -21,14 +21,9 @@ async function formSubmit(event) {
             username: form.username.value,
             password: hashedPassword
         };
+        console.log(jsondata)
 
-        let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/newUser", { //Fetch respons from server to modify the database
-            method: 'POST', // Fetch method used to send data to the server to update the database.
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(jsondata, null, 2) //Data to send to the server.
-        });
+        let answer = await postRequest("newUser", jsondata)
 
         answer = await answer.json()
 
@@ -51,9 +46,9 @@ async function formSubmit(event) {
         form.reset(); //Reset the forms to allow for new input.
 
 
-    } else{ 
-        if (form.password1.value !== form.password2.value){
-          passwordsNotIdenticalCSS();
+    } else {
+        if (form.password1.value !== form.password2.value) {
+            passwordsNotIdenticalCSS();
         } else {
             conditionCSS();
         }
@@ -61,16 +56,6 @@ async function formSubmit(event) {
 }
 
 //---------Subfunctions---------------------------------------------------------------------------------------------------------------------------------
-function checkRegex(password) {
-    let regex = /(?=.{8,}$)((?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]))/;
-    return regex.test(password)
-}
-
-
-function hashCode(str) { //Stolen from the internet.
-    return str.split('').reduce((prevHash, currVal) =>
-        (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
-}
 
 function savedUserCorrectCSS() { //Changes the CSS settings for when the user is saved correct
     let returnButton = document.getElementById("return");
@@ -95,7 +80,7 @@ function userExistCSS() { // Changes the CSS in case that a user already exist.
 
 function passwordsNotIdenticalCSS() { //Changes the CSS in case the password doesnt match.
     //Makes the body bigger, so there is room for a label, moves the buttons down, changes border colors on  the password fields and display the message.
-    
+
     //In case the passwords is not identical
     document.getElementById("inUse").style.display = "none"; // Not to have two error messages on top of eachother
     document.getElementById("username").style.borderColor = "#101010";
@@ -112,7 +97,7 @@ function passwordsNotIdenticalCSS() { //Changes the CSS in case the password doe
     document.getElementById("wrongPassword").style.display = "inline";
 }
 
-function conditionCSS () {
+function conditionCSS() {
     document.body.style.height = "350px";
     document.getElementById("pepperMessage").style.top = "270px";
     document.getElementById("create").style.top = "320px";

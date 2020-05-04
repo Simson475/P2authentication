@@ -6,7 +6,8 @@
     "scripts": {
         "docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
         "devStart": "nodemon ./Server/server.js",
-        "test": "jest"
+        "test": "jest",
+        "build": "webpack"
     },
     "repository": {
         "type": "git",
@@ -25,7 +26,8 @@
         "jsdoc": "^3.6.3",
         "nodemon": "^2.0.2",
         "puppeteer": "^3.0.2",
-        "watchify": "^3.11.1"
+        "watchify": "^3.11.1",
+        "webpack-cli": "^3.3.11"
     },
     "dependencies": {
         "bcrypt": "^4.0.1",
@@ -39,6 +41,7 @@
         "mysql": "^2.18.1",
         "passport": "^0.4.1",
         "passport-local": "^1.0.0",
-        "path": "^0.12.7"
+        "path": "^0.12.7",
+        "webpack": "^4.43.0"
     }
 }
