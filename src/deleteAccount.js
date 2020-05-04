@@ -1,6 +1,6 @@
 document.getElementById("AuthDeleteButton").addEventListener("click", deleteAccount);
 document.getElementById("deleteAccountButton").addEventListener("click", deleteLogin);
-const { hashCode } = require("./util.js")
+const { hashCode, postRequest } = require("./util.js")
 
 checkToken();
 
@@ -84,13 +84,7 @@ function deleteLogin(event) {
             domain: location
         };
 
-        let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/validate", { //Contacts the serveren with username and password to log in.
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(jsondata, null, 2)
-        });
+        let answer = await postRequest("/validate", jsondata);
 
         answer = await answer.json(); //parses the response
 

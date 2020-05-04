@@ -1,4 +1,4 @@
-const { hashCode } = require("./util.js")
+const { hashCode, postRequest } = require("./util.js")
 document.getElementById("importButton").addEventListener("click", importPageCSS);
 document.getElementById("importAccountButton").addEventListener("click", importFunction);
 document.getElementById("exportButton").addEventListener("click", exportAccount);
@@ -27,15 +27,10 @@ function exportAccount() {
             exportForm.style.display = "inline";
 
         } else {
+            console.log(response);
 
             //fetch req med token til severen (skal returnere username)
-            let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/confirmUsername", { //Sends a fetch request to the server with the identifying token and the jsondata object
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    "authorization": response.token
-                }
-            });
+            let answer = await postRequest("/confirmUsername", undefined, response.token);
 
 
             answer = await answer.json(); //parses the response
@@ -76,13 +71,7 @@ function exportAccountLogin(event) {
             domain: location
         };
 
-        let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/validate", { //Contacts the serveren with username and password to log in.
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(jsondata, null, 2)
-        });
+        let answer = postRequest("/validate", jsondata);
 
         answer = await answer.json(); //parses the response
 
@@ -104,7 +93,6 @@ function exportAccountLogin(event) {
         form.reset();
     })
 
-
 }
 //------SubFuncktions--------------------------------------------------------------------------------------------------
 function importPageCSS() { //Funtion to show the import menu
@@ -116,7 +104,6 @@ function importPageCSS() { //Funtion to show the import menu
     returnPop.style.display = "none";
     menu.style.display = "none"; //hides the menupage
     importPage.style.display = "inline"; //show the import page
-
 }
 
 async function importFunction(event) {
@@ -203,9 +190,7 @@ function overwrite() {
     let username = form.username.value;
     let pepperString = form.pepper.value;
 
-    chrome.storage.local.set({
-        [username]: pepperString
-    }, function() {
+    chrome.storage.local.set({[username]: pepperString}, function() {
         pepperImportedCSS();
         console.log("pepper has been overwritten")
     });

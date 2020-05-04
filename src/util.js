@@ -18,8 +18,8 @@ function generatePassword() { // Generates a random string of a length between 1
     return password.join(''); //Joins together the array 'password' into a string.
 }
 
-function postRequest(location, jsondata, token = undefined) {
-    return fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/" + location, { //Fetch respons from server to modify the database
+async function postRequest(location, jsondata, token = undefined) {
+    return await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/" + location, { //Fetch respons from server to modify the database
         method: 'POST', // Fetch method used to send data to the server to update the database.
         headers: {
             'Content-Type': 'application/json',
