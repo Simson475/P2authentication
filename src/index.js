@@ -2,6 +2,7 @@
 document.getElementById("LogIn-form").addEventListener("submit", formSubmit);
 document.getElementById("SignedIn-submit").addEventListener("click", retrievePassword);
 document.getElementById("LogoutButton").addEventListener("click", clearToken);
+const { hashCode, postRequest } = require("./util.js")
 chrome.runtime.sendMessage({ getToken: true }, function(response) { //gets token from background script. whatever is done with it should be done in this callback function
     if (response.token === null) return;
     else retrieveElementInformationCSS("SignIn");
@@ -25,14 +26,7 @@ async function formSubmit(event) {
             username: form.username.value,
             password: hashedPass
         };
-
-        let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/validate", { //Contacts the serveren with username and password to log in.
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(jsondata)
-        });
+        let answer =  await postRequest("/validate", jsondata);
 
         answer = await answer.json(); //parses the response
 
@@ -57,8 +51,8 @@ async function formSubmit(event) {
 }
 
 /**
- * TODO
- * @param {*} event 
+ * retrievePassword retrives the username and password for the given domain.
+ * @param {Object} event 
  */
 async function retrievePassword(event) { // LoggedIn script (listens for click on getpassword button)
     event.preventDefault()
@@ -77,14 +71,8 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
                 let activeTab = tabs[0];
 
                 //Contacts server and requests username and password for the domain passed in the body
-                let answer = await fetch("https://sw2b2-23.p2datsw.cs.aau.dk/node0/getPassword", {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "authorization": response.token
-                    },
-                    body: JSON.stringify({ domain: activeTab.url })
-                });
+                let answer = await postRequset("/getPassword",/*domain: */ activeTab.url, response.token);
+
                 answer = await answer.json() //parses the response
 
                 if (answer.error != undefined) { //Checks if the answer is a error message
@@ -162,10 +150,6 @@ function retrieveElementInformationCSS(X, answer) { //Defines variables for usea
     }
 }
 
-
-/**
- * TODO
- */
 function incorrectInfoCSS() {
     let fieldUsername = document.getElementById("LogIn-username");
     let fieldPassword = document.getElementById("LogIn-password");
@@ -174,16 +158,6 @@ function incorrectInfoCSS() {
     fieldUsername.style.borderColor = "red";
     fieldPassword.style.borderColor = "red";
     messageP.style.display = "inline";
-}
-
-
-/**
- * TODO
- * @param {*} str 
- */
-function hashCode(str) { //stolen from the internet
-    return str.split('').reduce((prevHash, currVal) =>
-        (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
 }
 
 function clearToken() { //Logout function: reset the token to null
