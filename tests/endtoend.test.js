@@ -21,7 +21,6 @@ async function initialize() {
     return { browser, extensionID };
 }
 
-
 test("should say username already exists", async() => {
     //initialize pupeteer browser
     const { browser, extensionID } = await initialize()
@@ -61,9 +60,9 @@ test("should say passwords doesn't match", async() => {
     await page.click("input#username")
     await page.type("input#username", "test")
     await page.click("input#firstPassword")
-    await page.type("input#firstPassword", "1234")
+    await page.type("input#firstPassword", "1234Test")
     await page.click("input#secondPassword")
-    await page.type("input#secondPassword", "4321")
+    await page.type("input#secondPassword", "Test4321")
     await page.click("input#create")
     const result = await page.$eval('label#wrongPassword', (elem) => {
         return window.getComputedStyle(elem).getPropertyValue('display')
@@ -85,7 +84,7 @@ test("should import pepper and login to Dennis, try to create new login on page 
     const page = await browser.newPage();
     await page.goto(`chrome-extension://${extensionID}/${extensionPopupHtml}`);
     await page.click("a#Settings")
-    await page.click("input#importButton")
+    await page.click("a#importButton")
     await page.click("input#importUsername")
     await page.type("input#importUsername", "Dennis")
     await page.click("input#importPepper")
@@ -97,7 +96,7 @@ test("should import pepper and login to Dennis, try to create new login on page 
     const firstCheck = await page.$eval('p#importSuccess', (elem) => {
         return window.getComputedStyle(elem).getPropertyValue('display')
     })
-    expect(firstCheck).toBe("inline");
+    expect(firstCheck).toBe("block");
     await page.click("a#returnSettings")
     await page.click("a#returnPop")
     await page.click("input#LogIn-username")
@@ -116,7 +115,8 @@ test("should import pepper and login to Dennis, try to create new login on page 
     await page.click("a#SignedIn-website")
     await page.click("input#username")
     await page.type("input#username", "Dennis")
-    await page.click("input#website")
+    await page.click("button#AutofillPassword")
+    await page.click("input#theSubmitButton")
     await page.waitFor(5000); // arbitrary wait time.
 
     //checks to see if it says user already has login for website
