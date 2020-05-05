@@ -4,9 +4,11 @@ module.exports = {
         addWebsiteAccount: './src/addWebsiteAccount.js',
         background: './src/background.js',
         content: './src/content.js',
-        deleteAccount: './src/deleteAccount.js',
         index: './src/index.js',
         settings: './src/settings.js',
+        import: './src/import.js',
+        export: './src/export.js',
+        deleteAccount: './src/deleteAccount.js'
     },
     output: {
         filename: '[name].js',

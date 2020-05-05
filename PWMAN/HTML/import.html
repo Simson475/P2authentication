@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Styles/import.css">
+    <title>Password Manager</title>
+</head>
+
+<body>
+    <h3>Import Account</h3>
+    <div id = "importWarning">
+        <p id = "warning">Warning!</p>
+        <p id = "warningMessage"> Your about to overwrite the existing pepper for this account.</p>
+        <p id = "warningMessage2"> This could effect the login process on other devices. </p>
+        <p id = "question"> Are you sure you want to overwrite?</p>
+        <a id = "answerNo"  href = "settings.html"> No </a>
+        <input id = "answerYes" type="button" value="Yes">
+    </div>
+
+    <div id="Import">
+        <form id="importForm">
+            <label id="importUserLabel" for="username"><b>Username</b></label>
+            <input id="importUsername" type="text" placeholder="Enter Username" name="username" required>
+            <label id="importPepperLabel" for="pepper"><b>Pepper</b></label>
+            <input id="importPepper" type="text" placeholder="Enter pepper" name="pepper" required>
+            <input id="importAccountButton" type="submit" value="Import">
+        </form>
+    </div>
+    
+    <p id="pepperMessage">Pepper needs to be 20 characters long.</p>
+    <p id="importSuccess">The account has been imported!</p>
+    
+    <a id="returnSettings" href="settings.html"> Back</a>
+    <div id="Logo"><img src="../Images/logo2.png" style="width: 50px;" alt="PWMAN"></div>
+    <script src="../Scripts/import.js"></script>
+    <!--refere til andet script-->
+</body>
+</html>
