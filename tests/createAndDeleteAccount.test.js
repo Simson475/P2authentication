@@ -36,7 +36,7 @@ test("should create user", async() => {
     await page.click("input#secondPassword")
     await page.type("input#secondPassword", "Delete1234")
     await page.click("input#create")
-    await page.waitFor(3000); // arbitrary wait time.
+    await page.waitFor(5000); // arbitrary wait time.
     const firstCheck = await page.$eval('h3#accountSuccess', (elem) => {
             return window.getComputedStyle(elem).getPropertyValue('display')
         })
@@ -49,7 +49,7 @@ test("should create user", async() => {
     await page.click("input#LogIn-password")
     await page.type("input#LogIn-password", "Delete1234")
     await page.click("input#LogIn-submit")
-    await page.waitFor(3000); // arbitrary wait time.
+    await page.waitFor(5000); // arbitrary wait time.
 
     //checks to make sure the login page is hidden when logged in.
     const secondCheck = await page.$eval('div#LogIn', (elem) => {
@@ -62,7 +62,7 @@ test("should create user", async() => {
     await page.click("input#AuthDelete")
     await page.type("input#AuthDelete", "DELETE")
     await page.click("input#AuthDeleteButton")
-    await page.waitFor(3000); // arbitrary wait time.
+    await page.waitFor(5000); // arbitrary wait time.
     const thirdCheck = await page.$eval('p#deletionMessage', (elem) => {
         return elem.innerHTML
     })
@@ -74,7 +74,7 @@ test("should create user", async() => {
     await page.click("input#LogIn-password")
     await page.type("input#LogIn-password", "Delete1234")
     await page.click("input#LogIn-submit")
-    await page.waitFor(3000); // arbitrary wait time.
+    await page.waitFor(5000); // arbitrary wait time.
 
     const fourthCheck = await page.$eval('p#LogIn-paragraph', (elem) => {
         return window.getComputedStyle(elem).getPropertyValue('display')

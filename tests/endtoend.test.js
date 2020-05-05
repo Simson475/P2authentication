@@ -37,7 +37,7 @@ test("should say username already exists", async() => {
     await page.click("input#secondPassword")
     await page.type("input#secondPassword", "Hejsa1234")
     await page.click("input#create")
-    await page.waitFor(3000); // arbitrary wait time.
+    await page.waitFor(5000); // arbitrary wait time.
     const result = await page.$eval('label#inUse', (elem) => {
         return window.getComputedStyle(elem).getPropertyValue('display')
     })
@@ -91,7 +91,7 @@ test("should import pepper and login to Dennis, try to create new login on page 
     await page.click("input#importPepper")
     await page.type("input#importPepper", "PAbdgFBA/Lo/98jkvT9d")
     await page.click("input#importAccountButton")
-    await page.waitFor(3000); // arbitrary wait time.
+    await page.waitFor(5000); // arbitrary wait time.
 
     //checks for import success message to be shown
     const firstCheck = await page.$eval('p#importSuccess', (elem) => {
@@ -105,7 +105,7 @@ test("should import pepper and login to Dennis, try to create new login on page 
     await page.click("input#LogIn-password")
     await page.type("input#LogIn-password", "1234")
     await page.click("input#LogIn-submit")
-    await page.waitFor(3000); // arbitrary wait time.
+    await page.waitFor(5000); // arbitrary wait time.
 
     //checks to make sure the login page is hidden when logged in.
     const secondCheck = await page.$eval('div#LogIn', (elem) => {
@@ -117,14 +117,14 @@ test("should import pepper and login to Dennis, try to create new login on page 
     await page.click("input#username")
     await page.type("input#username", "Dennis")
     await page.click("input#website")
-    await page.waitFor(3000); // arbitrary wait time.
+    await page.waitFor(5000); // arbitrary wait time.
 
     //checks to see if it says user already has login for website
     const thirdCheck = await page.$eval('p#errorMessage', elem => elem.innerHTML)
     expect(thirdCheck).toBe("Account already created for this website");
 
     await page.goto("https://www.facebook.com/");
-    await page.waitFor(3000); // arbitrary wait time.
+    await page.waitFor(5000); // arbitrary wait time.
 
     //checks to see if it inputs login information correctly to facebook.
     const fourthCheck = await page.$eval('input#email', elem => elem.value)
