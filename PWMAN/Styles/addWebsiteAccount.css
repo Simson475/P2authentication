@@ -42,8 +42,26 @@ body {
     top: 150px;
     left: 20px;
 }
+#AutofillPassword {
+    position: absolute;
+    top: 180px;
+    right: 95px;
+    padding: 2px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;    
+}
+#AutofillPassword:hover{
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
 
-#website {
+#theSubmitButton {
     /*Placement*/
     position: absolute;
     top: 180px;
@@ -55,9 +73,10 @@ body {
     border: solid black;
     border-width: 1px;
     border-radius: 4px;
+    display: none;
 }
-#website:hover {
-    background-color: #E59400;
+#theSubmitButton:hover {
+    background-color:  #E59400;
     border-color: #E59400;
     color: white;
     cursor: pointer;
