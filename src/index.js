@@ -81,8 +81,8 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
 
 
                 } else { //If there was no error message.
-
                     retrieveElementInformationCSS("retrievePassword", answer);
+                    autofill(answer.username, answer.password);
                 }
 
             });
