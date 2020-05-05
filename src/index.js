@@ -26,7 +26,7 @@ async function formSubmit(event) {
             username: form.username.value,
             password: hashedPass
         };
-        let answer =  await postRequest("/validate", jsondata);
+        let answer =  await postRequest("validate", jsondata);
 
         answer = await answer.json(); //parses the response
 
@@ -69,9 +69,10 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
                 // since only one tab should be active and in the current window at once
                 // the return variable should only have one entry
                 let activeTab = tabs[0];
+                console.log(activeTab.url);
 
                 //Contacts server and requests username and password for the domain passed in the body
-                let answer = await postRequset("/getPassword",/*domain: */ activeTab.url, response.token);
+                let answer = await postRequest("getPassword", {domain: activeTab.url}, response.token);
 
                 answer = await answer.json() //parses the response
 
