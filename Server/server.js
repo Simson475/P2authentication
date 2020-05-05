@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt"); //allows encryption using hashes and compariso
 const jwt = require("jsonwebtoken"); // allows jsonwebtoken authorization
 const mysql = require("mysql"); //allows communication with database (mysql)
 const util = require('util'); //used for promisify wrapper of mysql queries
+const { createAccount, findUserDB, deleteUserdataFromDB, stripQuotes } = require("./mysqlUtil.js")
 const secretKey = process.env.SESSION_SECRET; //the key used when signing JSon this key is loaded from .env
 const saltRounds = process.env.SALT_ROUNDS; //amount of rounds brypt uses
 const port = process.env.PORT; //port server is hosted on'
@@ -117,32 +118,13 @@ async function masterAccount(req, res) { //Checks for if an account already exci
         else {
             bcrypt.hash(data.password.toString(), +saltRounds) // + laver saltrounds fra string til number
                 .then(async function(hash) { //after password is hashed calls the funtion with the hashed password stored in hash
-                    await db.query("INSERT INTO loginTable SET ?", { username: mysql.escape(data.username), hashValue: hash }); //mysql.escape is used to escape when we accept user input, so they can't give the server input.
-                    let currentUser = await findUserDB(data); //finds the ID for the user
-                    await db.query("CREATE TABLE user" + currentUser[0].id + "( domain VARCHAR(255), username VARCHAR(255),password VARCHAR(255), PRIMARY KEY(domain))"); //Creates a table for the user in the loginTable
+                    createAccount(data, hash)
                     res.send(true);
                 });
         }
     } catch (err) {
         await errorHandling(err, res);
     }
-}
-
-
-/**
- * Sends a query to MySQL database and return the user with given username 
- * @param {Object} data data should have a property.username that has the current users username.
- */
-async function findUserDB(data) { //looks up a given user in the database tables.
-    if (data.username !== undefined) {
-        let sql = "SELECT * FROM loginTable WHERE username= \"" + mysql.escape(data.username) + "\""; // Select a table from the table loginTable with the username data.username
-        return await db.query(sql); //sends query to DB
-
-    } else if (data.id !== undefined) {
-        let sql = "SELECT * FROM loginTable WHERE id= " + data.id; // Select a table from the table loginTable with the username data.username
-        return await db.query(sql); //sends query to DB 
-
-    } else { throw "no info for findUserDB" }
 }
 
 
@@ -188,9 +170,7 @@ async function getPassword(req, res) {
 
             //if no errors received
             else {
-                userData.domain = userData.domain.split("'")[1]; //strips ' (the sql protection)
-                userData.username = userData.username.split("'")[1]; //strips ' (the sql protection)
-                userData.password = userData.password.split("'")[1]; //strips ' (the sql protection)
+                userData = await stripQuotes(userData)
                 res.json(userData); //returns username and password
             }
 
@@ -223,6 +203,8 @@ async function addUserInfo(req, res) {
 
             //if no errors recieved
             else {
+
+                //TODO consider moving to function so we can make testcase
                 let parameter = { domain: mysql.escape(domainStripped), username: mysql.escape(data.username), password: mysql.escape(data.password) }; //creates object we want to save in DB
                 db.query("INSERT INTO user" + authData.id + " SET ?", parameter) //inserts data into the users personal table
                     .then(res.send(true)); //responds with true when data is inserted
@@ -251,6 +233,7 @@ async function confirmUsername(req, res) {
     })
 }
 
+
 /**
  * Used to delete a master account from the database
  * @param {Object} req request to the server. This includes the authorization header to be verified
@@ -260,15 +243,11 @@ async function deleteAccount(req, res) {
     jwt.verify(req.token, secretKey, async(err, authData) => { //verifies the authenticity of the token.
         try {
             if (err || authData.username === undefined || authData.id === undefined) res.sendStatus(401);
-
-            else {
-                db.query("DROP TABLE user" + authData.id) //inserts data into the users personal table
-                db.query("DELETE FROM loginTable WHERE id= " + authData.id) //inserts data into the users personal table
-                res.send(true)
-            }
-        } catch (err) {
-            await errorHandling(err, res);
-        }
+            else deleteUserdataFromDB(authData).then((err) => {
+                if (err) throw err
+                else res.send(true)
+            })
+        } catch (err) { await errorHandling(err, res); }
     })
 }
 
