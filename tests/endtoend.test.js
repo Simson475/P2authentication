@@ -21,59 +21,6 @@ async function initialize() {
     return { browser, extensionID };
 }
 
-test("should say username already exists", async() => {
-    //initialize pupeteer browser
-    const { browser, extensionID } = await initialize()
-
-    const extensionPopupHtml = './HTML/popup.html'
-    const page = await browser.newPage();
-    await page.goto(`chrome-extension://${extensionID}/${extensionPopupHtml}`);
-    await page.click("a#create")
-    await page.click("input#username")
-    await page.type("input#username", "test")
-    await page.click("input#firstPassword")
-    await page.type("input#firstPassword", "Hejsa1234")
-    await page.click("input#secondPassword")
-    await page.type("input#secondPassword", "Hejsa1234")
-    await page.click("input#create")
-    await page.waitFor(5000); // arbitrary wait time.
-    const result = await page.$eval('label#inUse', (elem) => {
-        return window.getComputedStyle(elem).getPropertyValue('display')
-    })
-
-    await browser.close()
-    expect(result).toBe("block");
-
-}, 100000)
-
-
-test("should say passwords doesn't match", async() => {
-
-    //initialize pupeteer browser
-    const { browser, extensionID } = await initialize()
-
-    //running the actual test
-    const extensionPopupHtml = './HTML/popup.html'
-    const page = await browser.newPage();
-    await page.goto(`chrome-extension://${extensionID}/${extensionPopupHtml}`);
-    await page.click("a#create")
-    await page.click("input#username")
-    await page.type("input#username", "test")
-    await page.click("input#firstPassword")
-    await page.type("input#firstPassword", "1234Test")
-    await page.click("input#secondPassword")
-    await page.type("input#secondPassword", "Test4321")
-    await page.click("input#create")
-    const result = await page.$eval('label#wrongPassword', (elem) => {
-        return window.getComputedStyle(elem).getPropertyValue('display')
-    })
-
-    await browser.close()
-    expect(result).toBe("block");
-
-}, 100000)
-
-
 test("should import pepper and login to Dennis, try to create new login on page that already has a login, and then go to facebook to see if it inputs correct data", async() => {
 
     //initialize pupeteer browser
