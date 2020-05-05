@@ -69,7 +69,6 @@ async function retrievePassword(event) { // LoggedIn script (listens for click o
                 // since only one tab should be active and in the current window at once
                 // the return variable should only have one entry
                 let activeTab = tabs[0];
-                console.log(activeTab.url);
 
                 //Contacts server and requests username and password for the domain passed in the body
                 let answer = await postRequest("getPassword", {domain: activeTab.url}, response.token);
