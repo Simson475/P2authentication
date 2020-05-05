@@ -8,14 +8,28 @@ body {
     width: 200px;
     height: 250px;
 }
+#Logo {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+}
 
-#deleteUserLabel{
+#h3{
+    top: 10px;
+    left: 15px;
+}
+
+#form{
+    display: none;
+}
+
+#UserLabel{
     position: absolute;
     top: 75px;
     left: 20px;
 }
 
-#deleteUsername{
+#Username{
     position: absolute;
     top: 100px;
     left: 20px;
@@ -26,14 +40,14 @@ body {
     border-width: 2px;
 }
 
-#deletePassLabel{
+#PassLabel{
     position: absolute;
     top: 135px;
     left: 20px;
     
 }
 
-#deletePassword{
+#Password{
     position: absolute;
     top: 160px;
     left: 20px;
@@ -44,7 +58,7 @@ body {
     border-width: 2px;
 }
 
-#deleteAccountButton{
+#Button{
     position: absolute;
     top: 230px;
     right: 20px;
@@ -58,16 +72,37 @@ body {
     text-decoration: none;
 }
 
-#deleteAccountButton:hover {
+#Button:hover {
     background-color: #E59400;
     border-color: #E59400;
     color: white;
     cursor: pointer;
 }
 
-#ReturnSettings {
-
+#PepperLabel{
     position: absolute;
+    display: none;
+    top: 75px;
+    left: 20px;
+}
+#Pepper{
+    display: none;
+    position: absolute;
+    top: 90px;
+    left: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: black;
+    background-color: #FFB732;
+    /*Border*/
+    border: solid #101010;
+    border-width: 2px;
+
+}
+
+#returnSettings {
+    position: absolute;
+    display: inline;
     top: 230px;
     left: 20px;
     padding: 2px;
@@ -80,74 +115,38 @@ body {
     text-decoration: none;
 }
 
-#ReturnSettings:Hover {
+#returnSettings:hover {
     background-color: #E59400;
     border-color: #E59400;
     color: white;
     cursor: pointer;
 }
 
-#deletionMessage{
-    display: none;
+#returnPop {
     position: absolute;
-    top: 80px;
-    left: 25px;
-}
-
-#AuthDeleteButton{
-    position: absolute;
-    top: 231px;
-    left: 150px;
-    color: black;
-    padding: 2px;
-    background-color: orange;
-    /*Border on the button*/
-    border: solid black;
-    border-width: 1px;
-    border-radius: 4px;
-    text-decoration: none;
-}
-
-#AuthDeleteButton:Hover {
-    background-color: #E59400;
-    color: white;
-    border-color: #E59400;
-    cursor: pointer;
-}
-#loginSucces{
     display: none;
-    color: white;
-    top: 60px;
-}
-
-#BackButton{
-    display: none;
-    position: absolute;
-    top: 150px;
-    font-size: 1.3em;
-    padding: 10px 20px 10px 20px;
-    left: 70px;
-    color: black;
-    background-color: orange;
-    /*Border on the button*/
-    border: solid black;
-    border-width: 1px;
-    border-radius: 4px;
-    text-decoration: none;
-}
-
-#BackButton:Hover{
-    background-color: #E59400;
-    border-color: #E59400;
-    color: white;
-    cursor: pointer;
-}
-
-#logInCheck {
-    display: none;
-    position: absolute;
-    color: white;
-    top: 80px;
+    top: 230px;
     left: 20px;
+    padding: 2px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+    text-decoration: none;
 }
-    
+
+#returnPop:hover {
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
+#loginFail{
+    display: none;
+    position: absolute;
+    color: white;
+    top: 80px;
+    left: 16px;
+}

@@ -9,13 +9,66 @@ body {
     height: 250px;
 }
 
-#deleteUserLabel{
+#Logo {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+}
+
+#answerNo {
+    position: absolute;
+    display: none;
+    display: inline;
+    top: 230px;
+    left: 20px;
+    padding: 2px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+    text-decoration: none;
+
+}
+
+#answerNo:Hover {
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
+
+#answerYes {
+    position: absolute;
+    display: none;
+    display: inline;
+    top: 230px;
+    left: 170px;
+    padding: 2px;
+    color: black;
+    background-color: orange;
+    /*Border on the button*/
+    border: solid black;
+    border-width: 1px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+#answerYes:Hover {
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
+
+#importUserLabel {
     position: absolute;
     top: 75px;
     left: 20px;
 }
 
-#deleteUsername{
+#importUsername {
     position: absolute;
     top: 100px;
     left: 20px;
@@ -26,14 +79,13 @@ body {
     border-width: 2px;
 }
 
-#deletePassLabel{
+#importPepperLabel{
     position: absolute;
     top: 135px;
     left: 20px;
-    
 }
 
-#deletePassword{
+#importPepper{
     position: absolute;
     top: 160px;
     left: 20px;
@@ -44,7 +96,7 @@ body {
     border-width: 2px;
 }
 
-#deleteAccountButton{
+#importAccountButton{
     position: absolute;
     top: 230px;
     right: 20px;
@@ -57,17 +109,38 @@ body {
     border-radius: 4px;
     text-decoration: none;
 }
-
-#deleteAccountButton:hover {
+    
+#importAccountButton:hover {
     background-color: #E59400;
     border-color: #E59400;
     color: white;
     cursor: pointer;
 }
 
-#ReturnSettings {
+#importWarning{
+    display: none;
+    top: 60px;
+}
 
+#importSuccess{
+    display: none;
     position: absolute;
+    top: 190px;
+    left: 20px;
+    color: red;
+}
+
+#importAccount:hover {
+    background-color: #E59400;
+    border-color: #E59400;
+    color: white;
+    cursor: pointer;
+}
+
+#returnSettings {
+    position: absolute;
+    display: none;
+    display: inline;
     top: 230px;
     left: 20px;
     padding: 2px;
@@ -80,74 +153,19 @@ body {
     text-decoration: none;
 }
 
-#ReturnSettings:Hover {
+#returnSettings:hover {
     background-color: #E59400;
     border-color: #E59400;
     color: white;
     cursor: pointer;
 }
 
-#deletionMessage{
-    display: none;
+#pepperMessage {
     position: absolute;
-    top: 80px;
-    left: 25px;
-}
-
-#AuthDeleteButton{
-    position: absolute;
-    top: 231px;
-    left: 150px;
-    color: black;
-    padding: 2px;
-    background-color: orange;
-    /*Border on the button*/
-    border: solid black;
-    border-width: 1px;
-    border-radius: 4px;
-    text-decoration: none;
-}
-
-#AuthDeleteButton:Hover {
-    background-color: #E59400;
-    color: white;
-    border-color: #E59400;
-    cursor: pointer;
-}
-#loginSucces{
     display: none;
-    color: white;
-    top: 60px;
-}
+    color:red;
+    top: 175px;
+    left: 18px;
+    padding: 3px;
 
-#BackButton{
-    display: none;
-    position: absolute;
-    top: 150px;
-    font-size: 1.3em;
-    padding: 10px 20px 10px 20px;
-    left: 70px;
-    color: black;
-    background-color: orange;
-    /*Border on the button*/
-    border: solid black;
-    border-width: 1px;
-    border-radius: 4px;
-    text-decoration: none;
 }
-
-#BackButton:Hover{
-    background-color: #E59400;
-    border-color: #E59400;
-    color: white;
-    cursor: pointer;
-}
-
-#logInCheck {
-    display: none;
-    position: absolute;
-    color: white;
-    top: 80px;
-    left: 20px;
-}
-    
