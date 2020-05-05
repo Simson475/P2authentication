@@ -37,7 +37,7 @@ test("should import pepper and login to Dennis, try to create new login on page 
     await page.click("input#importPepper")
     await page.type("input#importPepper", "PAbdgFBA/Lo/98jkvT9d")
     await page.click("input#importAccountButton")
-    await page.waitFor(1000); // arbitrary wait time.
+    await page.waitFor(3000); // arbitrary wait time.
 
     //checks for import success message to be shown
     const firstCheck = await page.$eval('p#importSuccess', (elem) => {
@@ -54,7 +54,7 @@ test("should import pepper and login to Dennis, try to create new login on page 
         return window.getComputedStyle(elem).getPropertyValue('display')
     })
     expect(secondCheck).toBe("inline");
-    await page.waitFor(500); // arbitrary wait time.
+    await page.waitFor(3000); // arbitrary wait time.
     await page.goto(`chrome-extension://${extensionID}/${extensionPopupHtml}`);
 
     await page.click("input#LogIn-username")
@@ -62,13 +62,13 @@ test("should import pepper and login to Dennis, try to create new login on page 
     await page.click("input#LogIn-password")
     await page.type("input#LogIn-password", "1234")
     await page.click("input#LogIn-submit")
-    await page.waitFor(1500); // arbitrary wait time.
+    await page.waitFor(3000); // arbitrary wait time.
     await page.click("a#Settings")
     await page.click("input#exportButton")
-    await page.waitFor(500); // arbitrary wait time.
+    await page.waitFor(3000); // arbitrary wait time.
     const thirdCheck = await page.$eval('p#exportPepper', (elem) => {
         return elem.innerHTML
     })
     expect(thirdCheck).toBe("PAbdgFBA/Lo/98jkvT9d");
     browser.close()
-}, 10000)
+}, 100000)
