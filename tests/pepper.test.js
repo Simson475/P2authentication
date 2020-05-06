@@ -70,5 +70,5 @@ test("should import pepper and login to Dennis, try to create new login on page 
         return elem.innerHTML
     })
     expect(thirdCheck).toBe("PAbdgFBA/Lo/98jkvT9d");
-    //browser.close()
+    browser.close()
 }, 100000)
