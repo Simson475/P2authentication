@@ -26,7 +26,8 @@ async function formSubmit(event) {
         let answer = await postRequest("newUser", jsondata) // Sends a fetch request to "newUser" page
 
         answer = await answer.json() // Parses the user data to JSON
-
+        
+        console.log(answer.error);
         if (answer.error != undefined) { // Checks if the answer is a error message (In case the username is already in use on the database.)
             console.log(answer.error);
             userExistCSS(); // Changes the CSS
@@ -76,7 +77,7 @@ function userExistCSS() {
     document.getElementById("secondPassword").style.borderColor = "#101010";
 
     document.body.style.height = "310px";
-    document.getElementById("pepperMessage").style.top = "235px";
+    document.getElementById("tooltip").style.top = "235px";
     document.getElementById("create").style.top = "290px";
     document.getElementById("return").style.top = "290px";
     document.getElementById("username").style.borderColor = "#BA1919";
@@ -96,7 +97,7 @@ function passwordsNotIdenticalCSS() {
     document.getElementById("conditions").style.display = "none"; // in case the user earlier didnt meet the requirements. 
     document.body.style.height = "310px";
     document.getElementById("username").style.borderColor = "#101010";
-    document.getElementById("pepperMessage").style.top = "235px";
+    document.getElementById("tooltip").style.top = "235px";
     document.getElementById("create").style.top = "290px";
     document.getElementById("return").style.top = "290px";
     document.getElementById("inUse").style.display = "none";
@@ -109,7 +110,7 @@ function passwordsNotIdenticalCSS() {
  */
 function conditionCSS() {
     document.body.style.height = "350px";
-    document.getElementById("pepperMessage").style.top = "270px";
+    document.getElementById("tooltip").style.top = "270px";
     document.getElementById("create").style.top = "320px";
     document.getElementById("return").style.top = "320px";
     document.getElementById("conditions").style.display = "inline";

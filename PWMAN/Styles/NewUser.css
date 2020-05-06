@@ -156,7 +156,7 @@ body {
 
 
 /* Tooltip container */
-.tooltip {
+#tooltip {
     position: relative;
     top: 230px;
     left: 5px;
@@ -165,7 +165,7 @@ body {
   }
   
 /* Tooltip text */
-.tooltip .tooltiptext {
+#tooltip #tooltiptext {
     visibility: hidden;
     bottom: 0%;
     margin-left:-200px;
@@ -183,6 +183,6 @@ body {
 }
   
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext {
+#tooltip:hover #tooltiptext {
     visibility: visible;
 }
