@@ -5,47 +5,10 @@ const bcrypt = require("bcrypt"); //allows encryption using hashes and compariso
 const jwt = require("jsonwebtoken"); // allows jsonwebtoken authorization
 const mysql = require("mysql"); //allows communication with database (mysql)
 const util = require('util'); //used for promisify wrapper of mysql queries
-const { createAccount, findUserDB, deleteUserdataFromDB, stripQuotes } = require("./mysqlUtil.js")
+const { createAccount, findUserDB, deleteUserdataFromDB, stripQuotes, findLoginInfo, insertIntoUserTable } = require("./mysqlUtil.js")
 const secretKey = process.env.SESSION_SECRET; //the key used when signing JSon this key is loaded from .env
 const saltRounds = process.env.SALT_ROUNDS; //amount of rounds brypt uses
 const port = process.env.PORT; //port server is hosted on'
-
-
-/**
- * Promisify wrapper lets us use db as promises instead of with callback functions. 
- * @param {Object} login information needed to login to the server. should as a minimum include host user and password.
- */
-function makeDb(login) {
-    const connection = mysql.createConnection(login);
-    return {
-        query(sql, args) {
-            return util.promisify(connection.query)
-                .call(connection, sql, args);
-        },
-        close() {
-            return util.promisify(connection.end).call(connection);
-        }
-    };
-}
-
-
-const local = { //local development server on simon PC
-    host: "localhost",
-    user: "root",
-    password: "Password1234",
-    database: "PWMAN"
-};
-
-const online = { //mysql server hosted on university server. 
-    host: "localhost",
-    user: "sw2b2-23@student.aau.dk",
-    password: "ss5fNRfsdNXSaryL",
-    database: "sw2b2_23"
-};
-
-
-//connects to onineDB of online. else connects to offline.
-const db = process.env.PRODUCTION === "true" ? makeDb(online) : makeDb(local)
 
 /**
  * Middleware
@@ -160,8 +123,7 @@ async function getPassword(req, res) {
         try {
             let data = req.body,
                 domainStripped = data.domain.split("/")[2], //saves the part of the domain that doesn't include http(s).
-                sql = "SELECT * FROM user" + authData.id + " WHERE domain= \"" + mysql.escape(domainStripped) + "\"", //looks up the Domain under the userID to see if there is stored info for the website.
-                userData = (await db.query(sql))[0]; //stores the table data in position 0 as userdata.
+                userData = (await findLoginInfo(authData, domainStripped))[0] //stores the table data in position 0 as userdata.
 
             //error handling
             if (err) res.sendStatus(401);
@@ -192,8 +154,7 @@ async function addUserInfo(req, res) {
             let data = req.body,
                 user = await findUserDB(authData), //find current user.
                 domainStripped = data.domain.split("/")[2], //saves the part of the domain that doesn't include http(s).
-                sql = "SELECT * FROM user" + authData.id + " WHERE domain= \"" + mysql.escape(domainStripped) + "\"", //finds the table with the userID given and where the domain is domainStripped.
-                result = await db.query(sql); //sends query to server.
+                result = await findLoginInfo(authData, domainStripped)
 
             //error handling
             if (err) res.sendStatus(401);
@@ -203,10 +164,7 @@ async function addUserInfo(req, res) {
 
             //if no errors recieved
             else {
-
-                //TODO consider moving to function so we can make testcase
-                let parameter = { domain: mysql.escape(domainStripped), username: mysql.escape(data.username), password: mysql.escape(data.password) }; //creates object we want to save in DB
-                db.query("INSERT INTO user" + authData.id + " SET ?", parameter) //inserts data into the users personal table
+                insertIntoUserTable(authData, data, domainStripped)
                     .then(res.send(true)); //responds with true when data is inserted
             }
         } catch (err) {
@@ -214,7 +172,6 @@ async function addUserInfo(req, res) {
         }
     })
 }
-
 
 /**
  * Confirms a token is valid and responds with username from the token.
