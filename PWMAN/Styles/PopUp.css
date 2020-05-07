@@ -109,18 +109,8 @@
         right: 25px;
     }
     
-    #LogIn-wrongInput {
-        display: inline;
-        position: absolute;
-        top: 150px;
-        left: 20px;
-        color: red;
-    }
-    
+
     #SignedIn {
-        display: none;
-    }
-    #SignedIn2 {
         display: none;
     }
     
@@ -128,121 +118,11 @@
         position: absolute;
         top: 10px;
         left: 15px;
-    }
+    }    
     
-    #SignedIn-userLabel {
-        position: absolute;
-        top: 60px;
-        left: 20px;
-    }
-    
-    #SignedIn-username {
-        display: inline;
-        position: absolute;
-        top: 75px;
-        left: 20px;
-        color: black;
-        background-color: #FFB732;
-        /*Border*/
-        border: solid #101;
-        padding: 2px;
-        border-radius: 4px;
-        border-width: 2px;
-    }
-    
-    #SignedIn-passLabel {
-        position: absolute;
-        top: 120px;
-        left: 20px;
-    }
-    
-    #SignedIn-password {
-        position: absolute;
-        top: 135px;
-        left: 20px;
-        color: black;
-        background-color: #FFB732;
-        /*Border*/
-        border: solid #101;
-        border-radius: 4px;
-        padding: 2px;
-        border-width: 2px;
-    }
-    
-    #SignedIn-create {
-        position: absolute;
-        top: 180px;
-        left: 20px;
-        color: black;
-        padding: 2px;
-        background-color: orange;
-        /*Border on the button*/
-        border: solid black;
-        border-width: 1px;
-        border-radius: 4px;
-        text-decoration: none;
-    }
-    
-    #SignedIn-create:hover {
-        background-color: #E59400;
-        color: white;
-        border-color: #E59400;
-        cursor: pointer;
-    }
-    
-    #SignedIn-submit {
-        position: absolute;
-        top: 70px;
-        left: 55px;
-        padding: 10px;
-        color: black;
-        background-color: orange;
-        /*Border on the button*/
-        border: solid black;
-        border-width: 1px;
-        border-radius: 4px;
-        text-decoration: none;
-    }
-    
-    #SignedIn-submit:hover {
-        background-color: #E59400;
-        border-color: #E59400;
-        color: white;
-        cursor: pointer;
-    }
-    
-    #SignedIn-Logo {
-        position: absolute;
-        top: 20px;
-        right: 25px;
-    }
-    
-    #SignedIn-paragraph {
-        display: none;
-        margin: 75px 25px 0px 25px;
-        padding: 5px;
-        border: solid orange;
-        border-width: 2px;
-        border-radius: 4px;
-        font-weight: bold;
-        font-size: 1.2em;border-radius: 4px;
-    font-weight: bold;
-    font-size: 1.2em;
-    }
-    #error{
-        display: none;
-    }
-    #errorMessage{
-        display: inline;
-        position: absolute;
-        top: 75px;
-        left: 20px;
-        color: white;
-    }
-
     #SignedIn-website{
         position: absolute;
-        top: 120px;
+        top: 70px;
         left: 58px;
         padding: 5px;
         padding-left: 10px;
@@ -304,8 +184,10 @@
     #LogoutButton {
         position: absolute;
         top: 160px;
-        left: 50px;
+        left: 58px;
         padding: 5px;
+        padding-left: 27px;
+        padding-right: 27px;
         color: black;
         background-color: orange;
         /*Border on the button*/
