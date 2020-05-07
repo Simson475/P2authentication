@@ -21,7 +21,6 @@ async function formSubmit(event) {
         let form = document.getElementById("LogIn-form"); //Gets information from form and inserts in the object jsondata       
         let pepperPass = form.password.value.concat(result[form.username.value]); //concatinates password with the loaded pepper
         let hashedPass = hashCode(pepperPass);
-
         let jsondata = { //An object containing the username and hashed password.
             username: form.username.value,
             password: hashedPass
