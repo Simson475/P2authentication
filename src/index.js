@@ -1,6 +1,6 @@
 //Event Listeners
 document.getElementById("LogIn-form").addEventListener("submit", formSubmit);
-document.getElementById("SignedIn-submit").addEventListener("click", retrievePassword);
+//document.getElementById("SignedIn-submit").addEventListener("click", retrievePassword);
 document.getElementById("LogoutButton").addEventListener("click", clearToken);
 const { hashCode, postRequest } = require("./util.js")
 chrome.runtime.sendMessage({ getToken: true }, function(response) { //gets token from background script. whatever is done with it should be done in this callback function
@@ -49,48 +49,8 @@ async function formSubmit(event) {
 
 }
 
-/**
- * retrievePassword retrives the username and password for the given domain.
- * @param {Object} event 
- */
-async function retrievePassword(event) { // LoggedIn script (listens for click on getpassword button)
-    event.preventDefault()
-
-    chrome.runtime.sendMessage({ getToken: true }, async function(response) { //gets token from background script. whatever is done with it should be done in this callback function
-        console.log(response);
-        if (response.token === null) return; // todo error handling
-        else if (response.token === undefined) {
-            //STUB ERROR HANDLING
-            console.log("response.token is undefined")
-            return;
-        } else {
-            chrome.tabs.query({ active: true, currentWindow: true }, async function(tabs) { //Collects information on the active tab.
-                // since only one tab should be active and in the current window at once
-                // the return variable should only have one entry
-                let activeTab = tabs[0];
-
-                //Contacts server and requests username and password for the domain passed in the body
-                let answer = await postRequest("getPassword", {domain: activeTab.url}, response.token);
-
-                answer = await answer.json() //parses the response
-
-                if (answer.error != undefined) { //Checks if the answer is a error message
-                    console.log(answer);
-                    ErrorCSS();
-
-
-                } else { //If there was no error message.
-                    retrieveCSS(answer);
-                    autofill(answer.username, answer.password);
-                }
-
-            });
-        }
-    });
-};
 
 //---------Subfunctions---------------------------------------------------------------------------------------------------------------------------------
-
 
 /**
  * Hides a Css Div and shows another
@@ -102,47 +62,18 @@ function switchPage(hidePage, showPage) { //Changes display attribute of element
     showPage.style.display = "inline";
 }
 
-/**
- * Change the CSS settings when server has answered
- * @param {Object} answer 
- */
-function retrieveCSS(answer){
-    let username = document.getElementById("SignedIn-username");
-    let password = document.getElementById("SignedIn-password");
-    let button = document.getElementById("SignedIn-submit"); //button
-    let page = document.getElementById("SignedIn2"); //SignedInPage
-    let logoutButton = document.getElementById("LogoutButton");
-    let settingsButton = document.getElementById("Settings");
-
-    settingsButton.style.display = "none";
-    logoutButton.style.display = "none";
-    document.getElementById("SignedIn-website").style.display = "none"; //Hides the add new login button
-    username.innerHTML = answer.username; //inserts the username in the relevant paragraph.
-    password.innerHTML = answer.password; //inserts the passwords in the relevant paragraph.
-
-    switchPage(button, page); //Changes display attribute of elements.
-}
 
 function signInCSS(){
     let hidePage = document.getElementById("LogIn");
     let showPage = document.getElementById("SignedIn");
     let settingsButton2 = document.getElementById("Settings");
-    settingsButton2.style.top = "160px";
-    settingsButton2.style.left = "110px";
+    settingsButton2.style.top = "110px";
+    settingsButton2.style.left = "58px";
     settingsButton2.style.padding = "5px";
     settingsButton2.style.paddingBottom = "4px";
+    settingsButton2.style.paddingLeft = "27px";
+    settingsButton2.style.paddingRight = "27px";
     switchPage(hidePage, showPage); 
-}
- 
-function ErrorCSS(){
-    let button2 = document.getElementById("SignedIn-submit"); //button
-    let errorMessage = document.getElementById("error");
-    let logoutButton2 = document.getElementById("LogoutButton");
-    let settingsButton3 = document.getElementById("Settings");
-
-    logoutButton2.style.display = "none";
-    settingsButton3.style.display = "none";
-    switchPage(button2, errorMessage);
 }
 
 function incorrectInfoCSS() { //Sets the CSS settings in case of incorrect input
