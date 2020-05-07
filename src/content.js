@@ -20,8 +20,8 @@ chrome.runtime.onMessage.addListener(async function(request, sender, sendRespons
 
         const activeForm = parentForm(document.activeElement) // Finds the last active form - meant to find the sign up sheet.
         let passwords = findPasswordFieldInForm(activeForm) // Finds the password field.
-        for (elem of passwords) {
-            elem.value = request.autofillPassword; // inserts the user's password into the password field that has been found by findPasswordFieldInForm      
+        for (elem of passwords) { //Iterates over all password-fields found in the active form.
+            elem.value = request.autofillPassword; // Inserts the user's password into the password field.  
             elem.innerHTML = request.autofillPassword; // Overwrites the innerHTML of the password field to be the password.
         }
         await sendResponse({ autofillListenerResponse: true }) // calls callback function with value true.
@@ -104,7 +104,7 @@ function correctField(passwordFieldArray) {
 }
 
 /**
- * Finds the input field with the type 'password' in the given form.
+ * Finds the input fields with the type 'password' in the given form.
  * @param form an element with the class 'form' in the DOM.
  */
 function findPasswordFieldInForm(form) {
@@ -113,6 +113,5 @@ function findPasswordFieldInForm(form) {
     for (elem of inputFields) {
         if (elem.type === "password") passwordFields.push(elem) // If an element with the type "password" is found then, it returns that element. 
     }
-    console.log(passwordFields)
     return passwordFields; // if no elements with the type password can be found in the form it returns false
 }
