@@ -11,8 +11,26 @@ chrome.runtime.sendMessage({ getToken: true }, async function(response) { //gets
 
 function loggedInMenu(){
     let menu = document.getElementById("menu");
+    let importButton = document.getElementById("importButton");
+    let exportButton = document.getElementById("exportButton");
+    let deleteButton = document.getElementById("deleteButton");
+
+    importButton.style.padding = "5px"
+    importButton.style.paddingLeft = "27px"
+    importButton.style.paddingRight = "27px"
+
+    exportButton.style.top = "115px"
+    exportButton.style.padding = "5px"
+    exportButton.style.paddingLeft = "27px"
+    exportButton.style.paddingRight = "27px"
+
+    deleteButton.style.top = "155px"
+    deleteButton.style.padding = "5px"
+    deleteButton.style.paddingLeft = "27px"
+    deleteButton.style.paddingRight = "27px"
+    
     menu.style.display = "inline";
-     
+
 }
 
 function notloggedInMenu(){
