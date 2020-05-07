@@ -12,8 +12,8 @@ function generatePassword() { // Generates a random string of a length between 1
     let password = [],
         str = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Y', 'Z'];
     let passLength = Math.floor(Math.random() * 5) + 15; //the constant 15 is arbitrarily chosen as the minimum length for the password, Math.random * 5 varies the password length by up to 5 characters.
-    for (let i = 0; i < passLength; i++) {
-        password[i] = str[Math.floor(Math.random() * 61)]; //Selects the i'th position in password to be a pseudorandom number in the 61 character long string 'str'
+    for (let i = 0; i <= passLength; i++) {
+        password[i] = str[Math.floor(Math.random() * 60)]; //Selects the i'th position in password to be a pseudorandom number in the 61 character long string 'str'
     }
     return password.join(''); //Joins together the array 'password' into a string.
 }
@@ -27,7 +27,6 @@ async function postRequest(location, jsondata, token = undefined) {
         },
         body: JSON.stringify(jsondata, null, 2) //Data to send to the server.
     });
-
 }
 
 module.exports = { hashCode, checkRegex, generatePassword, postRequest }

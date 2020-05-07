@@ -88,6 +88,31 @@ async function stripQuotes(userData) {
     return userData
 }
 
+
+
+
+/**
+ * TODO 
+ * @param {*} authData 
+ * @param {*} domainStripped 
+ */
+async function findLoginInfo(authData, domainStripped) {
+    let sql = "SELECT * FROM user" + authData.id + " WHERE domain= \"" + mysql.escape(domainStripped) + "\""; //looks up the Domain under the userID to see if there is stored info for the website.
+    return await db.query(sql); //stores the table data in position 0 as userdata.
+}
+
+
+/**
+ * TODO
+ * @param {*} authData 
+ * @param {*} data 
+ * @param {*} domainStripped 
+ */
+async function insertIntoUserTable(authData, data, domainStripped) {
+    let parameter = { domain: mysql.escape(domainStripped), username: mysql.escape(data.username), password: mysql.escape(data.password) }; //creates object we want to save in DB
+    await db.query("INSERT INTO user" + authData.id + " SET ?", parameter) //inserts data into the users personal table
+}
+
 async function closeDB() { db.close() }
 
-module.exports = { createAccount, findUserDB, deleteUserdataFromDB, stripQuotes, closeDB }
+module.exports = { createAccount, findUserDB, deleteUserdataFromDB, stripQuotes, closeDB, findLoginInfo, insertIntoUserTable }
