@@ -8,7 +8,9 @@ chrome.runtime.sendMessage({ getToken: true }, async function(response) { //gets
         loggedInMenu();
     }
 });
-
+/**
+ * Changes the style of the DOM if the user is logged in
+ */
 function loggedInMenu(){
     let menu = document.getElementById("menu");
     let importButton = document.getElementById("importButton");
@@ -32,6 +34,9 @@ function loggedInMenu(){
     menu.style.display = "inline";
 
 }
+/**
+ * Changes the style of the DOM if the user is not logged in
+ */
 
 function notloggedInMenu(){
     

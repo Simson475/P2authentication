@@ -54,15 +54,18 @@ async function formSubmit(event) {
 
 /**
  * Hides a Css Div and shows another
- * @param {*} hidePage 
- * @param {*} showPage 
+ * @param {Object} hidePage 
+ * @param {Object} showPage 
  */
 function switchPage(hidePage, showPage) { //Changes display attribute of elements.
     hidePage.style.display = "none";
     showPage.style.display = "inline";
 }
 
-
+/**
+ * Changes the style of the DOM when the user is logged in. 
+ * Calls the switchPage function.
+ */
 function signInCSS(){
     let hidePage = document.getElementById("LogIn");
     let showPage = document.getElementById("SignedIn");
@@ -74,8 +77,13 @@ function signInCSS(){
     settingsButton2.style.paddingLeft = "27px";
     settingsButton2.style.paddingRight = "27px";
     switchPage(hidePage, showPage); 
+    
 }
 
+/**
+ * Changes the style of the DOM when the user inputs incorrect login information. 
+ * Display an error message.
+ */
 function incorrectInfoCSS() { //Sets the CSS settings in case of incorrect input
     let fieldUsername = document.getElementById("LogIn-username");
     let fieldPassword = document.getElementById("LogIn-password");
@@ -86,6 +94,10 @@ function incorrectInfoCSS() { //Sets the CSS settings in case of incorrect input
     messageP.style.display = "inline";
 }
 
+/**
+ * Sends a null token as current token to the background script
+ * Changes the style of the dom and calls the switchPage function
+ */
 function clearToken() { //Logout function: reset the token to null
 
     chrome.runtime.sendMessage({ token: null }, function(response) { //Sets the token to null (logged out)
