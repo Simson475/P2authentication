@@ -105,6 +105,8 @@ function successAccountCreationCSS() {
     let message = document.getElementById("h3");
     let form = document.getElementById("form");
     form.style.display = "none";
+    let autofill =document.getElementById("AutofillPassword");
+    autofill.style.display = "none";
     message.innerHTML = "Login Added";
     let returnButton = document.getElementById("return");
     returnButton.innerHTML = "Go back";

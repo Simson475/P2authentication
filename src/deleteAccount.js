@@ -9,8 +9,6 @@ chrome.runtime.sendMessage({ getToken: true }, async function(response) { //gets
         
 
     } else {
-        let deleteForm = document.getElementById("deleteForm");
-        deleteForm.style.display = "none";
     }
 });
 
