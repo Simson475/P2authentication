@@ -17,21 +17,22 @@ const port = process.env.PORT; //port server is hosted on'
  * @param {Object} res is the response the server sends to the user. This is used to send info back to the user. 
  * @param {Function} next Calls the next function
  */
-const logger = function(req, res, next) {
+const logger = function(req, res, next) { //logs user input
     console.log(req.method + " request received at " + req.url);
-    next();
+    next(); //calls next function
 }
 
 //app.use is all middleware run whenever a request for the server is made.
 app.use(express.json()); // for parsing application/json
 app.use(logger); //console logs requests
 
+//the post/delte requests sent to the server
 app.post("/validate", (async(req, res) => { login(req, res) })); //when post request happens to /validate, run login function
 app.post("/newUser", (async(req, res) => { masterAccount(req, res) })); //when post request happens to /newUser, run masterAccount function
 app.post("/getPassword", verifyToken, async(req, res) => { getPassword(req, res) }); //when post request happens to /getPassword, run verifyToken and then getPassword function
 app.post("/updateInfo", verifyToken, async(req, res) => { addUserInfo(req, res) }); //when post request happens to /updateInfo, run verifyToken and then addUserInfo function
-app.post("/confirmUsername", verifyToken, async(req, res) => { confirmUsername(req, res) });
-app.delete("/deleteAccount", verifyToken, async(req, res) => { deleteAccount(req, res) });
+app.post("/confirmUsername", verifyToken, async(req, res) => { confirmUsername(req, res) }); //when post request happens to /confirmUsername, run verifyToken and then confirmUsername
+app.delete("/deleteAccount", verifyToken, async(req, res) => { deleteAccount(req, res) }); //when delete request happens to /deleteAccount, run verifyToken and then deleteAccount
 app.listen(port, () => { console.log("listening at " + port) }); //Sets the server to listen to port 3180
 
 
@@ -132,7 +133,7 @@ async function getPassword(req, res) {
 
             //if no errors received
             else {
-                userData = await stripQuotes(userData)
+                userData = await stripQuotes(userData) //removes ' from object
                 res.json(userData); //returns username and password
             }
 
@@ -152,9 +153,9 @@ async function addUserInfo(req, res) {
     jwt.verify(req.token, secretKey, async(err, authData) => { //verifies the authenticity of the token.
         try {
             let data = req.body,
-                user = await findUserDB(authData), //find current user.
+                user = await findUserDB(authData), //find current user on the database.
                 domainStripped = data.domain.split("/")[2], //saves the part of the domain that doesn't include http(s).
-                result = await findLoginInfo(authData, domainStripped)
+                result = await findLoginInfo(authData, domainStripped) //assignes the loginInfo found to the results variable
 
             //error handling
             if (err) res.sendStatus(401);
@@ -164,7 +165,7 @@ async function addUserInfo(req, res) {
 
             //if no errors recieved
             else {
-                insertIntoUserTable(authData, data, domainStripped)
+                insertIntoUserTable(authData, data, domainStripped) //inserts the new login into the users personal table
                     .then(res.send(true)); //responds with true when data is inserted
             }
         } catch (err) {
@@ -182,7 +183,7 @@ async function confirmUsername(req, res) {
     jwt.verify(req.token, secretKey, async(err, authData) => { //verifies the authenticity of the token.
         try {
             if (err || authData.username === undefined) res.sendStatus(401);
-            else res.json({ username: authData.username });
+            else res.json({ username: authData.username }); //responds with the users name
 
         } catch (err) {
             await errorHandling(err, res);
@@ -200,10 +201,11 @@ async function deleteAccount(req, res) {
     jwt.verify(req.token, secretKey, async(err, authData) => { //verifies the authenticity of the token.
         try {
             if (err || authData.username === undefined || authData.id === undefined) res.sendStatus(401);
-            else deleteUserdataFromDB(authData).then((err) => {
-                if (err) throw err
-                else res.send(true)
-            })
+            else deleteUserdataFromDB(authData) //deletes the user
+                .then((err) => { //after account is deleted 
+                    if (err) throw err
+                    else res.send(true) //if no errors send true back
+                })
         } catch (err) { await errorHandling(err, res); }
     })
 }
