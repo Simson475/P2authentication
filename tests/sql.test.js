@@ -51,46 +51,46 @@ afterAll(async() => {
 })
 
 test("Should create an account on the sql database", async() => {
-    await createAccount({ username: "CreateTest1" }, "Hj824TLo9dmbo9he7yJo")
-    let sql = "SELECT * FROM loginTable WHERE username= \"" + mysql.escape("CreateTest1") + "\"";
+    await createAccount({ username: "CreateTest1" }, "Hj824TLo9dmbo9he7yJo") //calls the createAccount function with the insertet userData.
+    const sql = "SELECT * FROM loginTable WHERE username= \"" + mysql.escape("CreateTest1") + "\""; //defines the query that's send to the DB asking for the created account.
     const firstcheck = await db.query(sql); //sends query to DB
-    expect(firstcheck[0].username).toBe("'CreateTest1'")
-    expect(firstcheck[0].hashValue).toBe("Hj824TLo9dmbo9he7yJo")
+    expect(firstcheck[0].username).toBe("'CreateTest1'") //tests to see if the username is equal to the expected one.
+    expect(firstcheck[0].hashValue).toBe("Hj824TLo9dmbo9he7yJo") //tests to see if the hashvalue is equal to the expected one.
     const tables = await db.query("SHOW tables"); //sends query to DB
 
-    let secondCheck = tables.find((elem) => elem[Object.keys(elem)[0]] == "user" + firstcheck[0].id)
-    expect(secondCheck).not.toBe(undefined)
+    const secondCheck = tables.find((elem) => elem[Object.keys(elem)[0]] == "user" + firstcheck[0].id) //finds the user with the id given to the created user.
+    expect(secondCheck).not.toBe(undefined) //since we've just created the account the user shouldn't be undefined.
 
     //cleanup
-    await db.query("DROP TABLE user" + firstcheck[0].id)
-    await db.query("DELETE FROM loginTable WHERE id= " + firstcheck[0].id)
+    await db.query("DROP TABLE user" + firstcheck[0].id) //deletes the table for the id given to the created user.
+    await db.query("DELETE FROM loginTable WHERE id= " + firstcheck[0].id) //deletes the table for the given id in the loginTable.
 })
 
 test("Should delete a user", async() => {
-    const data = { username: "hopefullyDeletedSoon" }
-    await db.query("INSERT INTO loginTable SET ?", { username: mysql.escape(data.username), hashValue: "Lo97ghY7gnp8dh7&dikn" }); //mysql.escape is used to escape when we accept user input, so they can't give the server input.
-    let currentUser = await findUserDB(data); //finds the ID for the user
+    const data = { username: "hopefullyDeletedSoon" } //assignes the data used to create the test user
+    await db.query("INSERT INTO loginTable SET ?", { username: mysql.escape(data.username), hashValue: "Lo97ghY7gnp8dh7&dikn" }); //sends a db.query to create the test user on the database.
+    const currentUser = await findUserDB(data); //finds the userdata for the created account and assignes it to currentUser.
     await db.query("CREATE TABLE user" + currentUser[0].id + "( domain VARCHAR(255), username VARCHAR(255),password VARCHAR(255), PRIMARY KEY(domain))"); //Creates a table for the user in the loginTable
 
-    await deleteUserdataFromDB(currentUser[0])
-    let sql = "SELECT * FROM loginTable WHERE username= \"" + mysql.escape(data.username) + "\"";
+    await deleteUserdataFromDB(currentUser[0]) //deletes the formerly created test user.
+    const sql = "SELECT * FROM loginTable WHERE username= \"" + mysql.escape(data.username) + "\""; //finds the table for the testUser in loginTable
     const firstcheck = await db.query(sql); //sends query to DB
-    expect(firstcheck.length).toBe(0)
+    expect(firstcheck.length).toBe(0) //since the user should be deleted the length of the found user should be 0.
 })
 
 test("Should strip quotes from data received from database", async() => {
-    let data = { domain: "'www.shouldBeStripped.co.uk'", username: "'stripMcStrippy'", password: "'strippysStrippedPassword'" }
-    let result = { domain: "www.shouldBeStripped.co.uk", username: "stripMcStrippy", password: "strippysStrippedPassword" }
-    expect(await stripQuotes(data)).toEqual(result)
+    const data = { domain: "'www.shouldBeStripped.co.uk'", username: "'stripMcStrippy'", password: "'strippysStrippedPassword'" } //assignes the test data we're going to use.
+    const result = { domain: "www.shouldBeStripped.co.uk", username: "stripMcStrippy", password: "strippysStrippedPassword" } //assignes the expected result data.
+    expect(await stripQuotes(data)).toEqual(result) //compares the calculated results with the expected result.
 
 })
 
 test("shoud find login info for the user", async() => {
-    let authData = { id: 7 }
-    let domainStripped = "www.facebook.com"
-    let result = { domain: "'www.facebook.com'", username: "'Simon'", password: "'eHXZzquUIuXPsSaLy'" }
-    let firstCheck = (await findLoginInfo(authData, domainStripped))[0]
-    expect(firstCheck).toEqual(result)
+    const authData = { id: 7 } //assignes the test id used
+    const domainStripped = "www.facebook.com" //assignes an already stripped domain
+    const result = { domain: "'www.facebook.com'", username: "'Simon'", password: "'eHXZzquUIuXPsSaLy'" } //assignes the expected result
+    const firstCheck = (await findLoginInfo(authData, domainStripped))[0] //calls findLoginInfo with the test id and domain 
+    expect(firstCheck).toEqual(result) //compares the data found on the database with the expected result
 })
 
 test("Should insert data into usertable on database", async() => {
@@ -98,13 +98,13 @@ test("Should insert data into usertable on database", async() => {
     //in case of tests break before. cleans up
     await db.query("DELETE FROM user7 WHERE domain = \"'testwebsite.com'\"") // resets the databasa by removing the inserted data to be ready for another test.
 
-    let authData = { id: 7 }
-    let data = { username: "InersertysFancyInsertableUsername", password: "IntertyMcIntertyInsertablePassword" }
-    let domainStripped = "testwebsite.com"
-    let result = { domain: "'testwebsite.com'", username: "'InersertysFancyInsertableUsername'", password: "'IntertyMcIntertyInsertablePassword'" }
-    await insertIntoUserTable(authData, data, domainStripped);
-    const firstCheck = await db.query("SELECT * FROM user7 WHERE domain = \"'testwebsite.com'\"")
-    expect(firstCheck[0]).toEqual(result) //
+    let authData = { id: 7 } //assignes the test id used
+    let data = { username: "InersertysFancyInsertableUsername", password: "IntertyMcIntertyInsertablePassword" } //assignes the test data used
+    let domainStripped = "testwebsite.com" //assignes a stripped domain
+    let result = { domain: "'testwebsite.com'", username: "'InersertysFancyInsertableUsername'", password: "'IntertyMcIntertyInsertablePassword'" } //assignes the expected result
+    await insertIntoUserTable(authData, data, domainStripped); //inserts the testData into the user with the id 7.
+    const firstCheck = await db.query("SELECT * FROM user7 WHERE domain = \"'testwebsite.com'\"") //finds the data for the testWebsite for user7 on the database
+    expect(firstCheck[0]).toEqual(result) //compares the collected data with the expected result data
 
     //cleanup
     await db.query("DELETE FROM user7 WHERE domain = \"'testwebsite.com'\"") // resets the databasa by removing the inserted data to be ready for another test.
