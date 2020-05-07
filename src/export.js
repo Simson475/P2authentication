@@ -21,7 +21,6 @@ chrome.runtime.sendMessage({ getToken: true }, async function(response) { //gets
         } else {
 
             chrome.storage.local.get([answer.username], function(result) {
-                console.log(result[answer.username]);
                 exportSuccesCSS(result[answer.username])
             });
         }
@@ -29,14 +28,20 @@ chrome.runtime.sendMessage({ getToken: true }, async function(response) { //gets
 
 });
 
-
+/**
+ * Sets the style of the DOM when an account is not logged in.
+ */
 function notLoggedIn() {
     let loginFail = document.getElementById("loginFail");
     loginFail.style.display = "inline";
     
 
 }
-
+/**
+ * Sets the style of the DOM when an account is exported correctly.
+ * Displays the pepperstring in paragraph
+ * @param {String} result Contains the pepper string
+ */
 function exportSuccesCSS(result) {
     let paragraph = document.getElementById("Pepper");
     let pepperLabel = document.getElementById("PepperLabel");

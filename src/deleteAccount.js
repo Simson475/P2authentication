@@ -11,9 +11,12 @@ chrome.runtime.sendMessage({ getToken: true }, async function(response) { //gets
     } else {
     }
 });
-
-
-
+/**
+ * Checks if the user is logged in.(it is required to bee logged in)
+ * Checks if the user has inputted "DELETE"
+ * Sends a delete request to the server 
+ * @param {Object} event event is the event that triggers the function. It is used to prevent default behaviour of the submit method in a form.
+ */
 function deleteAccount(event) {
     event.preventDefault();
     let form = document.getElementById("deletePageForm");
@@ -63,7 +66,9 @@ function deleteAccount(event) {
 
 //----Subfunctions--------------------------------------------------
 
-
+/**
+ * Sets the style of the DOM when an account is successfully deleted.
+ */
 function deleteSuccesCSS() {
     let deletePage = document.getElementById("deletePage");
     let message = document.getElementById("deletionMessage");
@@ -78,6 +83,9 @@ function deleteSuccesCSS() {
     message.style.display = "inline";
 }
 
+/**
+ * CSS changes in case the user did not write "DELETE" correctly
+ */
 function errorFunction() {
 
     let delInput = document.getElementById("AuthDelete");
@@ -85,6 +93,9 @@ function errorFunction() {
     console.log(`Did not write "DELETE" correctly`);
 }
 
+/**
+ * Sends a null token as current token to the background script
+ */
 function clearToken() { //reset the token to null
 
     chrome.runtime.sendMessage({ token: null }, function(response) { //Sets the token to null (logged out)
