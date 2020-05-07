@@ -9,7 +9,7 @@
         "js": ["/Scripts/content.js"]
     }],
     "browser_action": {
-        "default_icon": "/Images/logo.png",
+        "default_icon": "/Images/PWMLogo.png",
         "default_popup": "/HTML/popup.html",
         "default_title": "PW MAN"
     },
