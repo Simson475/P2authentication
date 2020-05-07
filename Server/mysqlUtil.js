@@ -8,14 +8,14 @@ const util = require('util'); //used for promisify wrapper of mysql queries
  * @param {Object} login information needed to login to the server. should as a minimum include host user and password.
  */
 function makeDb(login) {
-    const connection = mysql.createConnection(login);
-    return {
+    const dbConnection = mysql.createConnection(login); //makes dbConnection to database
+    return { //returns object with two methods
         query(sql, args) {
-            return util.promisify(connection.query)
-                .call(connection, sql, args);
+            return util.promisify(dbConnection.query) //a promisified version of queries
+                .call(dbConnection, sql, args);
         },
         close() {
-            return util.promisify(connection.end).call(connection);
+            return util.promisify(dbConnection.end).call(dbConnection); //promisified version of ending the connection with the server gracefully.
         }
     };
 }
@@ -41,9 +41,9 @@ const db = process.env.PRODUCTION === "true" ? makeDb(online) : makeDb(local)
 
 
 /**
- * TODO
- * @param {*} data 
- * @param {*} hash 
+ * Creates an accounts on the mySQL database using db.querys to send inputs to the database.
+ * @param {object} data contains the username of the userdata 
+ * @param {object} hash contains the hashValue for the user
  */
 async function createAccount(data, hash) {
     await db.query("INSERT INTO loginTable SET ?", { username: mysql.escape(data.username), hashValue: hash }); //mysql.escape is used to escape when we accept user input, so they can't give the server input.
@@ -68,8 +68,8 @@ async function findUserDB(data) { //looks up a given user in the database tables
 }
 
 /**
- * TODO
- * @param {*} authData 
+ * Deletes a user from our databse. this is only used on account deletion.
+ * @param {Object} authData authdata comes from the jsonwebtoken. it should include the useres id as a minimum
  */
 async function deleteUserdataFromDB(authData) {
     await db.query("DROP TABLE user" + authData.id) //inserts data into the users personal table
@@ -78,23 +78,23 @@ async function deleteUserdataFromDB(authData) {
 
 
 /**
- * TODO
- * @param {*} userData 
+ * Strips the ' marks from our sql data. this is needed since we only apply them to sanitize the inputs of our DB
+ * @param {Object} userData userdata is the data we needed to sanitize
  */
 async function stripQuotes(userData) {
-    userData.domain = userData.domain.split("'")[1]; //strips ' (the sql protection)
-    userData.username = userData.username.split("'")[1]; //strips ' (the sql protection)
-    userData.password = userData.password.split("'")[1]; //strips ' (the sql protection)
-    return userData
+    for (elem in userData) { //iterates over all properties in object
+        userData[elem] = userData[elem].split("'")[1]; //strips ' (the sql protection)
+    }
+    return userData //returns destripped userdata
 }
 
 
 
 
 /**
- * TODO 
- * @param {*} authData 
- * @param {*} domainStripped 
+ * finds the login information for the given domain for the user.
+ * @param {object} authData contains the userdata needed which is the id given to the user on the database here.
+ * @param {object} domainStripped contains the stripped version of the domain needed.
  */
 async function findLoginInfo(authData, domainStripped) {
     let sql = "SELECT * FROM user" + authData.id + " WHERE domain= \"" + mysql.escape(domainStripped) + "\""; //looks up the Domain under the userID to see if there is stored info for the website.
@@ -103,16 +103,16 @@ async function findLoginInfo(authData, domainStripped) {
 
 
 /**
- * TODO
- * @param {*} authData 
- * @param {*} data 
- * @param {*} domainStripped 
+ * Inserts the given logindata for a website to a users loginTable.
+ * @param {object} authData contains the user id needed to lookup the user on the database
+ * @param {object} data contains the userna and password needed to be stored for the website
+ * @param {object} domainStripped contains the stripped version of the domain we're storing data for
  */
 async function insertIntoUserTable(authData, data, domainStripped) {
     let parameter = { domain: mysql.escape(domainStripped), username: mysql.escape(data.username), password: mysql.escape(data.password) }; //creates object we want to save in DB
     await db.query("INSERT INTO user" + authData.id + " SET ?", parameter) //inserts data into the users personal table
 }
 
-async function closeDB() { db.close() }
+async function closeDB() { db.close() } //closes DB connection
 
 module.exports = { createAccount, findUserDB, deleteUserdataFromDB, stripQuotes, closeDB, findLoginInfo, insertIntoUserTable }

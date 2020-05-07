@@ -21,7 +21,7 @@ async function initialize() {
     return { browser, extensionID };
 }
 
-test("should say passwords doesn't match", async() => {
+test("loginTest, should say passwords doesn't match", async() => {
 
     //initialize pupeteer browser
     const { browser, extensionID } = await initialize()
@@ -29,15 +29,17 @@ test("should say passwords doesn't match", async() => {
     //running the actual test
     const extensionPopupHtml = './HTML/popup.html'
     const page = await browser.newPage();
-    await page.goto(`chrome-extension://${extensionID}/${extensionPopupHtml}`);
-    await page.click("a#create")
-    await page.click("input#username")
-    await page.type("input#username", "test")
-    await page.click("input#firstPassword")
-    await page.type("input#firstPassword", "1234Test")
-    await page.click("input#secondPassword")
-    await page.type("input#secondPassword", "Test4321")
-    await page.click("input#create")
+    await page.goto(`chrome-extension://${extensionID}/${extensionPopupHtml}`); //enters the extension
+    await page.click("a#create") //clicks the crate button
+    await page.click("input#username") //clicks the input username field
+    await page.type("input#username", "test") //inputs the username "test"
+    await page.click("input#firstPassword") //clicks the first password field
+    await page.type("input#firstPassword", "1234Test") //inputs the password "1234Test"
+    await page.click("input#secondPassword") //clicks the second password field
+    await page.type("input#secondPassword", "Test4321") //inputs the password "Test4321"
+    await page.click("input#create") //clicks the create button
+
+    //checks if the extension throws an error for first and second password not matching
     const result = await page.$eval('label#wrongPassword', (elem) => {
         return window.getComputedStyle(elem).getPropertyValue('display')
     })

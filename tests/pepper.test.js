@@ -29,14 +29,14 @@ test("should import pepper and login to Dennis, try to create new login on page 
     //running the actual test
     const extensionPopupHtml = './HTML/popup.html'
     const page = await browser.newPage();
-    await page.goto(`chrome-extension://${extensionID}/${extensionPopupHtml}`);
-    await page.click("a#Settings")
-    await page.click("a#importButton")
-    await page.click("input#importUsername")
-    await page.type("input#importUsername", "Dennis")
-    await page.click("input#importPepper")
-    await page.type("input#importPepper", "PAbdgFBA/Lo/98jkvT9d")
-    await page.click("input#importAccountButton")
+    await page.goto(`chrome-extension://${extensionID}/${extensionPopupHtml}`); //opens our extension 
+    await page.click("a#Settings") //clicks the settings button
+    await page.click("a#importButton") //clixks the import button
+    await page.click("input#importUsername") //clicks the input field for the username
+    await page.type("input#importUsername", "Dennis") //inputs the username "Dennis"
+    await page.click("input#importPepper") //clicks the import pebber field
+    await page.type("input#importPepper", "PAbdgFBA/Lo/98jkvT9d") //inputs the given pebber
+    await page.click("input#importAccountButton") //clicks the submit input button
     await page.waitFor(5000); // arbitrary wait time.
 
     //checks for import success message to be shown
@@ -45,11 +45,12 @@ test("should import pepper and login to Dennis, try to create new login on page 
     })
     expect(firstCheck).toBe("block");
 
-    await page.type("input#importUsername", "Dennis")
-    await page.click("input#importPepper")
-    await page.type("input#importPepper", "PAbdgFBA/Lo/98jkvT9d")
-    await page.click("input#importAccountButton")
+    await page.type("input#importUsername", "Dennis") //inputs the username Dennis
+    await page.click("input#importPepper") //clicks the import pebber field
+    await page.type("input#importPepper", "PAbdgFBA/Lo/98jkvT9d") //inputs the pebber
+    await page.click("input#importAccountButton") //clicks the submit button
 
+    //checks if the user gets a warning trying to import pebber when something is already stored
     const secondCheck = await page.$eval('div#importWarning', (elem) => {
         return window.getComputedStyle(elem).getPropertyValue('display')
     })
@@ -57,18 +58,18 @@ test("should import pepper and login to Dennis, try to create new login on page 
     await page.waitFor(5000); // arbitrary wait time.
     await page.goto(`chrome-extension://${extensionID}/${extensionPopupHtml}`);
 
-    await page.click("input#LogIn-username")
-    await page.type("input#LogIn-username", "Dennis")
-    await page.click("input#LogIn-password")
-    await page.type("input#LogIn-password", "1234")
-    await page.click("input#LogIn-submit")
+    await page.click("input#LogIn-username") //clicks the login field
+    await page.type("input#LogIn-username", "Dennis") //inputs the username "Dennis"
+    await page.click("input#LogIn-password") //clicks the input field for password
+    await page.type("input#LogIn-password", "1234") //inputs the password "1234"
+    await page.click("input#LogIn-submit") //submites username and password
     await page.waitFor(5000); // arbitrary wait time.
-    await page.click("a#Settings")
-    await page.click("a#exportButton")
+    await page.click("a#Settings") //clicks settings button
+    await page.click("a#exportButton") //clicks export pepper button
     await page.waitFor(5000); // arbitrary wait time.
-    const thirdCheck = await page.$eval('p#Pepper', (elem) => {
+    const thirdCheck = await page.$eval('p#Pepper', (elem) => { //gets pepperstring from the element it is written in
         return elem.innerHTML
     })
-    expect(thirdCheck).toBe("PAbdgFBA/Lo/98jkvT9d");
+    expect(thirdCheck).toBe("PAbdgFBA/Lo/98jkvT9d"); //expects the visible pepper to be the same one as we imported.
     browser.close()
 }, 100000)
