@@ -4,7 +4,7 @@ form.addEventListener("submit", importFunction);
 /**
  * checks if a pepperstring inputted into a form is a valid pepperstring.
  * And then save the pepper to local storage to match the username. 
- * @param {Object} event The event that has been triggered 
+ * @param {Object} event event is the event that triggers the function. It is used to prevent default behaviour of the submit method in a form. 
  */
 
 async function importFunction(event) {
@@ -64,7 +64,8 @@ function savePepper(pepperString, username, CSS) {
 //---------Subfunctions---------------------------------------------------------------------------------------------------------------------------------
 
 /**
- * Changes the CSS of the DOM when the user clicks yes about overwriting pepper. Runs inside of the function "savePepper".
+ * Changes the style of the DOM when the user clicks yes about overwriting pepper. 
+ * Runs inside of the function "savePepper".
  */
 function pepperImportedCSS() {
     document.getElementById("importSuccess").style.display = "inline";
