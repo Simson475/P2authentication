@@ -18,12 +18,13 @@
             <input id="firstPassword" type="password" placeholder="Enter Password" name="password1" required>
             <label id="passLabelSecond" for="password"><b>Re-enter Password</b></label>
             <input id="secondPassword" type="password" placeholder="Re-enter Password" name="password2" required>
-            <div id = "tooltip">This password manager uses pepper
-                <span id ="tooltiptext">Pepper is a unique sequence of characters, used to mask your password. Masking the password, prevent other people from using your login info. 
+            <div id="tooltip">This password manager uses <span id="tooltipHover"> <b>pepper</b>
+                <span id="tooltiptext">Pepper is a unique sequence of characters, used to mask your password. Masking the password, prevent other people from using your login info. 
                     This extension only generates a pepper once and stores it locally on your device. 
                     This means that you will not be able to login with the same account on other devices.
                     If you want to login on other devices, you can export this pepper from your original device, and import it on the new device. This can be done in the settings menu.
                     Be sure that other people do not see your pepper!</span>
+                </span>
             </div>
             <input id="create" type="submit" value="Create">
         </form>

@@ -3,15 +3,14 @@ const extensionPath = __dirname + "/../PWMAN"
 
 async function initialize() {
     const browser = await puppeteer.launch({
-        headless: false, // extension are allowed only in the head-full mode
+        headless: false, // Extension are allowed only in the head-full mode
         args: [
             `--disable-extensions-except=${extensionPath}`,
             `--load-extension=${extensionPath}`
         ]
     });
-    //finds our extensions id using the extension name from manifest.json
+    // Finds our extensions id using the extension name from manifest.json
     const name = "Password Manager"
-        //TODO browser.targets?
     const targets = await browser.targets();
     const extensionProcess = await targets.find(({ _targetInfo }) => {
         return _targetInfo.title === name && _targetInfo.type === 'background_page';
@@ -23,12 +22,14 @@ async function initialize() {
 
 test("should import pepper and login to Dennis, try to create new login on page that already has a login, and then go to facebook to see if it inputs correct data", async() => {
 
-    //initialize pupeteer browser
+    // Initialize pupeteer browser
     const { browser, extensionID } = await initialize()
 
-    //running the actual test
+    // Running the actual test
     const extensionPopupHtml = './HTML/popup.html'
     const page = await browser.newPage();
+
+    // Imports pepper for dennis
     await page.goto(`chrome-extension://${extensionID}/${extensionPopupHtml}`);
     await page.click("a#Settings")
     await page.click("a#importButton")
@@ -44,6 +45,8 @@ test("should import pepper and login to Dennis, try to create new login on page 
         return window.getComputedStyle(elem).getPropertyValue('display')
     })
     expect(firstCheck).toBe("block");
+
+    //Login to dennis
     await page.click("a#returnSettings")
     await page.click("a#returnPop")
     await page.click("input#LogIn-username")
@@ -59,6 +62,7 @@ test("should import pepper and login to Dennis, try to create new login on page 
     })
     expect(secondCheck).toBe("none");
 
+    //checks to see if account can be created on a domain with previous login information (shouldnt be possible)
     await page.click("a#SignedIn-website")
     await page.click("input#username")
     await page.type("input#username", "Dennis")
@@ -70,6 +74,8 @@ test("should import pepper and login to Dennis, try to create new login on page 
     const thirdCheck = await page.$eval('p#errorMessage', elem => elem.innerHTML)
     expect(thirdCheck).toBe("Account already created for this website");
 
+
+    //goes to facebook and should input into login fields
     await page.goto("https://www.facebook.com/");
     await page.waitFor(5000); // arbitrary wait time.
 
@@ -81,5 +87,4 @@ test("should import pepper and login to Dennis, try to create new login on page 
     expect(fifthCheck).toBe("eHXZzquUIuXPsSaLy");
 
     await browser.close()
-
 }, 100000)

@@ -1,5 +1,7 @@
-node_modules
-docs
 .env
 env
 env.txt
+.txt
+txt
+docs
+node_modules
