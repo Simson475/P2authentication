@@ -3,7 +3,7 @@
  * It is hashed using bitshifts and reducing using addition
  * @param {string} str The string that will be hashed.
  */
-function hashCode(str) { // Stolen from the internet.
+function hashCode(str) { //https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript. comment from deekshith
     return str.split('').reduce((prevHash, currVal) =>
         (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
 }
