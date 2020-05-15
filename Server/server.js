@@ -125,7 +125,7 @@ async function getPassword(req, res) {
 
 
 /**
- * Takes information about a new username, password on a new domain and writes it to the users Json file 
+ * Takes information about a new username, password on a new domain and writes it to the users database table 
  * @param {Object} req req is the request the user sends to the server.
  * @param {Object} res res is the response to send the user. this either sends a 401, errormessages, false or true. responds true if everything went well
  */
