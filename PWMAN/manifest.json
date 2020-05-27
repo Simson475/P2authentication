@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Password Manager",
-    "version": "0.0.1",
+    "version": "1.0.3",
     "content_scripts": [{
         "matches": [
             "<all_urls>"
