@@ -20,23 +20,23 @@
     },
     "homepage": "https://github.com/Simson475/P2authentication#readme",
     "devDependencies": {
-        "eslint": "^6.8.0",
-        "jest": "^25.4.0",
-        "jsdoc": "^3.6.3",
-        "nodemon": "^2.0.2",
-        "puppeteer": "^3.0.2",
-        "webpack-cli": "^3.3.11"
+        "eslint": "^7.7.0",
+        "jest": "^26.4.0",
+        "jsdoc": "^3.6.5",
+        "nodemon": "^2.0.4",
+        "puppeteer": "^5.2.1",
+        "webpack-cli": "^3.3.12"
     },
     "dependencies": {
-        "bcrypt": "^4.0.1",
+        "bcrypt": "^5.0.0",
         "body-parser": "^1.19.0",
         "crypto-random-string": "^3.2.0",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "express-flash": "0.0.2",
-        "express-session": "^1.17.0",
+        "express-session": "^1.17.1",
         "jsonwebtoken": "^8.5.1",
         "mysql": "^2.18.1",
-        "webpack": "^4.43.0"
+        "webpack": "^4.44.1"
     }
 }
